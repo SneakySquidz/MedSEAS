@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>medseas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>medseas</h1>
+    <p class="subtitle">Second brain — notes, tasks, backstop</p>
+  </header>
+
+  <main>
+    <section id="tasks">
+      <h2>Tasks</h2>
+      <form id="task-form">
+        <input type="text" id="task-input" placeholder="Add a task…" autocomplete="off" required />
+        <button type="submit">Add</button>
+      </form>
+      <ul id="task-list"></ul>
+    </section>
+
+    <section id="notes">
+      <h2>Notes</h2>
+      <form id="note-form">
+        <textarea id="note-input" placeholder="Jot something down…" required></textarea>
+        <button type="submit">Save note</button>
+      </form>
+      <ul id="note-list"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Stored in this browser only (localStorage) — not synced anywhere yet.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
