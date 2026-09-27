@@ -19,7 +19,7 @@ To refresh: ask Claude to review the figures against the latest bulletins. Chang
 
 - **CSV download** — a button under the data table exports all 8 basins' figures (temperature, salinity, evaporation, depth, area, warming rate, etc.) as a spreadsheet-ready CSV.
 - **Net evaporation** — a new measure under Salinity, sourced from the eastern/western Mediterranean water budget (Frontiers in Climate, 2025). Only known at the whole-basin level (west vs. east), not per sub-basin, so every western basin shares one figure and every eastern basin shares another — noted in the footnotes and marked "est." in the UI.
-- **Submarine easter egg** — a small submarine surfaces at a random spot on the map every 25–90 seconds; clicking it shows a Calypso Deep dive fact. Purely decorative, `prefers-reduced-motion` friendly, adds no dependencies.
+- **Submarine easter egg** — a yellow submarine surfaces at a random spot on the map a few seconds after the map comes into view, then every ~20 seconds; clicking it shows a Calypso Deep dive fact. Purely decorative, `prefers-reduced-motion` friendly, adds no dependencies.
 
 ## Warming timeline
 
