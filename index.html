@@ -1,41 +1,625 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>medseas</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+<!doctype html><html><head><meta charset="utf-8"><title>MedSEAS · Mediterranean Basins</title><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mediterranean Basins</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#edf6fa; --surface:#ffffff; --surface-2:#e4f2f9; --surface-3:#d2e8f3;
+  --ink:#0a2c3e; --ink-2:#3a6377; --ink-muted:#6d8fa0; --border:#c6e1ee;
+  --accent:#12688f; --accent-strong:#0a4a68;
+  --land:#f1ebdd; --land-line:#cbbb99; --land-ink:#a08f68;
+  --sea-void:#d7ecf5; --shadow:0 12px 30px -18px rgba(10,44,62,.35); --halo:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#06171f; --surface:#0c242f; --surface-2:#102f3d; --surface-3:#16404f;
+    --ink:#e9f5fa; --ink-2:#b2d3e1; --ink-muted:#7ba0b1; --border:#1a3d4d;
+    --accent:#5cbfe4; --accent-strong:#8fd8f0;
+    --land:#2f2a20; --land-line:#5c5236; --land-ink:#9b8c66;
+    --sea-void:#0a2432; --shadow:0 14px 34px -18px rgba(0,0,0,.6); --halo:#06171f;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#06171f; --surface:#0c242f; --surface-2:#102f3d; --surface-3:#16404f;
+  --ink:#e9f5fa; --ink-2:#b2d3e1; --ink-muted:#7ba0b1; --border:#1a3d4d;
+  --accent:#5cbfe4; --accent-strong:#8fd8f0;
+  --land:#2f2a20; --land-line:#5c5236; --land-ink:#9b8c66;
+  --sea-void:#0a2432; --shadow:0 14px 34px -18px rgba(0,0,0,.6); --halo:#06171f;
+}
+*{box-sizing:border-box;}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;padding:26px 18px 52px;}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-size:clamp(29px,4.2vw,44px);font-weight:600;line-height:1.05;}
+.eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;}
+.sub{color:var(--ink-2);font-size:15px;line-height:1.55;max-width:62ch;margin:9px 0 0;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;}
+.chip{display:flex;align-items:baseline;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:7px 15px;box-shadow:var(--shadow);}
+.chip b{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--accent-strong);font-size:14px;}
+.chip span{font-size:12px;color:var(--ink-muted);}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:15px 15px 17px;}
+.ptitle{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;}
+
+/* two-level filter */
+.filter{display:flex;flex-direction:column;gap:9px;margin-bottom:13px;}
+.groups{display:flex;gap:6px;flex-wrap:wrap;}
+.gbtn{flex:1 1 0;min-width:112px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink-2);
+  font-family:inherit;font-size:13.5px;font-weight:600;padding:11px 12px;border-radius:11px;cursor:pointer;
+  display:flex;flex-direction:column;gap:2px;align-items:flex-start;transition:background .15s,border-color .15s;}
+.gbtn .gs{font-size:10.5px;font-weight:500;color:var(--ink-muted);letter-spacing:.02em;}
+.gbtn:hover{border-color:var(--accent);}
+.gbtn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.gbtn.on .gs{color:rgba(255,255,255,.8);}
+.gbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.subs{display:flex;gap:5px;flex-wrap:wrap;}
+.sbtn{border:1px solid transparent;background:var(--surface-2);color:var(--ink-2);font-family:inherit;font-size:12px;
+  font-weight:600;padding:6px 12px;border-radius:99px;cursor:pointer;}
+.sbtn:hover{color:var(--ink);}
+.sbtn.on{background:var(--surface);border-color:var(--accent);color:var(--accent-strong);}
+.sbtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+.est{font-size:9px;color:var(--ink-muted);vertical-align:super;}
+.gbtn.on .est,.sbtn.on .est{color:inherit;opacity:.75;}
+
+/* map */
+.mapwrap{position:relative;border-radius:13px;overflow:hidden;border:1px solid var(--border);background:var(--sea-void);}
+svg#map{display:block;width:100%;height:auto;touch-action:none;cursor:grab;}
+svg#map.drag{cursor:grabbing;}
+.zoomui{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:5px;}
+.zbtn{width:31px;height:31px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--ink);
+  font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 10px -4px rgba(10,44,62,.5);padding:0;line-height:1;}
+.zbtn:hover{border-color:var(--accent);color:var(--accent-strong);}
+.zbtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+.zbtn.wide{width:auto;padding:0 10px;font-size:11px;font-weight:600;}
+.maphint{position:absolute;left:10px;bottom:9px;font-size:10.5px;color:var(--ink-muted);background:var(--surface);
+  border:1px solid var(--border);border-radius:99px;padding:4px 11px;opacity:.9;}
+.land{fill:var(--land);stroke:var(--land-line);stroke-width:.8;stroke-linejoin:round;}
+.basin{cursor:pointer;transition:opacity .18s ease;}
+.basin:hover{opacity:.85;}
+.bedge{fill:none;stroke:var(--halo);stroke-width:1.4;stroke-opacity:.5;stroke-linejoin:round;pointer-events:none;}
+.bedge.on{stroke:var(--accent-strong);stroke-width:3;stroke-opacity:1;}
+.blabel,.bval{pointer-events:none;text-anchor:middle;}
+.blabel{font-weight:700;}
+.bval{font-family:"IBM Plex Mono",monospace;font-weight:600;}
+.clabel{pointer-events:none;text-anchor:middle;fill:var(--land-ink);font-weight:600;letter-spacing:.18em;text-transform:uppercase;}
+.ilabel{pointer-events:none;text-anchor:middle;fill:var(--land-ink);font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+.olabel{pointer-events:none;text-anchor:middle;fill:var(--ink-muted);font-weight:500;letter-spacing:.09em;font-style:italic;opacity:.75;}
+.slabel{pointer-events:none;text-anchor:middle;fill:var(--ink-muted);font-weight:600;}
+.sdot{fill:none;stroke:var(--ink-muted);}
+.ramp-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.ramp{height:10px;border-radius:99px;flex:1;min-width:150px;border:1px solid var(--border);}
+.ramp-end{font-size:11.5px;color:var(--ink-muted);font-family:"IBM Plex Mono",monospace;}
+.ramp-cap{font-size:11.5px;color:var(--ink-2);font-weight:600;}
+#tip{position:fixed;z-index:40;pointer-events:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 12px;box-shadow:0 10px 26px -10px rgba(10,44,62,.45);font-size:12px;color:var(--ink);display:none;max-width:235px;}
+#tip .tn{font-weight:700;margin-bottom:5px;}
+#tip .tr{display:flex;justify-content:space-between;gap:14px;color:var(--ink-2);line-height:1.65;}
+#tip .tr b{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-weight:600;}
+
+.lower{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.74fr);gap:16px;}
+@media (max-width:840px){.lower{grid-template-columns:1fr;}}
+.bars{display:flex;flex-direction:column;gap:7px;margin-top:11px;}
+.row{display:grid;grid-template-columns:92px minmax(0,1fr) 86px;align-items:center;gap:10px;cursor:pointer;padding:4px 5px;border-radius:9px;border:1px solid transparent;}
+.row:hover{background:var(--surface-2);}
+.row.on{background:var(--surface-2);border-color:var(--border);}
+.row:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+.rname{font-size:12.5px;color:var(--ink-2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.row.on .rname{color:var(--ink);font-weight:700;}
+.track{display:block;height:18px;border-radius:6px;background:var(--surface-3);position:relative;overflow:hidden;}
+.fill{display:block;height:18px;border-radius:6px;transition:width .4s cubic-bezier(.4,0,.2,1);min-width:3px;}
+.rval{display:block;font-family:"IBM Plex Mono",monospace;font-size:12.5px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums;font-weight:500;}
+.avg-mark{position:absolute;top:0;bottom:0;width:2px;background:var(--ink-muted);opacity:.65;}
+.avg-note{font-size:11px;color:var(--ink-muted);margin-top:10px;display:flex;align-items:center;gap:6px;}
+.avg-swatch{display:inline-block;width:2px;height:11px;background:var(--ink-muted);opacity:.65;}
+.dname{font-family:"Fraunces",Georgia,serif;font-size:22px;font-weight:600;margin-top:10px;}
+.ddesc{font-size:13px;color:var(--ink-2);line-height:1.55;margin-top:5px;}
+.quirk{margin-top:12px;background:var(--surface-2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 12px;}
+.quirk .ql{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--accent);font-weight:700;display:block;margin-bottom:4px;}
+.quirk .qt{font-size:12.5px;color:var(--ink-2);line-height:1.55;}
+.tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;}
+.tile{background:var(--surface-2);border-radius:10px;padding:9px 10px;}
+.tile .tl{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);display:block;}
+.tile .tv{font-family:"IBM Plex Mono",monospace;font-size:16px;font-weight:600;color:var(--accent-strong);display:block;margin-top:2px;}
+.tile .tv i{font-size:9.5px;font-style:normal;color:var(--ink-muted);margin-left:1px;}
+.prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:11px;margin-top:11px;}
+.pcard{background:var(--surface-2);border-radius:11px;padding:11px 12px;display:flex;flex-direction:column;gap:4px;}
+.pcard .pn{font-size:12.5px;font-weight:700;}
+.pcard .pw{font-size:11.5px;color:var(--ink-2);line-height:1.5;}
+.pcard .pd{font-size:10.5px;color:var(--ink-muted);font-family:"IBM Plex Mono",monospace;line-height:1.5;}
+.pcard a{color:var(--accent);text-decoration:none;font-size:11.5px;}
+.pcard a:hover{text-decoration:underline;}
+summary{cursor:pointer;font-size:12.5px;color:var(--accent);font-weight:600;padding:9px 0 2px;}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.tbl-scroll{overflow-x:auto;margin-top:8px;}
+table{border-collapse:collapse;width:100%;min-width:700px;font-size:12px;}
+th,td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--border);}
+th:first-child,td:first-child{text-align:left;}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);font-weight:600;}
+td{font-family:"IBM Plex Mono",monospace;color:var(--ink-2);font-variant-numeric:tabular-nums;}
+td:first-child{font-family:"IBM Plex Sans",sans-serif;color:var(--ink);font-weight:500;}
+footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-direction:column;gap:8px;}
+.note{font-size:11.5px;color:var(--ink-muted);line-height:1.65;max-width:90ch;margin:0;}
+.note a{color:var(--ink-2);}
+@media (max-width:520px){ .row{grid-template-columns:70px minmax(0,1fr) 72px;} .tiles{grid-template-columns:1fr 1fr;} }
+@media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+</style>
+
+<div class="wrap">
   <header>
-    <h1>medseas</h1>
-    <p class="subtitle">Second brain — notes, tasks, backstop</p>
+    <div class="eyebrow">Physical oceanography &middot; Copernicus Marine &middot; Argo &middot; EMODnet</div>
+    <h1>Mediterranean Basins</h1>
+    <p class="sub">The Mediterranean behaves as eight distinct seas. Choose a measure, and the map shades every basin by it &mdash; then zoom in, or click a basin to read it on its own.</p>
+    <div class="chips">
+      <div class="chip"><b>21.2 &deg;C</b><span>mean sea-surface temperature in 2025, second warmest on record</span></div>
+      <div class="chip"><b>5,109 m</b><span>Calypso Deep, Ionian Sea, measured to &plusmn;1 m</span></div>
+      <div class="chip"><b>2.7 psu</b><span>saltier at the eastern end than the western</span></div>
+    </div>
   </header>
 
-  <main>
-    <section id="tasks">
-      <h2>Tasks</h2>
-      <form id="task-form">
-        <input type="text" id="task-input" placeholder="Add a task…" autocomplete="off" required />
-        <button type="submit">Add</button>
-      </form>
-      <ul id="task-list"></ul>
-    </section>
+  <div class="panel">
+    <div class="filter">
+      <div class="groups" id="groups" role="tablist" aria-label="Measure category"></div>
+      <div class="subs" id="subs" role="group" aria-label="Measure"></div>
+    </div>
+    <div class="mapwrap">
+      <svg id="map" viewBox="0 0 1000 482" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map of the Mediterranean Sea divided into eight sub-basins, shaded by the selected measure">
+        <rect id="seaRect" x="-500" y="-500" width="2000" height="1500" fill="var(--sea-void)"/>
+        <g id="basins"></g>
+        <g id="edges"></g>
+        <path class="land" fill-rule="evenodd" d="M1034.7 -44.1L1034.7 525.8L956.9 525.8L962.3 491.9L956.9 500.2L954.1 515.3L950.6 525.8L926.1 525.8L922.4 520.9L918.4 506.0L913.7 499.8L910.2 492.9L906.6 479.6L904.5 481.0L904.8 483.2L901.8 489.7L902.7 492.5L907.4 498.7L908.8 510.3L917.9 525.8L-34.7 525.8L-34.7 377.6L-22.3 371.9L-7.0 362.2L5.7 338.5L15.6 308.9L22.6 307.6L27.8 304.6L30.6 305.4L29.2 306.8L29.2 310.1L31.2 313.9L40.8 323.7L45.6 325.9L52.5 327.2L67.3 323.7L69.7 325.2L74.2 325.7L78.6 324.9L84.0 320.0L87.0 328.2L108.5 329.2L121.9 321.2L124.9 317.4L131.5 312.3L142.9 306.6L148.4 307.9L151.7 307.5L153.9 305.5L156.3 300.7L160.0 297.8L175.3 289.5L181.9 287.3L207.0 284.6L212.8 284.9L221.6 279.5L234.3 279.2L240.3 276.2L262.9 276.2L275.4 283.5L285.3 279.1L293.2 277.2L297.4 275.0L299.3 271.8L302.9 270.7L305.0 273.1L313.1 275.6L320.3 274.1L319.5 270.5L324.8 271.5L335.9 277.4L357.0 273.3L364.4 267.5L377.0 263.2L380.5 264.1L379.3 267.0L380.3 269.2L381.9 267.9L381.4 265.7L386.3 265.8L388.8 267.1L388.6 272.2L392.0 277.1L391.0 279.6L393.8 281.1L396.3 279.3L397.5 276.7L402.0 275.2L406.3 271.5L408.7 271.1L410.3 276.9L406.6 280.7L402.7 288.1L399.1 290.2L395.6 295.1L396.0 301.6L397.9 305.9L407.5 313.3L408.4 322.1L410.2 324.9L400.3 341.4L388.9 351.2L385.8 355.1L385.4 359.7L387.9 365.7L391.3 369.3L394.8 371.2L400.8 370.5L401.0 375.6L405.1 375.0L406.4 372.3L409.4 374.2L410.9 379.8L413.4 381.6L412.1 383.4L416.7 384.1L426.2 387.9L437.0 394.8L448.0 396.5L460.3 393.2L466.1 395.9L480.5 399.2L488.7 405.1L504.1 408.6L508.3 415.4L508.4 420.9L511.5 430.2L516.3 436.9L526.0 441.7L541.2 443.1L565.5 451.6L573.9 456.0L584.9 466.6L591.1 470.3L599.3 470.4L606.2 466.7L609.1 464.5L616.0 455.3L619.2 447.1L619.0 443.7L614.8 433.1L614.0 425.4L615.1 420.1L618.6 413.6L630.1 403.0L640.3 397.3L648.7 396.6L653.6 392.5L655.6 392.4L658.3 393.4L666.4 393.1L687.3 401.9L687.6 410.3L691.8 413.8L703.6 415.4L711.3 419.8L724.2 419.6L728.7 420.5L732.1 423.5L736.7 433.8L740.3 434.4L752.2 431.2L772.4 435.6L783.5 438.3L790.3 443.2L797.0 443.7L800.2 446.6L812.8 448.0L825.7 454.4L834.0 451.6L845.6 442.8L848.4 441.6L852.4 441.9L856.4 436.0L868.6 432.8L867.7 434.1L860.3 437.2L863.4 437.6L870.4 435.8L872.3 431.7L882.5 436.0L890.9 433.5L896.7 439.4L895.3 439.3L891.0 435.3L888.2 440.8L893.7 443.0L895.9 446.7L898.3 445.9L900.0 443.5L898.5 440.8L907.5 447.4L919.7 444.5L921.2 447.0L937.6 444.1L943.9 440.5L948.8 435.2L955.5 423.1L965.5 388.2L977.1 360.4L978.0 354.0L981.6 348.5L985.6 345.2L983.5 333.5L984.8 325.4L983.9 319.6L980.7 315.2L982.4 307.0L985.1 302.6L981.7 293.5L990.5 283.2L990.3 278.9L987.2 275.8L978.3 281.3L975.4 285.0L972.1 285.7L956.1 278.6L946.8 284.8L938.8 293.9L932.7 297.2L915.0 299.8L911.9 301.5L905.9 299.6L902.3 297.2L894.0 286.8L875.9 278.4L862.1 277.1L860.7 279.1L860.2 287.1L857.5 294.6L856.2 295.4L852.6 293.5L840.0 298.0L829.3 293.0L827.4 290.9L825.0 282.2L823.4 281.6L819.8 282.7L812.1 279.0L808.0 278.7L803.5 283.6L801.4 283.9L802.9 280.5L790.3 282.5L788.3 281.6L788.6 280.6L801.1 278.1L806.5 272.3L785.9 272.6L783.9 273.9L783.6 270.9L784.7 269.5L790.2 268.4L789.8 265.9L782.9 261.8L781.2 255.5L779.4 253.9L783.0 251.9L783.2 244.4L775.0 242.2L770.4 238.0L768.1 239.4L761.4 235.7L762.6 232.9L764.3 233.0L763.4 225.5L764.8 225.0L766.5 225.3L768.2 227.5L768.4 231.5L770.2 234.0L771.5 231.5L774.6 232.9L781.1 230.5L777.1 230.7L775.6 229.7L772.3 223.0L775.7 221.0L778.1 217.8L773.5 215.6L774.4 211.0L770.4 205.9L775.7 199.2L775.4 198.3L757.2 200.7L758.8 185.4L761.9 184.3L771.7 173.3L778.1 173.4L780.6 171.8L784.4 171.7L785.5 174.0L788.8 175.7L794.6 175.4L797.4 173.9L794.7 170.9L798.0 170.0L800.7 170.7L799.3 173.9L800.1 174.2L807.6 173.2L824.2 173.6L825.4 172.6L819.2 169.4L823.1 166.5L843.7 162.7L832.5 161.3L826.7 157.5L825.1 155.5L826.3 150.5L827.5 149.2L845.4 151.3L855.2 149.9L866.0 153.2L876.3 152.5L878.4 151.1L881.0 146.3L895.5 138.4L900.6 134.3L925.5 125.8L957.2 127.6L963.1 124.5L966.5 125.5L965.8 129.5L969.9 134.3L975.9 137.1L984.3 134.7L987.3 135.6L990.3 143.2L995.5 147.6L997.9 148.0L1001.1 145.3L1004.1 145.0L1009.1 147.6L1010.8 150.3L1027.0 153.4L1030.3 155.6L1034.7 156.6L1034.7 53.2L1029.0 47.0L1025.6 48.1L1020.7 47.1L1017.4 44.4L1014.0 39.0L1001.2 34.5L1000.4 32.7L1007.9 29.7L1002.8 27.3L1006.2 25.6L1014.2 30.2L1015.4 29.1L1024.2 27.1L1024.8 23.8L1023.4 23.5L1023.4 21.6L1028.7 14.7L1030.9 8.8L1032.7 7.4L1034.1 8.3L1034.2 10.7L1034.7 10.0L1034.7 -2.4L1030.4 -3.1L1027.0 -9.9L1031.7 -9.3L1034.7 -10.8L1034.7 -23.0L1021.8 -22.8L1017.1 -18.1L1010.4 -16.9L1004.5 -12.2L1002.1 -13.6L999.0 -13.6L992.6 -10.5L986.7 -10.8L982.1 -9.5L972.2 -2.4L967.7 3.8L963.3 5.7L969.4 0.6L969.7 -2.1L968.3 -4.1L964.4 1.0L959.5 3.2L959.7 9.2L963.5 17.6L969.0 25.1L973.6 28.9L975.9 29.1L982.3 26.4L986.4 27.3L990.1 24.9L999.4 26.6L996.5 31.4L995.2 36.3L983.1 38.0L978.6 35.2L973.9 35.3L971.2 38.8L966.5 41.2L965.0 44.0L956.4 43.9L950.7 46.4L946.3 51.7L941.5 55.1L937.7 56.2L931.8 54.8L927.1 51.3L930.8 40.9L929.5 35.3L925.8 32.7L921.0 32.5L914.8 28.0L907.7 28.6L905.3 26.3L920.0 16.2L923.1 15.7L932.1 10.4L930.4 6.0L926.6 7.1L921.3 3.7L904.6 6.4L894.3 1.1L889.6 0.5L888.4 -0.7L893.3 -1.9L893.7 -3.8L886.9 -5.0L883.2 -7.5L901.9 -5.1L906.9 -9.3L901.7 -7.8L894.5 -10.1L892.2 -14.2L892.1 -20.0L889.8 -25.2L887.9 -26.8L891.5 -18.4L890.6 -10.3L882.7 -10.7L883.4 -14.0L879.7 -9.7L873.5 -9.5L865.7 -7.4L862.4 1.0L852.3 12.7L843.1 16.7L839.9 16.0L838.6 17.0L838.0 20.6L839.6 22.3L840.9 28.1L838.8 38.8L837.0 42.8L825.2 45.3L826.0 44.1L825.2 40.4L826.3 38.9L823.6 38.4L822.5 39.2L821.6 40.6L822.4 43.8L819.6 51.0L821.5 50.7L815.9 58.9L816.2 68.0L813.9 82.2L811.7 85.5L808.3 84.4L804.0 85.3L799.3 91.5L798.4 104.3L795.2 105.6L789.0 112.6L794.2 116.0L800.5 124.9L800.6 130.6L805.5 139.4L808.9 142.0L825.4 148.9L823.1 155.4L819.0 156.4L804.9 153.3L799.2 156.0L795.1 155.3L789.3 156.5L787.7 160.4L783.8 164.9L772.5 170.4L762.3 181.4L759.3 182.9L760.5 175.8L765.0 172.0L771.3 169.1L773.0 166.7L757.1 167.1L754.9 162.5L751.3 160.3L737.3 157.7L733.9 155.8L726.7 159.9L719.4 157.2L710.2 163.8L702.8 163.1L702.4 165.2L705.5 169.1L704.4 170.9L705.2 172.8L709.0 173.0L713.3 175.4L716.3 180.7L712.0 176.8L706.3 174.5L702.0 175.4L701.9 176.7L707.6 181.7L708.4 184.3L707.1 186.1L704.5 184.4L700.6 178.5L695.1 177.3L694.1 178.5L695.2 181.7L700.8 186.3L699.7 187.3L694.3 185.4L692.4 178.7L682.8 173.3L681.7 170.7L683.4 167.7L676.6 170.5L675.7 184.0L681.4 190.9L684.7 197.9L690.6 203.9L692.8 209.3L688.8 211.5L687.9 210.5L688.9 206.9L685.0 204.7L683.4 205.4L681.5 206.8L682.5 209.4L684.4 213.5L686.7 213.3L680.6 217.3L675.2 218.3L685.7 222.0L688.4 224.2L691.0 224.4L693.7 228.4L698.4 229.4L701.0 233.5L707.6 235.7L708.9 239.7L709.8 250.4L709.6 252.3L707.7 253.3L697.6 242.9L686.3 246.7L688.6 249.8L689.8 255.0L694.4 256.2L696.5 259.6L688.9 263.4L687.5 262.5L687.4 260.2L685.5 259.0L680.0 256.0L678.8 257.3L679.7 261.6L686.6 277.5L686.1 283.6L688.9 289.4L684.8 287.0L680.1 279.5L678.6 279.2L676.1 279.7L673.4 285.9L673.4 289.4L670.7 287.5L670.7 281.9L663.9 272.3L661.0 273.5L659.5 280.9L656.0 277.2L652.4 270.8L652.3 267.3L654.9 264.1L654.6 261.8L652.1 257.3L646.5 253.5L645.6 250.4L641.8 247.0L646.0 243.0L648.2 238.0L654.1 238.7L658.0 234.2L661.0 234.4L667.7 238.3L674.9 240.5L681.6 244.8L683.3 245.0L682.7 242.3L688.0 241.7L689.4 239.9L687.4 238.0L681.4 236.9L671.8 230.9L669.4 233.3L661.2 231.7L649.8 234.4L646.6 229.5L645.9 232.8L643.1 233.7L641.5 232.5L638.7 224.6L636.0 221.0L633.7 220.1L633.5 218.1L633.7 216.6L636.4 216.2L641.5 217.5L642.4 216.7L641.6 213.6L633.8 214.2L626.6 206.9L622.7 204.8L620.2 198.4L615.8 193.6L614.9 188.8L612.3 183.8L603.8 178.9L600.1 173.1L602.8 174.0L603.2 173.2L600.4 165.6L603.3 157.6L603.7 148.7L602.8 143.2L605.9 136.9L606.0 132.6L596.9 127.8L595.4 124.5L590.1 119.0L584.1 115.2L584.4 113.3L581.4 113.6L565.4 102.9L559.8 101.7L547.3 96.5L551.4 96.2L563.0 101.3L549.3 90.7L544.1 85.4L532.3 81.0L522.8 81.7L521.8 77.6L511.6 70.2L504.3 62.5L502.8 60.0L506.6 59.1L510.9 59.6L499.6 49.9L497.6 46.8L497.8 39.0L496.6 35.8L489.6 29.4L484.1 28.3L482.3 33.5L476.1 43.0L473.6 43.0L468.3 35.0L465.7 24.0L471.8 19.8L468.2 15.5L464.5 17.3L458.5 15.5L454.4 19.5L440.6 24.4L443.0 22.2L441.9 22.1L436.9 25.1L435.8 31.1L439.6 37.0L442.7 39.1L441.3 42.7L439.5 44.1L437.0 43.1L436.3 46.3L439.7 61.0L446.6 67.7L451.6 69.9L466.8 80.2L472.3 91.6L477.1 106.1L481.1 111.4L489.4 119.1L496.9 124.8L503.9 128.3L522.3 128.1L527.0 129.4L527.5 131.8L526.6 133.4L521.2 137.5L520.8 140.6L523.4 142.9L535.9 148.9L548.7 153.9L557.3 160.4L568.4 165.8L577.0 174.2L580.1 178.6L580.7 182.0L577.4 190.3L571.2 186.9L566.3 176.8L555.5 175.1L552.3 173.3L550.5 170.3L547.0 170.0L544.6 171.6L538.6 181.0L535.4 189.2L535.2 192.5L537.0 195.7L542.2 197.5L548.9 203.3L550.3 214.5L548.6 216.8L545.2 216.2L540.6 217.7L537.4 220.3L536.1 222.8L535.8 231.8L529.7 236.5L524.5 245.5L516.8 245.6L514.9 242.8L514.9 238.7L516.2 236.1L519.0 234.9L520.9 229.6L520.3 225.8L522.5 222.9L527.7 221.5L528.0 216.2L525.6 213.7L523.7 204.1L516.0 185.4L513.5 183.5L506.8 183.0L498.9 178.0L498.4 176.0L499.7 174.0L498.8 171.3L496.3 166.6L494.6 165.4L484.7 167.5L487.5 163.7L484.0 161.2L477.9 161.2L478.0 159.5L473.6 151.9L470.7 148.8L459.4 147.2L455.8 148.5L450.2 143.7L445.2 141.9L432.3 128.1L426.1 123.9L422.2 117.9L414.3 113.9L410.7 114.9L409.8 114.1L411.7 112.9L411.3 110.6L406.0 104.6L402.9 102.7L400.7 98.8L396.2 97.9L396.3 91.0L394.6 86.0L391.7 81.9L388.6 69.1L378.0 64.6L367.8 58.2L355.7 55.2L350.7 57.4L338.1 71.2L320.9 76.5L308.3 86.0L304.9 91.1L294.3 94.8L287.3 94.1L284.1 91.7L277.9 90.2L275.9 86.8L270.2 86.2L269.9 83.9L261.9 86.0L250.6 82.8L246.6 79.5L243.3 80.4L240.4 83.4L228.2 91.3L223.4 99.4L223.2 101.7L224.3 109.0L229.3 117.8L226.1 118.8L225.7 121.5L227.7 123.9L228.0 128.0L222.3 133.1L206.3 142.0L201.0 147.2L176.7 153.9L169.3 160.9L173.4 163.8L172.7 164.9L166.6 167.0L151.0 188.7L145.2 199.2L145.2 202.2L149.7 215.3L152.0 217.6L156.4 219.6L157.4 221.5L151.6 226.6L144.0 231.0L140.7 234.5L140.0 237.8L137.8 239.4L137.0 244.0L133.9 250.6L133.7 252.3L136.1 254.7L133.7 256.1L122.0 256.7L114.8 261.8L111.2 266.4L107.9 274.8L102.1 280.7L99.4 278.5L96.0 278.2L88.3 281.6L79.9 280.3L73.4 281.8L64.2 280.4L51.7 281.5L44.6 287.7L38.5 287.8L33.1 290.1L29.4 295.6L28.7 298.6L26.8 298.1L26.3 300.4L22.6 301.8L12.9 297.0L8.7 290.0L7.7 285.0L5.0 283.9L4.3 281.2L6.3 277.7L8.9 275.7L6.5 275.9L4.7 278.1L2.5 274.5L-6.6 267.5L-6.1 265.0L-8.7 267.4L-20.7 268.2L-28.6 273.0L-34.7 271.3L-34.7 77.9L-25.4 74.5L-20.9 75.2L-15.3 79.5L-10.7 80.7L-7.0 79.7L12.0 79.5L17.4 78.0L21.6 79.8L48.1 84.7L52.9 84.8L69.3 81.7L82.3 86.0L86.2 83.6L101.9 87.5L115.0 84.1L118.4 80.4L123.9 51.1L125.7 48.1L127.8 47.3L126.1 45.1L124.0 48.0L125.3 33.4L127.8 22.5L133.7 27.0L136.8 35.4L140.1 38.2L137.9 35.5L134.5 24.4L125.1 17.2L124.8 15.5L128.9 16.4L127.2 11.0L126.2 -0.3L120.5 -1.5L111.4 -6.3L105.1 -15.0L104.4 -18.2L106.0 -21.7L101.9 -25.3L104.0 -28.3L105.8 -28.6L112.4 -26.9L107.1 -29.7L96.4 -29.1L94.8 -29.7L94.2 -31.8L96.6 -34.4L95.3 -35.6L88.7 -35.7L88.0 -36.3L89.5 -38.2L88.3 -38.9L84.2 -38.2L79.7 -41.0L73.1 -41.4L66.5 -44.1ZM513.3 237.3L505.4 250.1L502.3 259.7L502.7 263.4L505.3 266.0L504.0 267.0L506.8 271.6L502.7 277.9L502.6 282.4L494.8 281.7L488.5 279.1L482.8 271.8L480.2 270.1L474.7 270.2L472.2 269.2L457.6 259.1L451.9 256.4L445.4 255.7L442.7 253.5L440.6 249.1L443.2 242.3L447.6 238.4L451.5 242.8L454.8 241.3L455.0 240.0L457.4 238.2L460.4 238.2L472.0 244.4L478.0 242.6L483.5 243.3L488.6 242.5L495.1 238.9L502.7 239.3L511.5 235.3L514.7 236.0L513.3 237.3ZM375.7 159.2L379.8 170.4L376.0 177.2L377.5 184.6L374.1 209.6L372.4 210.3L367.2 208.1L364.6 208.7L362.4 207.4L360.3 215.5L358.4 217.0L353.0 216.6L347.6 208.4L347.2 200.3L348.4 193.2L348.9 192.5L350.5 192.9L350.6 189.8L349.4 188.1L347.4 187.5L348.9 176.5L346.1 170.4L342.4 165.9L343.2 158.2L346.4 160.2L351.2 160.1L357.0 157.2L366.4 148.1L367.7 149.8L371.6 151.3L375.4 155.2L373.9 157.7L375.7 159.2ZM372.2 102.7L371.6 107.0L373.3 110.1L373.9 122.5L370.4 128.5L369.8 135.7L365.4 144.4L356.7 138.4L358.5 135.1L354.6 133.3L355.1 128.5L352.4 128.3L354.2 123.5L351.6 121.6L351.1 119.9L353.6 118.0L351.1 115.8L354.5 110.2L356.8 108.5L362.1 106.9L364.3 104.8L368.4 105.4L369.5 96.4L371.8 97.5L372.2 102.7ZM950.5 314.5L938.5 323.4L937.7 326.0L941.0 332.3L932.9 332.8L926.3 339.3L918.1 341.5L916.8 344.6L915.3 344.4L913.6 341.9L909.6 342.2L903.9 339.9L903.1 338.5L900.9 333.3L900.5 329.5L902.6 330.5L908.6 326.6L913.9 326.6L915.3 320.5L923.8 321.9L930.7 321.5L941.3 318.0L952.7 312.5L950.5 314.5ZM704.9 316.2L708.6 316.4L710.5 314.5L712.2 314.5L712.9 316.2L710.9 317.4L714.2 318.2L714.7 320.6L716.5 321.4L725.0 319.5L731.6 319.9L733.9 321.8L742.5 322.9L748.4 321.7L748.7 327.7L749.8 328.3L755.3 325.6L758.5 325.6L762.0 322.7L760.3 330.6L758.5 331.4L750.7 331.2L726.8 333.9L725.6 333.4L724.7 329.3L719.1 327.2L698.9 324.4L697.9 319.7L698.4 316.2L699.3 315.3L700.8 316.8L702.2 312.7L703.5 315.6L704.9 316.2ZM225.6 191.2L227.8 192.2L231.4 191.6L232.6 192.1L232.9 193.9L227.9 203.1L223.9 205.6L217.6 203.1L215.3 198.5L213.8 198.1L210.6 200.4L207.6 197.6L207.7 196.4L217.2 189.3L225.9 185.9L226.8 186.2L226.0 187.3L226.8 188.3L225.6 191.2ZM694.8 215.7L697.3 219.9L705.5 223.6L711.3 224.8L713.0 227.9L714.7 237.4L716.7 239.0L722.0 240.2L720.8 244.4L716.7 243.3L713.2 240.4L709.3 232.4L702.7 232.0L700.2 230.8L699.5 227.6L691.0 220.3L685.9 218.2L683.7 219.2L682.2 218.2L691.2 213.5L692.4 213.4L694.8 215.7ZM764.1 204.8L763.7 206.5L766.9 209.4L768.4 213.0L765.9 212.2L767.3 214.6L765.5 215.2L758.4 213.7L757.1 212.1L761.0 208.6L758.7 208.7L756.3 211.6L752.5 210.4L751.0 208.6L752.5 206.0L756.7 205.5L758.4 204.7L758.5 203.5L762.7 203.2L764.1 204.8ZM797.3 304.6L795.0 305.2L794.3 303.8L795.3 300.5L794.4 297.5L798.9 292.4L806.3 289.8L804.3 296.4L802.5 298.8L803.0 300.6L800.1 301.2L797.3 304.6ZM756.8 237.4L754.6 239.1L752.1 236.7L751.7 235.9L754.4 233.4L751.2 228.9L751.1 227.0L754.9 226.1L758.3 227.9L758.3 234.9L756.8 237.4ZM629.9 232.6L630.2 235.9L634.0 239.6L633.4 241.7L629.8 240.3L627.9 240.7L626.2 236.9L623.9 238.5L625.2 233.9L627.8 234.1L628.8 229.9L629.9 232.6ZM252.2 189.7L242.3 186.3L242.0 183.2L246.7 182.9L250.6 184.1L252.7 187.5L252.2 189.7ZM186.2 216.8L185.4 218.6L181.1 217.3L184.0 212.1L189.0 210.9L190.4 213.3L186.2 216.8ZM617.5 201.7L618.0 203.4L613.1 200.9L607.6 191.9L612.0 190.3L614.0 191.7L612.2 194.8L614.7 200.6L617.5 201.7ZM741.6 185.6L739.7 190.7L737.6 190.3L737.3 188.2L735.8 190.1L732.9 189.4L732.8 185.1L736.9 184.9L738.1 186.3L741.9 184.0L741.6 185.6ZM406.4 369.5L404.1 370.5L401.0 369.0L401.5 364.6L405.6 364.5L407.8 366.5L408.3 367.6L406.4 369.5ZM773.7 249.4L778.7 250.6L779.1 252.4L774.2 254.3L768.1 251.9L769.4 250.3L773.7 249.4ZM488.2 48.2L488.0 49.3L486.6 47.9L484.1 41.1L484.7 37.6L483.5 33.9L484.5 33.3L487.7 39.1L488.2 48.2ZM495.6 38.9L492.8 39.5L487.0 35.3L490.1 31.6L495.6 38.9ZM726.3 167.0L723.3 168.0L720.3 166.1L720.3 164.9L722.8 161.8L725.0 162.0L726.5 164.4L726.3 167.0ZM541.3 89.0L534.5 88.5L533.1 86.9L533.5 85.6L537.1 85.7L543.8 87.7L541.3 89.0ZM636.3 249.5L638.7 252.4L636.8 251.7L634.7 253.7L630.1 248.1L631.7 245.9L633.3 248.1L636.3 249.5ZM744.1 274.1L742.1 275.3L739.9 271.1L743.6 267.4L745.1 268.7L744.1 274.1ZM731.3 250.9L730.6 252.9L724.9 246.8L724.5 244.9L726.6 244.1L728.1 246.4L730.5 246.6L731.3 250.9ZM550.8 93.2L538.9 93.3L531.9 90.7L535.2 90.2L538.3 90.7L539.3 91.8L550.8 93.2ZM504.4 57.7L503.8 58.5L498.0 53.3L494.0 47.1L505.6 57.3L504.4 57.7ZM781.9 318.3L781.0 319.9L779.4 314.4L781.4 308.8L782.9 307.8L781.4 313.5L783.2 317.9L781.9 318.3ZM631.6 225.9L628.6 226.7L629.5 221.5L631.8 219.0L631.6 225.9ZM538.2 97.0L548.5 98.0L550.7 99.4L545.8 99.1L542.8 100.0L539.3 98.9L538.2 97.0ZM686.4 297.0L686.2 298.3L683.1 296.1L684.0 291.3L687.4 295.3L686.4 297.0ZM776.6 281.2L775.9 281.2L776.7 279.8L782.8 276.2L785.9 277.0L776.6 281.2ZM753.9 181.1L748.6 182.0L747.0 181.1L748.6 179.3L752.7 178.1L753.9 181.1ZM893.8 2.8L897.0 4.3L883.4 1.2L882.1 -2.1L885.1 0.8L893.8 2.8ZM393.4 101.1L394.0 105.4L392.0 104.0L387.3 104.5L387.2 102.5L392.6 102.2L393.4 101.1ZM755.3 257.6L754.2 257.8L754.6 256.6L756.6 254.5L762.8 253.4L759.4 256.5L755.3 257.6ZM490.0 306.9L487.0 307.8L485.0 306.3L485.0 303.2L487.2 303.8L490.0 306.9ZM125.5 11.6L124.7 14.2L121.1 9.8L120.6 7.3L125.5 11.6ZM737.9 271.2L736.1 273.4L733.9 272.2L734.9 270.0L736.9 268.8L737.9 269.1L737.9 271.2ZM737.4 255.6L736.5 257.5L735.1 257.2L731.4 253.3L737.4 255.6ZM724.0 220.0L720.9 220.6L721.4 219.4L719.0 217.7L719.6 215.0L724.0 220.0ZM747.4 172.5L744.7 173.3L741.9 170.9L744.6 169.9L747.4 172.5ZM504.4 69.8L504.7 70.6L503.1 70.3L496.9 62.6L504.4 69.8ZM720.7 280.1L720.6 282.5L715.9 283.3L716.6 280.7L718.2 281.6L720.7 280.1ZM496.1 45.3L496.7 46.6L492.6 44.9L492.8 42.6L494.3 42.7L496.1 45.3ZM751.4 279.3L748.7 279.4L754.6 275.0L756.1 276.0L751.4 279.3ZM716.6 256.2L715.0 257.7L715.8 253.3L717.1 253.1L716.6 256.2ZM189.7 224.1L185.3 224.1L186.0 221.2L189.7 224.1ZM740.8 260.9L738.6 261.1L739.5 258.2L742.2 259.4L740.8 260.9ZM349.0 212.5L347.7 215.4L346.3 213.3L346.5 211.0L349.0 212.5ZM765.3 285.4L762.3 287.5L760.9 286.5L760.9 285.1L762.4 285.5L763.2 283.8L765.3 285.4ZM560.4 103.7L563.5 105.7L554.3 103.1L560.4 103.7ZM778.2 274.4L775.9 274.8L776.3 272.5L775.2 270.6L778.7 273.1L778.2 274.4ZM718.4 263.1L717.1 264.0L716.9 260.9L718.3 259.2L719.5 261.2L718.4 263.1ZM633.3 234.1L632.2 234.5L630.2 229.7L632.0 230.6L633.3 234.1ZM740.3 282.8L737.5 280.3L738.3 279.4L740.9 281.5L740.3 282.8Z"/>
+        <g id="places"></g>
+        <g id="labels"></g>
+      </svg>
+      <div class="zoomui">
+        <button class="zbtn" id="zin" type="button" aria-label="Zoom in">+</button>
+        <button class="zbtn" id="zout" type="button" aria-label="Zoom out">&minus;</button>
+        <button class="zbtn wide" id="zreset" type="button" aria-label="Reset the map view">Reset</button>
+      </div>
+      <div class="maphint">Drag to pan &middot; double-click to zoom &middot; click a basin to select it</div>
+    </div>
+    <div class="ramp-row">
+      <span class="ramp-cap" id="rampCap">&mdash;</span>
+      <span class="ramp-end" id="rampLo">&mdash;</span>
+      <div class="ramp" id="ramp"></div>
+      <span class="ramp-end" id="rampHi">&mdash;</span>
+    </div>
+  </div>
 
-    <section id="notes">
-      <h2>Notes</h2>
-      <form id="note-form">
-        <textarea id="note-input" placeholder="Jot something down…" required></textarea>
-        <button type="submit">Save note</button>
-      </form>
-      <ul id="note-list"></ul>
-    </section>
-  </main>
+  <div class="lower">
+    <div class="panel">
+      <span class="ptitle">All eight basins ranked</span>
+      <div class="bars" id="bars"></div>
+      <div class="avg-note"><span class="avg-swatch"></span><span id="avgNote"></span></div>
+      <details>
+        <summary>View the full data table</summary>
+        <div class="tbl-scroll"><table id="dataTable"></table></div>
+      </details>
+    </div>
+    <div class="panel">
+      <span class="ptitle">Selected basin</span>
+      <div class="dname" id="dName">&mdash;</div>
+      <div class="ddesc" id="dDesc">&mdash;</div>
+      <div class="tiles">
+        <div class="tile"><span class="tl">Summer</span><span class="tv" id="t1">&mdash;</span></div>
+        <div class="tile"><span class="tl">Winter</span><span class="tv" id="t2">&mdash;</span></div>
+        <div class="tile"><span class="tl">Salinity</span><span class="tv" id="t3">&mdash;</span></div>
+        <div class="tile"><span class="tl">Mean depth</span><span class="tv" id="t4">&mdash;</span></div>
+        <div class="tile"><span class="tl">Max depth</span><span class="tv" id="t5">&mdash;</span></div>
+        <div class="tile"><span class="tl">Area</span><span class="tv" id="t6">&mdash;</span></div>
+      </div>
+      <div class="quirk"><span class="ql">The odd thing about it</span><span class="qt" id="dQuirk">&mdash;</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="ptitle">Where the data comes from</span>
+    <div class="prov">
+      <div class="pcard">
+        <span class="pn">Copernicus Marine Service</span>
+        <span class="pw">Mediterranean Sea Physics Reanalysis &mdash; the reference gridded temperature and salinity field.</span>
+        <span class="pd">MEDSEA_MULTIYEAR_PHY_006_004 &middot; NEMO + OceanVAR &middot; 1/24&deg; (&asymp;4 km) &middot; 141 depth levels</span>
+        <a href="https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description" target="_blank" rel="noopener">data.marine.copernicus.eu &rarr;</a>
+      </div>
+      <div class="pcard">
+        <span class="pn">Argo float network</span>
+        <span class="pw">Profilers diving to 2,000 m every ten days &mdash; the in-situ backbone for salinity and warming trends.</span>
+        <span class="pd">19,545 profiles, W. Med / Ionian / Levantine, 2012&ndash;2025</span>
+        <a href="https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2026.1846069/full" target="_blank" rel="noopener">Argo vs. reanalysis trends &rarr;</a>
+      </div>
+      <div class="pcard">
+        <span class="pn">EMODnet Bathymetry</span>
+        <span class="pw">The European seabed terrain model behind the depth figures.</span>
+        <span class="pd">DTM 2022 &middot; 21,937 surveys &middot; 64 providers &middot; 28 countries</span>
+        <a href="https://emodnet.ec.europa.eu/en/bathymetry" target="_blank" rel="noopener">emodnet.ec.europa.eu &rarr;</a>
+      </div>
+      <div class="pcard">
+        <span class="pn">Mercator Ocean &amp; Copernicus C3S</span>
+        <span class="pw">Annual SST bulletins and marine-heatwave monitoring.</span>
+        <span class="pd">2025 mean 21.2 &deg;C, 2nd warmest after 21.3 &deg;C in 2024; heatwaves touched 99.6% of the basin</span>
+        <a href="https://marine.copernicus.eu/bulletin/2025-annual-ocean-health-bulletin" target="_blank" rel="noopener">2025 Ocean Health Bulletin &rarr;</a>
+      </div>
+      <div class="pcard">
+        <span class="pn">Natural Earth</span>
+        <span class="pw">The coastline drawn here &mdash; public-domain vector shorelines, reprojected for this map.</span>
+        <span class="pd">ne_50m_land &middot; equirectangular, true scale at 38&deg;N</span>
+        <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">naturalearthdata.com &rarr;</a>
+      </div>
+      <div class="pcard">
+        <span class="pn">Basin monographs</span>
+        <span class="pw">Per-basin depth, area, tide, plankton and seasonal figures from the regional literature.</span>
+        <span class="pd">Adriatic, Aegean, Tyrrhenian, Ligurian, Alboran, Levantine studies; CIESM; Britannica</span>
+        <a href="https://www.britannica.com/place/Mediterranean-Sea/Hydrologic-features-and-climate" target="_blank" rel="noopener">Britannica &rarr;</a>
+      </div>
+    </div>
+  </div>
 
   <footer>
-    <p>Stored in this browser only (localStorage) — not synced anywhere yet.</p>
+    <p class="note"><b>Reading the numbers.</b> Summer and winter SST are typical open-water seasonal means, not coastal extremes &mdash; shallow corners of the northern Adriatic and the Levant run several degrees hotter in August. Salinity is surface salinity in practical salinity units (&asymp; g/kg); the Aegean mean hides a steep gradient, from brackish Black Sea outflow in the north (below 33) to over 39 in the Cretan Sea. The Calypso Deep figure is the 2020 direct measurement of 5,109 m &plusmn;1 m from the submersible <i>Limiting Factor</i>, superseding older 5,121&ndash;5,267 m sonar estimates; the litter found there was catalogued in a separate 2025 study of debris recovered on that same dive. The map's &ldquo;Balearic Sea&rdquo; follows the broad sense of that name &mdash; Britannica treats it as a synonym for the Algerian/Alg&eacute;ro-Proven&ccedil;al Basin, the whole open basin between Algeria, France and the Balearic Islands, not just the strip around Mallorca &mdash; so its area is the sourced ~0.85 million km&sup2; western-basin total minus the separately-mapped Alboran, Ligurian and Tyrrhenian. Basin areas otherwise vary with where you draw the boundaries; all are given to the nearest thousand km&sup2;.</p>
+    <p class="note"><b>Figures marked <span class="est">est.</span></b> are interpolated across a documented gradient rather than measured basin by basin. <i>Warming rate:</i> in the multi-decade satellite SST record, the Balearic, Tyrrhenian, Adriatic and northern Ionian trend fastest at 0.4&ndash;0.5 &deg;C/decade, while the Aegean and northern Levantine trend highest basin-wide, up to 0.6 &deg;C/decade (Copernicus Ocean State Report); the Alboran and Ligurian sit below that band. These are long-run averages &mdash; Argo float data for 2012&ndash;2025 alone show still steeper warming across the whole basin (+0.76 to +0.89 &deg;C/decade at the surface of the western Mediterranean, +0.37 to +0.57 &deg;C/decade in the Ionian), reflecting how much faster the sea has warmed in just the last decade. <i>Plankton layer:</i> the deep chlorophyll maximum is measured at about 30 m in the Alboran Sea and 120 m in the easternmost Levantine; the basins between are placed along that west-to-east gradient. <i>Posidonia meadows</i> is a five-step presence rating, not an area: <i>Posidonia oceanica</i> is endemic to the Mediterranean and 1,224,707 ha of it have been mapped basin-wide (510,715 ha west, 713,992 ha east), but per-basin areas are not published on a comparable footing. The ratings follow the documented range limits &mdash; the Alboran is the species' western edge, meadows are rare or absent in the low-salinity northern Adriatic, and they stop at a sharp border in the Levantine, where records from the Syrian, Lebanese and Israeli coasts are now considered erroneous. Meadows have contracted by roughly a third in the last fifty years. <i>Biggest tide</i> is the largest spring range observed anywhere in the basin, not a basin-wide average &mdash; the Ionian figure is the Gulf of Gab&egrave;s, the Adriatic figure is the head of the gulf at Venice, and most of the sea sits nearer 0.2&ndash;0.3 m.</p>
+    <p class="note"><b>Basin outlines</b> follow the conventional hydrographic divisions at the sills &mdash; Gibraltar, the Sicily Channel, Otranto, the Dardanelles and the Cretan Arc &mdash; drawn as straight lines between capes, the convention the IHO uses. Coastlines are Natural Earth 1:50m, simplified; the map is thematic, not navigational. Compiled September 2026.</p>
   </footer>
+</div>
 
-  <script src="app.js"></script>
-</body>
-</html>
+<div id="tip" role="tooltip"></div>
+
+<script>
+var NS="http://www.w3.org/2000/svg";
+function mk(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+function poly(pts){return "M"+pts.map(function(p){return p[0]+" "+p[1];}).join("L")+"Z";}
+var DEG="\u00b0";
+
+var basins=[
+ {id:"alboran",name:"Alboran Sea",lab:[92,308],sm:true,
+  shape:[[-20.8,237.9],[152.8,255.6],[159.7,361.3],[-20.8,361.3]],
+  desc:"The Atlantic's doorway. A jet of cool, fresh ocean water pours through Gibraltar and coils into two standing gyres, keeping this the coldest and least salty corner of the sea.",
+  quirk:"Every drop of Mediterranean water entered through this basin. It is also the one stretch that blooms like a real ocean \u2014 the plankton layer sits just 30 m down, against 120 m at the far eastern end.",
+  summer:22.5,winter:15.5,salinity:36.5,avgDepth:445,maxDepth:1500,warming:0.30,area:53000,dcm:30,tide:0.3,posidonia:1},
+ {id:"balearic",name:"Balearic Sea",lab:[236,197],
+  shape:[[152.8,255.6],[159.7,361.3],[354.2,302.6],[354.2,143.9],[324.1,67.6],[262,20],[180,30],[152.8,214.4]],
+  desc:"The Mediterranean's broadest open basin, running from the Algerian current to the Balearic Islands and the Gulf of Lion. In that northern corner, winter mistral storms make it one of the few places on Earth where surface water sinks all the way to the seafloor.",
+  quirk:"A single seagrass meadow off Formentera, within this basin, has been cloning itself for at least 100,000 years and stretches 15 km. It is arguably the oldest living organism on the planet.",
+  summer:25.5,winter:13.5,salinity:37.8,avgDepth:1050,maxDepth:2800,warming:0.45,area:551000,dcm:50,tide:0.25,posidonia:4},
+ {id:"ligurian",name:"Ligurian Sea",lab:[363,75],sm:true,
+  shape:[[324.1,67.6],[319.4,99.9],[395.8,99.9],[398.1,38.2],[324.1,38.2]],
+  desc:"A small, steep basin in the crook of the Riviera. Deep water rises close to shore here, feeding the plankton blooms that draw fin whales in every summer.",
+  quirk:"The Pelagos Sanctuary, 87,500 km\u00b2 of protected water centred on this basin, is the Mediterranean's only large marine-mammal reserve \u2014 and the reason fin whales still summer within sight of Monaco.",
+  summer:24.0,winter:13.5,salinity:38.1,avgDepth:1200,maxDepth:2850,warming:0.40,area:15000,dcm:50,tide:0.3,posidonia:3},
+ {id:"tyrrhenian",name:"Tyrrhenian Sea",lab:[437,185],
+  shape:[[354.2,143.9],[395.8,99.9],[440,100],[556,214],[509.3,267.3],[407.4,258.5],[354.2,220.3]],
+  desc:"Boxed in by Italy, Sicily, Sardinia and Corsica, and deep almost everywhere. Its water column is among the most stable in the sea.",
+  quirk:"Marsili, 70 km long and rising 3,000 m off the seabed, is the largest volcano in Europe \u2014 bigger than Etna. Its crater sits 450 m below the surface and nothing on the water above gives it away.",
+  summer:25.0,winter:14.0,salinity:38.1,avgDepth:2000,maxDepth:3785,warming:0.45,area:231000,dcm:70,tide:0.4,posidonia:4},
+ {id:"adriatic",name:"Adriatic Sea",lab:[540,118],
+  shape:[[421.3,-20.6],[490.7,-20.6],[628,170],[628,185],[574,185],[440,58],[421.3,32.3]],
+  desc:"Shallow enough to wade far offshore in the north, then plunging past 1,200 m in the south. River water and winter cold give it the widest seasonal swing of any basin.",
+  quirk:"It carries the Mediterranean's second-biggest tides \u2014 about 1.2 m at the head of the gulf, enough to flood St Mark's Square \u2014 in a sea where 20 to 30 cm is the norm.",
+  summer:25.0,winter:11.5,salinity:38.3,avgDepth:252,maxDepth:1233,warming:0.50,area:139000,dcm:40,tide:1.2,posidonia:2},
+ {id:"ionian",name:"Ionian Sea",lab:[567,300],
+  shape:[[425,242],[504.6,222],[516.2,188.0],[574,185],[628,185],[648,200],[659.7,237.9],[689.8,314.3],[689.8,508.2],[407.4,508.2],[393.5,355.4]],
+  desc:"The abyss of the Mediterranean. The Hellenic Trench drops to the Calypso Deep, deeper than anywhere else in the sea.",
+  quirk:"Its floor, 5,109 m down, is the lowest point in the Mediterranean. Debris recovered there during the 2020 dive that measured it was catalogued in a 2025 study \u2014 167 objects, 88% of them plastic \u2014 sitting in the deepest water in the sea.",
+  summer:26.0,winter:16.0,salinity:38.7,avgDepth:2600,maxDepth:5109,warming:0.40,area:169000,dcm:90,tide:2.0,posidonia:4},
+ {id:"aegean",name:"Aegean Sea",lab:[724,196],
+  shape:[[671.3,132.2],[782.4,132.2],[810.2,232.1],[810.2,308.4],[768.5,334.9],[685.2,334.9],[671.3,284.9]],
+  desc:"Thousands of islands and a sharp north-south split: brackish Black Sea outflow chills the north, while the Cretan Sea in the south is warm, salty and over 3,500 m deep.",
+  quirk:"Nobody agrees how many islands it holds \u2014 estimates run from about 1,200 to 6,000 depending on the minimum size counted. Only around 220 of them have anyone living on them.",
+  summer:24.5,winter:12.5,salinity:38.6,avgDepth:570,maxDepth:3543,warming:0.55,area:214000,dcm:80,tide:0.3,posidonia:3},
+ {id:"levantine",name:"Levantine Sea",lab:[882,382],
+  shape:[[689.8,314.3],[768.5,326.1],[814.8,280],[1020.8,240],[1020.8,508.2],[689.8,508.2]],
+  desc:"The hot, salty end of the line. Relentless evaporation leaves the saltiest surface water in the Mediterranean, which then sinks and begins the long return journey west.",
+  quirk:"The clearest and emptiest water in the sea \u2014 a Secchi disc once stayed visible 53 m down. It is also the front line of the Suez invasion that has pushed the Mediterranean past 1,000 alien species.",
+  summer:28.0,winter:17.5,salinity:39.2,avgDepth:1500,maxDepth:4300,warming:0.50,area:320000,dcm:120,tide:0.4,posidonia:1}
+];
+basins.forEach(function(b){ b.range=+(b.summer-b.winter).toFixed(1); });
+
+function fT(v){return v.toFixed(1)+" "+DEG+"C";}
+function fN(v){return v.toLocaleString("en-US");}
+var POS=["Absent","Marginal","Patchy","Widespread","Extensive"];
+var groups=[
+ {id:"temp",label:"Temperature",hint:"how warm, how variable",measures:[
+   {id:"summer",short:"Summer",full:"Summer sea-surface temperature",fmt:fT},
+   {id:"winter",short:"Winter",full:"Winter sea-surface temperature",fmt:fT},
+   {id:"range",short:"Seasonal swing",full:"Summer-to-winter temperature swing",fmt:fT},
+   {id:"warming",short:"Warming rate",full:"Surface warming rate",est:true,fmt:function(v){return "+"+v.toFixed(2)+" "+DEG+"C/dec";}}]},
+ {id:"salt",label:"Salinity",hint:"how much salt",measures:[
+   {id:"salinity",short:"Surface salinity",full:"Surface salinity",fmt:function(v){return v.toFixed(1)+" psu";}}]},
+ {id:"depth",label:"Depth",hint:"how deep, how big",measures:[
+   {id:"avgDepth",short:"Mean depth",full:"Mean water depth",fmt:function(v){return fN(v)+" m";}},
+   {id:"maxDepth",short:"Max depth",full:"Maximum recorded depth",fmt:function(v){return fN(v)+" m";}},
+   {id:"area",short:"Surface area",full:"Surface area",fmt:function(v){return fN(v)+" km\u00b2";}}]},
+ {id:"odd",label:"Curiosities",hint:"the strange measures",measures:[
+   {id:"dcm",short:"Plankton layer",full:"Depth of the plankton layer",est:true,fmt:function(v){return fN(v)+" m down";}},
+   {id:"tide",short:"Biggest tide",full:"Largest spring tidal range",fmt:function(v){return v.toFixed(2)+" m";}},
+   {id:"posidonia",short:"Posidonia meadows",full:"Posidonia seagrass meadows",fmt:function(v){return POS[Math.round(v)];}}]}
+];
+var group="temp", metric="summer", selected="levantine";
+function G(){return groups.filter(function(g){return g.id===group;})[0];}
+function M(){
+  var all=[]; groups.forEach(function(g){all=all.concat(g.measures);});
+  return all.filter(function(m){return m.id===metric;})[0];
+}
+
+var RAMP=["#e4f4fb","#c2e6f4","#95d2ea","#63b7da","#3897c4","#1c72a4","#0d4e79","#083553"];
+function hex2rgb(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+function rampColor(t){
+  t=Math.max(0,Math.min(1,t));
+  var x=t*(RAMP.length-1), i=Math.floor(x), f=x-i;
+  if(i>=RAMP.length-1) return RAMP[RAMP.length-1];
+  var a=hex2rgb(RAMP[i]), b=hex2rgb(RAMP[i+1]);
+  return "rgb("+Math.round(a[0]+(b[0]-a[0])*f)+","+Math.round(a[1]+(b[1]-a[1])*f)+","+Math.round(a[2]+(b[2]-a[2])*f)+")";
+}
+function lum(c){var m=c.match(/\d+/g);return (0.2126*m[0]+0.7152*m[1]+0.0722*m[2])/255;}
+function extent(){var v=basins.map(function(b){return b[metric];});return [Math.min.apply(null,v),Math.max.apply(null,v)];}
+function shadeFor(v){var e=extent();var t=e[1]===e[0]?0.5:(v-e[0])/(e[1]-e[0]);return rampColor(0.10+t*0.86);}
+
+/* ---- map furniture ---- */
+var placesG=document.getElementById("places");
+var countries={"Spain":[69,203],"France":[208,26],"Italy":[419,50],"Croatia":[551,56],"Greece":[660,197],
+ "T\u00fcrkiye":[905,220],"Syria":[978,300],"Egypt":[836,473],"Libya":[558,464],"Tunisia":[370,350],
+ "Algeria":[213,344],"Morocco":[46,373]};
+var cEls=[],iEls=[],oEls=[],sEls=[];
+Object.keys(countries).forEach(function(k){
+  var e=mk("text",{x:countries[k][0],y:countries[k][1],"class":"clabel"},placesG); e.textContent=k; cEls.push(e);
+});
+var islands={"Sicily":[477,256],"Sardinia":[363,182],"Corsica":[363,120],"Crete":[727,326],
+ "Cyprus":[919,332],"Balearics":[220,194],"Rhodes":[801,297]};
+Object.keys(islands).forEach(function(k){
+  var e=mk("text",{x:islands[k][0],y:islands[k][1],"class":"ilabel"},placesG); e.textContent=k; iEls.push(e);
+});
+var others={"Black Sea":[870,79],"Sea of Marmara":[801,162],"Atlantic":[16,326]};
+Object.keys(others).forEach(function(k){
+  var e=mk("text",{x:others[k][0],y:others[k][1],"class":"olabel"},placesG); e.textContent=k; oEls.push(e);
+});
+var sills=[["Gibraltar",27.8,304,62,300],["Sicily Channel",421,264,421,288],["Otranto",590,179,604,166],
+ ["Dardanelles",762,179,782,170],["Suez",905,461,924,470]];
+var sDots=[];
+sills.forEach(function(s){
+  sDots.push(mk("circle",{cx:s[1],cy:s[2],r:2.8,"class":"sdot"},placesG));
+  var e=mk("text",{x:s[3],y:s[4],"class":"slabel"},placesG); e.textContent=s[0]; sEls.push(e);
+});
+
+var basinsG=document.getElementById("basins"), edgesG=document.getElementById("edges"), labelsG=document.getElementById("labels");
+basins.forEach(function(b){
+  b.el=mk("path",{d:poly(b.shape),"class":"basin"},basinsG);
+  b.edge=mk("path",{d:poly(b.shape),"class":"bedge"},edgesG);
+  b.tName=mk("text",{x:b.lab[0],y:b.lab[1],"class":"blabel"},labelsG);
+  b.tName.textContent=b.name.replace(" Sea","");
+  b.tVal=mk("text",{x:b.lab[0],y:b.lab[1]+15,"class":"bval"},labelsG);
+  var xs=b.shape.map(function(p){return p[0];}), ys=b.shape.map(function(p){return p[1];});
+  b.bounds=[Math.max(0,Math.min.apply(null,xs)),Math.max(0,Math.min.apply(null,ys)),
+            Math.min(1000,Math.max.apply(null,xs)),Math.min(482,Math.max.apply(null,ys))];
+});
+
+/* ---- zoom & pan ---- */
+var svg=document.getElementById("map");
+var HOME={x:0,y:0,w:1000,h:482};
+var view={x:0,y:0,w:1000,h:482};
+var anim=null;
+function applyView(){
+  svg.setAttribute("viewBox",view.x.toFixed(1)+" "+view.y.toFixed(1)+" "+view.w.toFixed(1)+" "+view.h.toFixed(1));
+  var k=view.w/HOME.w;   // keep text a constant size on screen
+  basins.forEach(function(b){
+    b.tName.setAttribute("font-size",((b.sm?10.5:13)*k).toFixed(2));
+    b.tVal.setAttribute("font-size",((b.sm?10.5:12)*k).toFixed(2));
+    b.tVal.setAttribute("y",(b.lab[1]+(b.sm?12:15)*k).toFixed(1));
+    b.edge.setAttribute("stroke-width",((b.id===selected?3:1.4)*k).toFixed(2));
+  });
+  cEls.forEach(function(e){e.setAttribute("font-size",(9.5*k).toFixed(2));});
+  iEls.forEach(function(e){e.setAttribute("font-size",(7.5*k).toFixed(2));});
+  oEls.forEach(function(e){e.setAttribute("font-size",(8*k).toFixed(2));});
+  sEls.forEach(function(e){e.setAttribute("font-size",(7.5*k).toFixed(2));});
+  sDots.forEach(function(e){e.setAttribute("r",(2.8*k).toFixed(2));e.setAttribute("stroke-width",(1.2*k).toFixed(2));});
+  document.querySelector(".land").setAttribute("stroke-width",(0.8*k).toFixed(2));
+}
+function clampView(v){
+  var maxW=HOME.w, minW=HOME.w/9;
+  v.w=Math.max(minW,Math.min(maxW,v.w));
+  v.h=v.w*(HOME.h/HOME.w);
+  var slackX=Math.max(0,HOME.w-v.w), slackY=Math.max(0,HOME.h-v.h);
+  v.x=Math.max(-20,Math.min(slackX+20,v.x));
+  v.y=Math.max(-20,Math.min(slackY+20,v.y));
+  return v;
+}
+function goTo(target,animate){
+  clampView(target);
+  if(!animate || window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    view=target; applyView(); return;
+  }
+  if(anim) cancelAnimationFrame(anim);
+  var from={x:view.x,y:view.y,w:view.w,h:view.h}, t0=performance.now(), dur=420;
+  (function step(now){
+    var p=Math.min(1,(now-t0)/dur), e=p<0.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+    view={x:from.x+(target.x-from.x)*e, y:from.y+(target.y-from.y)*e,
+          w:from.w+(target.w-from.w)*e, h:from.h+(target.h-from.h)*e};
+    applyView();
+    if(p<1) anim=requestAnimationFrame(step);
+  })(t0);
+}
+function zoomTo(b){
+  var pad=26, x0=b.bounds[0]-pad, y0=b.bounds[1]-pad, x1=b.bounds[2]+pad, y1=b.bounds[3]+pad;
+  var w=Math.max(x1-x0,(y1-y0)*(HOME.w/HOME.h));
+  var cx=(x0+x1)/2, cy=(y0+y1)/2, h=w*(HOME.h/HOME.w);
+  goTo({x:cx-w/2,y:cy-h/2,w:w,h:h},true);
+}
+function zoomBy(f){
+  var cx=view.x+view.w/2, cy=view.y+view.h/2, w=view.w*f, h=w*(HOME.h/HOME.w);
+  goTo({x:cx-w/2,y:cy-h/2,w:w,h:h},true);
+}
+document.getElementById("zin").addEventListener("click",function(){zoomBy(1/1.6);});
+document.getElementById("zout").addEventListener("click",function(){zoomBy(1.6);});
+document.getElementById("zreset").addEventListener("click",function(){goTo({x:HOME.x,y:HOME.y,w:HOME.w,h:HOME.h},true);});
+
+function svgPoint(ev){
+  var r=svg.getBoundingClientRect();
+  return {x:view.x+((ev.clientX-r.left)/r.width)*view.w, y:view.y+((ev.clientY-r.top)/r.height)*view.h};
+}
+/* Ctrl/Cmd + wheel zooms; a plain wheel is left alone so the page still scrolls. */
+svg.addEventListener("wheel",function(ev){
+  if(!ev.ctrlKey && !ev.metaKey) return;
+  ev.preventDefault();
+  if(anim) cancelAnimationFrame(anim);
+  var p=svgPoint(ev), f=ev.deltaY>0?1.12:1/1.12;
+  var w=view.w*f, h=w*(HOME.h/HOME.w);
+  var nx=p.x-(p.x-view.x)*(w/view.w), ny=p.y-(p.y-view.y)*(h/view.h);
+  view=clampView({x:nx,y:ny,w:w,h:h}); applyView();
+},{passive:false});
+
+svg.addEventListener("dblclick",function(ev){
+  var p=svgPoint(ev), w=view.w/1.8, h=w*(HOME.h/HOME.w);
+  goTo({x:p.x-w/2,y:p.y-h/2,w:w,h:h},true);
+});
+
+var dragging=false,moved=false,last=null;
+svg.addEventListener("pointerdown",function(ev){
+  dragging=true; moved=false; last=svgPoint(ev);
+  svg.classList.add("drag"); svg.setPointerCapture(ev.pointerId);
+});
+svg.addEventListener("pointermove",function(ev){
+  if(!dragging) return;
+  var p=svgPoint(ev), dx=p.x-last.x, dy=p.y-last.y;
+  if(Math.abs(dx)>1||Math.abs(dy)>1) moved=true;
+  if(anim) cancelAnimationFrame(anim);
+  view=clampView({x:view.x-dx,y:view.y-dy,w:view.w,h:view.h});
+  applyView();
+});
+function endDrag(ev){
+  if(!dragging) return;
+  dragging=false; svg.classList.remove("drag");
+  try{svg.releasePointerCapture(ev.pointerId);}catch(e){}
+}
+svg.addEventListener("pointerup",endDrag);
+svg.addEventListener("pointercancel",endDrag);
+svg.addEventListener("pointerleave",endDrag);
+
+/* ---- painting ---- */
+var tip=document.getElementById("tip");
+function paintMap(){
+  var m=M();
+  basins.forEach(function(b){
+    var col=shadeFor(b[metric]);
+    b.el.setAttribute("fill",col);
+    b.edge.classList.toggle("on",b.id===selected);
+    var ink=lum(col)<0.55?"#ffffff":"#0a2c3e";
+    b.tName.setAttribute("fill",ink);
+    b.tVal.setAttribute("fill",ink);
+    b.tVal.textContent=m.fmt(b[metric]);
+  });
+  var e=extent();
+  document.getElementById("ramp").style.background="linear-gradient(90deg,"+RAMP.map(function(c,i){return c+" "+Math.round(i/(RAMP.length-1)*100)+"%";}).join(",")+")";
+  document.getElementById("rampLo").textContent=m.fmt(e[0]);
+  document.getElementById("rampHi").textContent=m.fmt(e[1]);
+  document.getElementById("rampCap").textContent=m.full;
+  applyView();
+}
+function paintBars(){
+  var m=M(), host=document.getElementById("bars");
+  host.innerHTML="";
+  var max=extent()[1];
+  var mean=basins.reduce(function(s,b){return s+b[metric];},0)/basins.length;
+  basins.slice().sort(function(a,b){return b[metric]-a[metric];}).forEach(function(b){
+    var row=document.createElement("div");
+    row.className="row"+(b.id===selected?" on":"");
+    row.tabIndex=0; row.setAttribute("role","button");
+    row.setAttribute("aria-label",b.name+", "+m.fmt(b[metric]));
+    var nm=document.createElement("div"); nm.className="rname"; nm.textContent=b.name.replace(" Sea","");
+    var track=document.createElement("div"); track.className="track";
+    var fill=document.createElement("div"); fill.className="fill";
+    fill.style.width=Math.max(2,(b[metric]/max)*100)+"%";
+    fill.style.background=shadeFor(b[metric]);
+    track.appendChild(fill);
+    var am=document.createElement("div"); am.className="avg-mark";
+    am.style.left=((mean/max)*100)+"%"; track.appendChild(am);
+    var val=document.createElement("div"); val.className="rval"; val.textContent=m.fmt(b[metric]);
+    row.appendChild(nm); row.appendChild(track); row.appendChild(val);
+    row.addEventListener("click",function(){select(b.id,true);});
+    row.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();select(b.id,true);}});
+    host.appendChild(row);
+  });
+  document.getElementById("avgNote").textContent="Mediterranean mean \u00b7 "+m.fmt(mean);
+}
+function paintDetail(){
+  var b=basins.filter(function(x){return x.id===selected;})[0];
+  document.getElementById("dName").textContent=b.name;
+  document.getElementById("dDesc").textContent=b.desc;
+  document.getElementById("dQuirk").textContent=b.quirk;
+  document.getElementById("t1").innerHTML=b.summer.toFixed(1)+'<i>'+DEG+'C</i>';
+  document.getElementById("t2").innerHTML=b.winter.toFixed(1)+'<i>'+DEG+'C</i>';
+  document.getElementById("t3").innerHTML=b.salinity.toFixed(1)+'<i>psu</i>';
+  document.getElementById("t4").innerHTML=fN(b.avgDepth)+'<i>m</i>';
+  document.getElementById("t5").innerHTML=fN(b.maxDepth)+'<i>m</i>';
+  document.getElementById("t6").innerHTML=fN(Math.round(b.area/1000))+'<i>k km\u00b2</i>';
+}
+function paintTable(){
+  var cols=[["Basin","name"],["Summer "+DEG+"C","summer"],["Winter "+DEG+"C","winter"],["Swing "+DEG+"C","range"],
+            ["Salinity psu","salinity"],["Mean m","avgDepth"],["Max m","maxDepth"],["Area km2","area"],
+            ["Warming "+DEG+"C/dec","warming"],["Plankton m","dcm"],["Tide m","tide"],["Posidonia","posidonia"]];
+  var h="<thead><tr>"+cols.map(function(c){return "<th>"+c[0]+"</th>";}).join("")+"</tr></thead><tbody>";
+  basins.forEach(function(b){
+    h+="<tr>"+cols.map(function(c){
+      var v=b[c[1]];
+      if(c[1]==="name") return "<td>"+v+"</td>";
+      if(c[1]==="warming") return "<td>+"+v.toFixed(2)+"</td>";
+      if(c[1]==="tide") return "<td>"+v.toFixed(2)+"</td>";
+      if(c[1]==="posidonia") return "<td>"+POS[v]+"</td>";
+      return "<td>"+(typeof v==="number"?fN(v):v)+"</td>";
+    }).join("")+"</tr>";
+  });
+  document.getElementById("dataTable").innerHTML=h+"</tbody>";
+}
+function select(id,fly){
+  selected=id; paintMap(); paintBars(); paintDetail();
+  if(fly){var b=basins.filter(function(x){return x.id===id;})[0]; zoomTo(b);}
+}
+
+function showTip(b,ev){
+  tip.innerHTML='<div class="tn">'+b.name+'</div>'+
+   '<div class="tr"><span>Summer / winter</span><b>'+b.summer.toFixed(1)+" / "+b.winter.toFixed(1)+" "+DEG+'C</b></div>'+
+   '<div class="tr"><span>Salinity</span><b>'+b.salinity.toFixed(1)+' psu</b></div>'+
+   '<div class="tr"><span>Mean / max depth</span><b>'+fN(b.avgDepth)+" / "+fN(b.maxDepth)+' m</b></div>';
+  tip.style.display="block"; moveTip(ev);
+}
+function moveTip(ev){
+  var pad=14,w=tip.offsetWidth,h=tip.offsetHeight;
+  var x=ev.clientX+pad,y=ev.clientY+pad;
+  if(x+w>window.innerWidth-8) x=ev.clientX-w-pad;
+  if(y+h>window.innerHeight-8) y=ev.clientY-h-pad;
+  tip.style.left=x+"px"; tip.style.top=y+"px";
+}
+basins.forEach(function(b){
+  b.el.addEventListener("mouseenter",function(ev){if(!dragging)showTip(b,ev);});
+  b.el.addEventListener("mousemove",function(ev){if(!dragging)moveTip(ev);else tip.style.display="none";});
+  b.el.addEventListener("mouseleave",function(){tip.style.display="none";});
+  b.el.addEventListener("click",function(){ if(!moved) select(b.id,false); });
+});
+
+/* ---- filter UI ---- */
+var gHost=document.getElementById("groups"), sHost=document.getElementById("subs");
+function renderSubs(){
+  var g=G();
+  sHost.innerHTML="";
+  sHost.style.display = g.measures.length>1 ? "flex" : "none";
+  g.measures.forEach(function(m){
+    var b=document.createElement("button");
+    b.className="sbtn"+(m.id===metric?" on":"");
+    b.type="button";
+    b.innerHTML=m.short+(m.est?' <span class="est">est.</span>':"");
+    b.addEventListener("click",function(){ metric=m.id; renderSubs(); paintMap(); paintBars(); });
+    sHost.appendChild(b);
+  });
+}
+groups.forEach(function(g){
+  var b=document.createElement("button");
+  b.className="gbtn"+(g.id===group?" on":"");
+  b.type="button"; b.id="g-"+g.id;
+  b.innerHTML=g.label+'<span class="gs">'+g.hint+'</span>';
+  b.addEventListener("click",function(){
+    group=g.id; metric=g.measures[0].id;
+    Array.prototype.forEach.call(gHost.children,function(c){c.classList.toggle("on",c.id==="g-"+g.id);});
+    renderSubs(); paintMap(); paintBars();
+  });
+  gHost.appendChild(b);
+});
+
+renderSubs(); paintMap(); paintBars(); paintDetail(); paintTable();
+</script>
+
+</body></html>
