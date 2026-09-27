@@ -128,6 +128,21 @@ svg#map.drag{cursor:grabbing;}
 .pcard .pd{font-size:10.5px;color:var(--ink-muted);font-family:"IBM Plex Mono",monospace;line-height:1.5;}
 .pcard a{color:var(--accent);text-decoration:none;font-size:11.5px;}
 .pcard a:hover{text-decoration:underline;}
+.csvbtn{margin-top:12px;border:1px solid var(--border);background:var(--surface-2);color:var(--accent-strong);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:99px;cursor:pointer;}
+.csvbtn:hover{border-color:var(--accent);}
+.csvbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+/* easter egg: a submarine that surfaces now and then */
+#sub{cursor:pointer;display:none;}
+#sub.up{display:inline;}
+#sub .rise{transform-box:fill-box;transform-origin:center;animation:subRise 7s ease-in-out forwards;}
+#sub .bob{transform-box:fill-box;transform-origin:center;animation:subBob 1.6s ease-in-out infinite;}
+@keyframes subRise{0%{transform:translateY(60%);opacity:0}14%{transform:translateY(0);opacity:1}86%{transform:translateY(0);opacity:1}100%{transform:translateY(60%);opacity:0}}
+@keyframes subBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6%)}}
+@media (prefers-reduced-motion: reduce){#sub .rise{animation:subFade 7s linear forwards;} #sub .bob{animation:none;}}
+@keyframes subFade{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
+.subtoast{position:absolute;left:10px;top:10px;max-width:min(330px,calc(100% - 130px));background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:10px;padding:8px 11px;font-size:12px;line-height:1.5;box-shadow:0 10px 26px -10px rgba(10,44,62,.45);opacity:0;transform:translateY(-4px);transition:opacity .25s,transform .25s;pointer-events:none;}
+.subtoast.show{opacity:1;transform:none;}
+.subtoast b{color:var(--accent-strong);}
 summary{cursor:pointer;font-size:12.5px;color:var(--accent);font-weight:600;padding:9px 0 2px;}
 summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .tbl-scroll{overflow-x:auto;margin-top:8px;}
@@ -182,6 +197,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <button class="zbtn" id="zout" type="button" aria-label="Zoom out">&minus;</button>
         <button class="zbtn wide" id="zreset" type="button" aria-label="Reset the map view">Reset</button>
       </div>
+      <div class="subtoast" id="subToast" role="status" aria-live="polite"></div>
       <div class="maphint">Drag to pan &middot; double-click to zoom &middot; click a basin to select it</div>
     </div>
     <div class="ramp-row">
@@ -201,6 +217,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <summary>View the full data table</summary>
         <div class="tbl-scroll"><table id="dataTable"></table></div>
       </details>
+      <button class="csvbtn" id="csvBtn" type="button">Download data (CSV)</button>
     </div>
     <div class="panel">
       <span class="ptitle">Selected basin</span>
@@ -246,6 +263,12 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <a href="https://marine.copernicus.eu/bulletin/2025-annual-ocean-health-bulletin" target="_blank" rel="noopener">2025 Ocean Health Bulletin &rarr;</a>
       </div>
       <div class="pcard">
+        <span class="pn">Mediterranean water budget</span>
+        <span class="pw">Net evaporation (evaporation minus rain) for the western and eastern basins.</span>
+        <span class="pd">West 0.88 mm/day &middot; East 1.52 mm/day &middot; Frontiers in Climate, 2025</span>
+        <a href="https://www.frontiersin.org/journals/climate/articles/10.3389/fclim.2025.1472731/full" target="_blank" rel="noopener">Eastern Med water budget &rarr;</a>
+      </div>
+      <div class="pcard">
         <span class="pn">Natural Earth</span>
         <span class="pw">The coastline drawn here &mdash; public-domain vector shorelines, reprojected for this map.</span>
         <span class="pd">ne_50m_land &middot; equirectangular, true scale at 38&deg;N</span>
@@ -262,7 +285,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
 
   <footer>
     <p class="note"><b>Reading the numbers.</b> Summer and winter SST are typical open-water seasonal means, not coastal extremes &mdash; shallow corners of the northern Adriatic and the Levant run several degrees hotter in August. Salinity is surface salinity in practical salinity units (&asymp; g/kg); the Aegean mean hides a steep gradient, from brackish Black Sea outflow in the north (below 33) to over 39 in the Cretan Sea. The Calypso Deep figure is the 2020 direct measurement of 5,109 m &plusmn;1 m from the submersible <i>Limiting Factor</i>, superseding older 5,121&ndash;5,267 m sonar estimates; the litter found there was logged in a separate 2025 study of video filmed on that same dive. The map's &ldquo;Balearic Sea&rdquo; follows the broad sense of that name &mdash; Britannica treats it as a synonym for the Algerian/Alg&eacute;ro-Proven&ccedil;al Basin, the whole open basin between Algeria, France and the Balearic Islands, not just the strip around Mallorca &mdash; so its area is the sourced ~0.85 million km&sup2; western-basin total minus the separately-mapped Alboran, Ligurian and Tyrrhenian. Basin areas otherwise vary with where you draw the boundaries; all are given to the nearest thousand km&sup2;.</p>
-    <p class="note"><b>Figures marked <span class="est">est.</span></b> are interpolated across a documented gradient rather than measured basin by basin. <i>Warming rate:</i> in the multi-decade satellite SST record, the Balearic, Tyrrhenian, Adriatic and northern Ionian trend fastest at 0.4&ndash;0.5 &deg;C/decade, while the Aegean and northern Levantine trend highest basin-wide, up to 0.6 &deg;C/decade (Copernicus Ocean State Report); the Alboran and Ligurian sit below that band. These are long-run averages &mdash; Argo float data for 2012&ndash;2025 alone show still steeper warming across the whole basin (up to 0.8&ndash;0.9 &deg;C/decade near the surface in the western Mediterranean and Ionian), reflecting how much faster the sea has warmed in just the last decade. <i>Plankton layer:</i> the deep chlorophyll maximum is measured at about 30 m in the Alboran Sea and 120 m in the easternmost Levantine; the basins between are placed along that west-to-east gradient. <i>Posidonia meadows</i> is a five-step presence rating, not an area: <i>Posidonia oceanica</i> is endemic to the Mediterranean and 1,224,707 ha of it have been mapped basin-wide (510,715 ha west, 713,992 ha east), but per-basin areas are not published on a comparable footing. The ratings follow the documented range limits &mdash; the Alboran is the species' western edge, meadows are rare or absent in the low-salinity northern Adriatic, and they stop at a sharp border in the Levantine, where records from the Syrian, Lebanese and Israeli coasts are now considered erroneous. Meadows have contracted by roughly a third in the last fifty years. <i>Biggest tide</i> is the largest spring range observed anywhere in the basin, not a basin-wide average &mdash; the Ionian figure is the Gulf of Gab&egrave;s, the Adriatic figure is the head of the gulf at Venice, and most of the sea sits nearer 0.2&ndash;0.3 m.</p>
+    <p class="note"><b>Figures marked <span class="est">est.</span></b> are interpolated across a documented gradient rather than measured basin by basin. <i>Warming rate:</i> in the multi-decade satellite SST record, the Balearic, Tyrrhenian, Adriatic and northern Ionian trend fastest at 0.4&ndash;0.5 &deg;C/decade, while the Aegean and northern Levantine trend highest basin-wide, up to 0.6 &deg;C/decade (Copernicus Ocean State Report); the Alboran and Ligurian sit below that band. These are long-run averages &mdash; Argo float data for 2012&ndash;2025 alone show still steeper warming across the whole basin (up to 0.8&ndash;0.9 &deg;C/decade near the surface in the western Mediterranean and Ionian), reflecting how much faster the sea has warmed in just the last decade. <i>Net evaporation</i> is evaporation minus rainfall, and each sub-basin carries its parent basin&rsquo;s average: 0.88 mm/day (&asymp;0.32 m a year) over the western Mediterranean and 1.52 mm/day (&asymp;0.55 m a year) over the eastern, where drought since the late 1990s has intensified it. Comparable per-sub-basin figures are not published; the Adriatic in particular is so diluted by rivers that its real freshwater balance is far less negative than the eastern average suggests. Rivers replace only about a third of what the sea loses to evaporation &mdash; the Atlantic inflow at Gibraltar makes up the deficit, and that imbalance is why the sea gets saltier from west to east. <i>Plankton layer:</i> the deep chlorophyll maximum is measured at about 30 m in the Alboran Sea and 120 m in the easternmost Levantine; the basins between are placed along that west-to-east gradient. <i>Posidonia meadows</i> is a five-step presence rating, not an area: <i>Posidonia oceanica</i> is endemic to the Mediterranean and 1,224,707 ha of it have been mapped basin-wide (510,715 ha west, 713,992 ha east), but per-basin areas are not published on a comparable footing. The ratings follow the documented range limits &mdash; the Alboran is the species' western edge, meadows are rare or absent in the low-salinity northern Adriatic, and they stop at a sharp border in the Levantine, where records from the Syrian, Lebanese and Israeli coasts are now considered erroneous. Meadows have contracted by roughly a third in the last fifty years. <i>Biggest tide</i> is the largest spring range observed anywhere in the basin, not a basin-wide average &mdash; the Ionian figure is the Gulf of Gab&egrave;s, the Adriatic figure is the head of the gulf at Venice, and most of the sea sits nearer 0.2&ndash;0.3 m.</p>
     <p class="note"><b>Basin outlines</b> follow the conventional hydrographic divisions at the sills &mdash; Gibraltar, the Sicily Channel, Otranto, the Dardanelles and the Cretan Arc &mdash; drawn as straight lines between capes, the convention the IHO uses. Coastlines are Natural Earth 1:50m, simplified; the map is thematic, not navigational. Compiled September 2026.</p>
   </footer>
 </div>
@@ -318,6 +341,9 @@ var basins=[
   summer:28.0,winter:17.5,salinity:39.2,avgDepth:1500,maxDepth:4384,warming:0.50,area:320000,dcm:120,tide:0.4,posidonia:1}
 ];
 basins.forEach(function(b){ b.range=+(b.summer-b.winter).toFixed(1); });
+/* net evaporation (E - P), parent-basin averages: west 0.88 mm/day, east 1.52 mm/day */
+var WEST_BASINS=["alboran","balearic","ligurian","tyrrhenian"];
+basins.forEach(function(b){ b.evap = WEST_BASINS.indexOf(b.id)>=0 ? 0.32 : 0.55; });
 
 function fT(v){return v.toFixed(1)+" "+DEG+"C";}
 function fN(v){return v.toLocaleString("en-US");}
@@ -328,8 +354,9 @@ var groups=[
    {id:"winter",short:"Winter",full:"Winter sea-surface temperature",fmt:fT},
    {id:"range",short:"Seasonal swing",full:"Summer-to-winter temperature swing",fmt:fT},
    {id:"warming",short:"Warming rate",full:"Surface warming rate",est:true,fmt:function(v){return "+"+v.toFixed(2)+" "+DEG+"C/dec";}}]},
- {id:"salt",label:"Salinity",hint:"how much salt",measures:[
-   {id:"salinity",short:"Surface salinity",full:"Surface salinity",fmt:function(v){return v.toFixed(1)+" psu";}}]},
+ {id:"salt",label:"Salinity",hint:"salt, and the water it loses",measures:[
+   {id:"salinity",short:"Surface salinity",full:"Surface salinity",fmt:function(v){return v.toFixed(1)+" psu";}},
+   {id:"evap",short:"Net evaporation",full:"Net evaporation (evaporation minus rain)",est:true,fmt:function(v){return v.toFixed(2)+" m/yr";}}]},
  {id:"depth",label:"Depth",hint:"how deep, how big",measures:[
    {id:"avgDepth",short:"Mean depth",full:"Mean water depth",fmt:function(v){return fN(v)+" m";}},
    {id:"maxDepth",short:"Max depth",full:"Maximum recorded depth",fmt:function(v){return fN(v)+" m";}},
@@ -407,6 +434,7 @@ function applyView(){
   var k=view.w/HOME.w;   // keep text a constant size on screen
   // on a narrow map the whole SVG shrinks, so enlarge labels to stay readable
   var boost=Math.min(2.2,Math.max(1,640/(svg.clientWidth||1000))), kb=k*boost, kp=k*Math.sqrt(boost);
+  labelScale=kb; if(sub.spot) placeSub();
   basins.forEach(function(b){
     b.tName.setAttribute("font-size",((b.sm?10.5:13)*kb).toFixed(2));
     b.tVal.setAttribute("font-size",((b.sm?10.5:12)*kb).toFixed(2));
@@ -562,7 +590,7 @@ function paintDetail(){
 }
 function paintTable(){
   var cols=[["Basin","name"],["Summer "+DEG+"C","summer"],["Winter "+DEG+"C","winter"],["Swing "+DEG+"C","range"],
-            ["Salinity psu","salinity"],["Mean m","avgDepth"],["Max m","maxDepth"],["Area km2","area"],
+            ["Salinity psu","salinity"],["Net evap. m/yr","evap"],["Mean m","avgDepth"],["Max m","maxDepth"],["Area km2","area"],
             ["Warming "+DEG+"C/dec","warming"],["Plankton m","dcm"],["Tide m","tide"],["Posidonia","posidonia"]];
   var h="<thead><tr>"+cols.map(function(c){return "<th>"+c[0]+"</th>";}).join("")+"</tr></thead><tbody>";
   basins.forEach(function(b){
@@ -570,7 +598,7 @@ function paintTable(){
       var v=b[c[1]];
       if(c[1]==="name") return "<td>"+v+"</td>";
       if(c[1]==="warming") return "<td>+"+v.toFixed(2)+"</td>";
-      if(c[1]==="tide") return "<td>"+v.toFixed(2)+"</td>";
+      if(c[1]==="tide"||c[1]==="evap") return "<td>"+v.toFixed(2)+"</td>";
       if(c[1]==="posidonia") return "<td>"+POS[v]+"</td>";
       return "<td>"+(typeof v==="number"?fN(v):v)+"</td>";
     }).join("")+"</tr>";
@@ -630,6 +658,85 @@ groups.forEach(function(g){
   });
   gHost.appendChild(b);
 });
+
+/* ---- CSV download ---- */
+var CSV_COLS=[["basin","name"],["summer_sst_c","summer"],["winter_sst_c","winter"],["seasonal_swing_c","range"],
+  ["surface_salinity_psu","salinity"],["net_evaporation_m_per_yr_est","evap"],["mean_depth_m","avgDepth"],
+  ["max_depth_m","maxDepth"],["area_km2","area"],["warming_c_per_decade_est","warming"],
+  ["plankton_layer_depth_m_est","dcm"],["max_spring_tide_m","tide"],["posidonia_meadows","posidonia"]];
+document.getElementById("csvBtn").addEventListener("click",function(){
+  var lines=[CSV_COLS.map(function(c){return c[0];}).join(",")];
+  basins.forEach(function(b){
+    lines.push(CSV_COLS.map(function(c){
+      var v=b[c[1]];
+      if(c[1]==="posidonia") return POS[v];
+      if(c[1]==="name") return '"'+v+'"';
+      return v;
+    }).join(","));
+  });
+  var blob=new Blob(["﻿"+lines.join("\r\n")+"\r\n"],{type:"text/csv;charset=utf-8"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download="medseas-basins.csv";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+});
+
+/* ---- easter egg: a yellow submarine surfaces now and then ---- */
+var labelScale=1;
+var sub={spot:null,timer:null,fact:0};
+(function buildSub(){
+  var g=mk("g",{id:"sub",role:"button","aria-label":"A submarine"},document.getElementById("labels").parentNode);
+  var rise=mk("g",{"class":"rise"},g), bob=mk("g",{"class":"bob"},rise);
+  var ink="#5c4300", hullC="#f2c230";
+  mk("ellipse",{cx:0,cy:7,rx:25,ry:2.6,fill:"#ffffff",opacity:.55},bob);
+  mk("path",{d:"M3 -12V-18H8",fill:"none",stroke:ink,"stroke-width":1.5,"stroke-linecap":"round"},bob);
+  mk("rect",{x:-5,y:-12,width:11,height:7,rx:2,fill:hullC,stroke:ink,"stroke-width":1.2},bob);
+  mk("path",{d:"M-18 0Q-18 -6 -10 -6H12Q20 -6 20 0Q20 6 12 6H-10Q-18 6 -18 0Z",fill:hullC,stroke:ink,"stroke-width":1.2},bob);
+  [-8,0,8].forEach(function(x){mk("circle",{cx:x,cy:0,r:1.9,fill:"#bfe6f5",stroke:ink,"stroke-width":.8},bob);});
+  mk("path",{d:"M-18 -1L-23 -5M-18 1L-23 5",stroke:ink,"stroke-width":1.4,"stroke-linecap":"round"},bob);
+  sub.g=g; sub.rise=rise;
+  g.addEventListener("pointerdown",function(ev){ev.stopPropagation();});
+  g.addEventListener("click",function(ev){ev.stopPropagation(); spotSub();});
+  rise.addEventListener("animationend",function(ev){ if(ev.target===rise) hideSub(); });
+})();
+var SUB_FACTS=[
+  "In 2020 the submersible <i>Limiting Factor</i> dived to 5,109 m in the Calypso Deep, the lowest point of this sea.",
+  "In 1965 the French bathyscaphe <i>Archimède</i> was the first to reach the floor of the Calypso Deep.",
+  "<i>Limiting Factor</i> spent 43 minutes on the Calypso Deep floor in 2020, filming a 650 m run of seabed."
+];
+function placeSub(){
+  var s=labelScale*0.9;
+  sub.g.setAttribute("transform","translate("+sub.spot[0].toFixed(1)+" "+sub.spot[1].toFixed(1)+") scale("+s.toFixed(3)+")");
+}
+function findSeaSpot(){
+  var land=document.querySelector(".land"), pt=svg.createSVGPoint();
+  for(var i=0;i<80;i++){
+    var b=basins[Math.floor(Math.random()*basins.length)], bd=b.bounds;
+    var x=bd[0]+Math.random()*(bd[2]-bd[0]), y=bd[1]+Math.random()*(bd[3]-bd[1]);
+    if(x<view.x+30||x>view.x+view.w-30||y<view.y+25||y>view.y+view.h-25) continue;
+    if(Math.abs(x-b.lab[0])<60*labelScale&&Math.abs(y-b.lab[1])<30*labelScale) continue;
+    pt.x=x; pt.y=y;
+    try{ if(b.el.isPointInFill(pt)&&!land.isPointInFill(pt)) return [x,y]; }catch(e){ return [b.lab[0],b.lab[1]+45]; }
+  }
+  return null;
+}
+function showSub(){
+  if(document.hidden||dragging){ scheduleSub(5000,10000); return; }
+  sub.spot=findSeaSpot();
+  if(!sub.spot){ scheduleSub(5000,10000); return; }
+  placeSub();
+  sub.g.classList.remove("up"); void sub.g.getBoundingClientRect(); sub.g.classList.add("up");
+}
+function hideSub(){ sub.g.classList.remove("up"); sub.spot=null; scheduleSub(45000,90000); }
+function scheduleSub(min,max){ clearTimeout(sub.timer); sub.timer=setTimeout(showSub,min+Math.random()*(max-min)); }
+function spotSub(){
+  var n=1; try{ n=(parseInt(localStorage.getItem("medseas.subs"),10)||0)+1; localStorage.setItem("medseas.subs",n); }catch(e){}
+  var t=document.getElementById("subToast");
+  t.innerHTML="<b>Submarine spotted"+(n>1?" · "+n+" so far":"")+"!</b> "+SUB_FACTS[sub.fact++%SUB_FACTS.length];
+  t.classList.add("show");
+  clearTimeout(sub.toastTimer); sub.toastTimer=setTimeout(function(){t.classList.remove("show");},6500);
+}
+scheduleSub(location.hash==="#sub"?800:25000, location.hash==="#sub"?1000:40000);
 
 renderSubs(); paintMap(); paintBars(); paintDetail(); paintTable();
 </script>
