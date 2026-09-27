@@ -1,5 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>MedSEAS · Mediterranean Basins</title><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Mediterranean Basins</title>
+<!doctype html><html><head><meta charset="utf-8"><title>MedSEAS · Mediterranean Basins</title><meta name="description" content="Interactive map of the Mediterranean's eight sub-basins: temperature, salinity, depth and curiosities, from Copernicus Marine, Argo and EMODnet data."><meta property="og:title" content="MedSEAS · Mediterranean Basins"><meta property="og:description" content="The Mediterranean as eight distinct seas, shaded by temperature, salinity or depth."><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%2312688f%27/%3E%3Cpath d=%27M5 19c3.5-4 7.5 4 11 0s7.5 4 11 0%27 stroke=%27white%27 stroke-width=%273%27 fill=%27none%27 stroke-linecap=%27round%27/%3E%3C/svg%3E"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -35,7 +34,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .sub{color:var(--ink-2);font-size:15px;line-height:1.55;max-width:62ch;margin:9px 0 0;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;}
 .chip{display:flex;align-items:baseline;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:7px 15px;box-shadow:var(--shadow);}
-.chip b{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--accent-strong);font-size:14px;}
+.chip b{white-space:nowrap;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--accent-strong);font-size:14px;}
 .chip span{font-size:12px;color:var(--ink-muted);}
 .reviewed{font-size:12px;color:var(--ink-muted);margin:10px 0 0;}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:15px 15px 17px;}
@@ -44,7 +43,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 /* two-level filter */
 .filter{display:flex;flex-direction:column;gap:9px;margin-bottom:13px;}
 .groups{display:flex;gap:6px;flex-wrap:wrap;}
-.gbtn{flex:1 1 0;min-width:112px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink-2);
+.gbtn{text-align:left;flex:1 1 0;min-width:112px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink-2);
   font-family:inherit;font-size:13.5px;font-weight:600;padding:11px 12px;border-radius:11px;cursor:pointer;
   display:flex;flex-direction:column;gap:2px;align-items:flex-start;transition:background .15s,border-color .15s;}
 .gbtn .gs{font-size:10.5px;font-weight:500;color:var(--ink-muted);letter-spacing:.02em;}
@@ -81,6 +80,7 @@ svg#map.drag{cursor:grabbing;}
 .bedge.on{stroke:var(--accent-strong);stroke-width:3;stroke-opacity:1;}
 .blabel,.bval{pointer-events:none;text-anchor:middle;}
 .blabel{font-weight:700;}
+.blabel,.bval{paint-order:stroke fill;stroke-linejoin:round;}
 .bval{font-family:"IBM Plex Mono",monospace;font-weight:600;}
 .clabel{pointer-events:none;text-anchor:middle;fill:var(--land-ink);font-weight:600;letter-spacing:.18em;text-transform:uppercase;}
 .ilabel{pointer-events:none;text-anchor:middle;fill:var(--land-ink);font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
@@ -141,6 +141,12 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
 .note{font-size:11.5px;color:var(--ink-muted);line-height:1.65;max-width:90ch;margin:0;}
 .note a{color:var(--ink-2);}
 @media (max-width:520px){ .row{grid-template-columns:70px minmax(0,1fr) 72px;} .tiles{grid-template-columns:1fr 1fr;} }
+@media (max-width:600px){
+  .maphint{position:static;display:block;border:0;border-top:1px solid var(--border);border-radius:0;opacity:1;padding:6px 10px;}
+  .zoomui{top:6px;right:6px;flex-direction:row;gap:4px;}
+  .zbtn{width:26px;height:26px;font-size:13px;border-radius:7px;}
+  .zbtn.wide{font-size:10px;padding:0 7px;}
+}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
 </style>
 
@@ -224,7 +230,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <div class="pcard">
         <span class="pn">Argo float network</span>
         <span class="pw">Profilers diving to 2,000 m every ten days &mdash; the in-situ backbone for salinity and warming trends.</span>
-        <span class="pd">19,545 profiles, W. Med / Ionian / Levantine, 2012&ndash;2025</span>
+        <span class="pd">Argo vs. reanalysis &middot; W. Med / Ionian / Levantine, 2012&ndash;2025</span>
         <a href="https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2026.1846069/full" target="_blank" rel="noopener">Argo vs. reanalysis trends &rarr;</a>
       </div>
       <div class="pcard">
@@ -236,7 +242,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <div class="pcard">
         <span class="pn">Mercator Ocean &amp; Copernicus C3S</span>
         <span class="pw">Annual SST bulletins and marine-heatwave monitoring.</span>
-        <span class="pd">2025 mean 21.2 &deg;C, 2nd warmest after 21.3 &deg;C in 2024; heatwaves touched 99.6% of the basin</span>
+        <span class="pd">2025 mean 21.2 &deg;C, 2nd warmest after 21.3 &deg;C in 2024; intense heatwaves covered 93% of the basin, 3rd widest after 2023 and 2024</span>
         <a href="https://marine.copernicus.eu/bulletin/2025-annual-ocean-health-bulletin" target="_blank" rel="noopener">2025 Ocean Health Bulletin &rarr;</a>
       </div>
       <div class="pcard">
@@ -255,8 +261,8 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
   </div>
 
   <footer>
-    <p class="note"><b>Reading the numbers.</b> Summer and winter SST are typical open-water seasonal means, not coastal extremes &mdash; shallow corners of the northern Adriatic and the Levant run several degrees hotter in August. Salinity is surface salinity in practical salinity units (&asymp; g/kg); the Aegean mean hides a steep gradient, from brackish Black Sea outflow in the north (below 33) to over 39 in the Cretan Sea. The Calypso Deep figure is the 2020 direct measurement of 5,109 m &plusmn;1 m from the submersible <i>Limiting Factor</i>, superseding older 5,121&ndash;5,267 m sonar estimates; the litter found there was catalogued in a separate 2025 study of debris recovered on that same dive. The map's &ldquo;Balearic Sea&rdquo; follows the broad sense of that name &mdash; Britannica treats it as a synonym for the Algerian/Alg&eacute;ro-Proven&ccedil;al Basin, the whole open basin between Algeria, France and the Balearic Islands, not just the strip around Mallorca &mdash; so its area is the sourced ~0.85 million km&sup2; western-basin total minus the separately-mapped Alboran, Ligurian and Tyrrhenian. Basin areas otherwise vary with where you draw the boundaries; all are given to the nearest thousand km&sup2;.</p>
-    <p class="note"><b>Figures marked <span class="est">est.</span></b> are interpolated across a documented gradient rather than measured basin by basin. <i>Warming rate:</i> in the multi-decade satellite SST record, the Balearic, Tyrrhenian, Adriatic and northern Ionian trend fastest at 0.4&ndash;0.5 &deg;C/decade, while the Aegean and northern Levantine trend highest basin-wide, up to 0.6 &deg;C/decade (Copernicus Ocean State Report); the Alboran and Ligurian sit below that band. These are long-run averages &mdash; Argo float data for 2012&ndash;2025 alone show still steeper warming across the whole basin (+0.76 to +0.89 &deg;C/decade at the surface of the western Mediterranean, +0.37 to +0.57 &deg;C/decade in the Ionian), reflecting how much faster the sea has warmed in just the last decade. <i>Plankton layer:</i> the deep chlorophyll maximum is measured at about 30 m in the Alboran Sea and 120 m in the easternmost Levantine; the basins between are placed along that west-to-east gradient. <i>Posidonia meadows</i> is a five-step presence rating, not an area: <i>Posidonia oceanica</i> is endemic to the Mediterranean and 1,224,707 ha of it have been mapped basin-wide (510,715 ha west, 713,992 ha east), but per-basin areas are not published on a comparable footing. The ratings follow the documented range limits &mdash; the Alboran is the species' western edge, meadows are rare or absent in the low-salinity northern Adriatic, and they stop at a sharp border in the Levantine, where records from the Syrian, Lebanese and Israeli coasts are now considered erroneous. Meadows have contracted by roughly a third in the last fifty years. <i>Biggest tide</i> is the largest spring range observed anywhere in the basin, not a basin-wide average &mdash; the Ionian figure is the Gulf of Gab&egrave;s, the Adriatic figure is the head of the gulf at Venice, and most of the sea sits nearer 0.2&ndash;0.3 m.</p>
+    <p class="note"><b>Reading the numbers.</b> Summer and winter SST are typical open-water seasonal means, not coastal extremes &mdash; shallow corners of the northern Adriatic and the Levant run several degrees hotter in August. Salinity is surface salinity in practical salinity units (&asymp; g/kg); the Aegean mean hides a steep gradient, from brackish Black Sea outflow in the north (below 33) to over 39 in the Cretan Sea. The Calypso Deep figure is the 2020 direct measurement of 5,109 m &plusmn;1 m from the submersible <i>Limiting Factor</i>, superseding older 5,121&ndash;5,267 m sonar estimates; the litter found there was logged in a separate 2025 study of video filmed on that same dive. The map's &ldquo;Balearic Sea&rdquo; follows the broad sense of that name &mdash; Britannica treats it as a synonym for the Algerian/Alg&eacute;ro-Proven&ccedil;al Basin, the whole open basin between Algeria, France and the Balearic Islands, not just the strip around Mallorca &mdash; so its area is the sourced ~0.85 million km&sup2; western-basin total minus the separately-mapped Alboran, Ligurian and Tyrrhenian. Basin areas otherwise vary with where you draw the boundaries; all are given to the nearest thousand km&sup2;.</p>
+    <p class="note"><b>Figures marked <span class="est">est.</span></b> are interpolated across a documented gradient rather than measured basin by basin. <i>Warming rate:</i> in the multi-decade satellite SST record, the Balearic, Tyrrhenian, Adriatic and northern Ionian trend fastest at 0.4&ndash;0.5 &deg;C/decade, while the Aegean and northern Levantine trend highest basin-wide, up to 0.6 &deg;C/decade (Copernicus Ocean State Report); the Alboran and Ligurian sit below that band. These are long-run averages &mdash; Argo float data for 2012&ndash;2025 alone show still steeper warming across the whole basin (up to 0.8&ndash;0.9 &deg;C/decade near the surface in the western Mediterranean and Ionian), reflecting how much faster the sea has warmed in just the last decade. <i>Plankton layer:</i> the deep chlorophyll maximum is measured at about 30 m in the Alboran Sea and 120 m in the easternmost Levantine; the basins between are placed along that west-to-east gradient. <i>Posidonia meadows</i> is a five-step presence rating, not an area: <i>Posidonia oceanica</i> is endemic to the Mediterranean and 1,224,707 ha of it have been mapped basin-wide (510,715 ha west, 713,992 ha east), but per-basin areas are not published on a comparable footing. The ratings follow the documented range limits &mdash; the Alboran is the species' western edge, meadows are rare or absent in the low-salinity northern Adriatic, and they stop at a sharp border in the Levantine, where records from the Syrian, Lebanese and Israeli coasts are now considered erroneous. Meadows have contracted by roughly a third in the last fifty years. <i>Biggest tide</i> is the largest spring range observed anywhere in the basin, not a basin-wide average &mdash; the Ionian figure is the Gulf of Gab&egrave;s, the Adriatic figure is the head of the gulf at Venice, and most of the sea sits nearer 0.2&ndash;0.3 m.</p>
     <p class="note"><b>Basin outlines</b> follow the conventional hydrographic divisions at the sills &mdash; Gibraltar, the Sicily Channel, Otranto, the Dardanelles and the Cretan Arc &mdash; drawn as straight lines between capes, the convention the IHO uses. Coastlines are Natural Earth 1:50m, simplified; the map is thematic, not navigational. Compiled September 2026.</p>
   </footer>
 </div>
@@ -275,11 +281,11 @@ var basins=[
   desc:"The Atlantic's doorway. A jet of cool, fresh ocean water pours through Gibraltar and coils into two standing gyres, keeping this the coldest and least salty corner of the sea.",
   quirk:"Every drop of Mediterranean water entered through this basin. It is also the one stretch that blooms like a real ocean \u2014 the plankton layer sits just 30 m down, against 120 m at the far eastern end.",
   summer:22.5,winter:15.5,salinity:36.5,avgDepth:445,maxDepth:1500,warming:0.30,area:53000,dcm:30,tide:0.3,posidonia:1},
- {id:"balearic",name:"Balearic Sea",lab:[236,197],
+ {id:"balearic",name:"Balearic Sea",lab:[290,165],
   shape:[[152.8,255.6],[159.7,361.3],[354.2,302.6],[354.2,143.9],[324.1,67.6],[262,20],[180,30],[152.8,214.4]],
   desc:"The Mediterranean's broadest open basin, running from the Algerian current to the Balearic Islands and the Gulf of Lion. In that northern corner, winter mistral storms make it one of the few places on Earth where surface water sinks all the way to the seafloor.",
-  quirk:"A single seagrass meadow off Formentera, within this basin, has been cloning itself for at least 100,000 years and stretches 15 km. It is arguably the oldest living organism on the planet.",
-  summer:25.5,winter:13.5,salinity:37.8,avgDepth:1050,maxDepth:2800,warming:0.45,area:551000,dcm:50,tide:0.25,posidonia:4},
+  quirk:"A single seagrass meadow off Formentera, within this basin, has been cloning itself for an estimated 80,000 to 200,000 years and stretches 15 km. It is arguably the oldest living organism on the planet.",
+  summer:25.5,winter:13.5,salinity:37.8,avgDepth:1050,maxDepth:2800,warming:0.45,area:507000,dcm:50,tide:0.25,posidonia:4},
  {id:"ligurian",name:"Ligurian Sea",lab:[363,75],sm:true,
   shape:[[324.1,67.6],[319.4,99.9],[395.8,99.9],[398.1,38.2],[324.1,38.2]],
   desc:"A small, steep basin in the crook of the Riviera. Deep water rises close to shore here, feeding the plankton blooms that draw fin whales in every summer.",
@@ -289,16 +295,16 @@ var basins=[
   shape:[[354.2,143.9],[395.8,99.9],[440,100],[556,214],[509.3,267.3],[407.4,258.5],[354.2,220.3]],
   desc:"Boxed in by Italy, Sicily, Sardinia and Corsica, and deep almost everywhere. Its water column is among the most stable in the sea.",
   quirk:"Marsili, 70 km long and rising 3,000 m off the seabed, is the largest volcano in Europe \u2014 bigger than Etna. Its crater sits 450 m below the surface and nothing on the water above gives it away.",
-  summer:25.0,winter:14.0,salinity:38.1,avgDepth:2000,maxDepth:3785,warming:0.45,area:231000,dcm:70,tide:0.4,posidonia:4},
+  summer:25.0,winter:14.0,salinity:38.1,avgDepth:2000,maxDepth:3785,warming:0.45,area:275000,dcm:70,tide:0.4,posidonia:4},
  {id:"adriatic",name:"Adriatic Sea",lab:[540,118],
   shape:[[421.3,-20.6],[490.7,-20.6],[628,170],[628,185],[574,185],[440,58],[421.3,32.3]],
   desc:"Shallow enough to wade far offshore in the north, then plunging past 1,200 m in the south. River water and winter cold give it the widest seasonal swing of any basin.",
-  quirk:"It carries the Mediterranean's second-biggest tides \u2014 about 1.2 m at the head of the gulf, enough to flood St Mark's Square \u2014 in a sea where 20 to 30 cm is the norm.",
+  quirk:"It carries the Mediterranean's second-biggest tides \u2014 about 1.2 m at the head of the gulf, which, stacked on a storm surge, is what floods St Mark's Square \u2014 in a sea where 20 to 30 cm is the norm.",
   summer:25.0,winter:11.5,salinity:38.3,avgDepth:252,maxDepth:1233,warming:0.50,area:139000,dcm:40,tide:1.2,posidonia:2},
  {id:"ionian",name:"Ionian Sea",lab:[567,300],
   shape:[[425,242],[504.6,222],[516.2,188.0],[574,185],[628,185],[648,200],[659.7,237.9],[689.8,314.3],[689.8,508.2],[407.4,508.2],[393.5,355.4]],
   desc:"The abyss of the Mediterranean. The Hellenic Trench drops to the Calypso Deep, deeper than anywhere else in the sea.",
-  quirk:"Its floor, 5,109 m down, is the lowest point in the Mediterranean. Debris recovered there during the 2020 dive that measured it was catalogued in a 2025 study \u2014 167 objects, 88% of them plastic \u2014 sitting in the deepest water in the sea.",
+  quirk:"Its floor, 5,109 m down, is the lowest point in the Mediterranean. Video from the 2020 dive that measured it, analysed in a 2025 study, shows 167 objects on the seafloor \u2014 88% of the identified litter plastic \u2014 one of the highest litter densities ever recorded in the deep sea.",
   summer:26.0,winter:16.0,salinity:38.7,avgDepth:2600,maxDepth:5109,warming:0.40,area:169000,dcm:90,tide:2.0,posidonia:4},
  {id:"aegean",name:"Aegean Sea",lab:[724,196],
   shape:[[671.3,132.2],[782.4,132.2],[810.2,232.1],[810.2,308.4],[768.5,334.9],[685.2,334.9],[671.3,284.9]],
@@ -309,7 +315,7 @@ var basins=[
   shape:[[689.8,314.3],[768.5,326.1],[814.8,280],[1020.8,240],[1020.8,508.2],[689.8,508.2]],
   desc:"The hot, salty end of the line. Relentless evaporation leaves the saltiest surface water in the Mediterranean, which then sinks and begins the long return journey west.",
   quirk:"The clearest and emptiest water in the sea \u2014 a Secchi disc once stayed visible 53 m down. It is also the front line of the Suez invasion that has pushed the Mediterranean past 1,000 alien species.",
-  summer:28.0,winter:17.5,salinity:39.2,avgDepth:1500,maxDepth:4300,warming:0.50,area:320000,dcm:120,tide:0.4,posidonia:1}
+  summer:28.0,winter:17.5,salinity:39.2,avgDepth:1500,maxDepth:4384,warming:0.50,area:320000,dcm:120,tide:0.4,posidonia:1}
 ];
 basins.forEach(function(b){ b.range=+(b.summer-b.winter).toFixed(1); });
 
@@ -399,16 +405,19 @@ var anim=null;
 function applyView(){
   svg.setAttribute("viewBox",view.x.toFixed(1)+" "+view.y.toFixed(1)+" "+view.w.toFixed(1)+" "+view.h.toFixed(1));
   var k=view.w/HOME.w;   // keep text a constant size on screen
+  // on a narrow map the whole SVG shrinks, so enlarge labels to stay readable
+  var boost=Math.min(2.2,Math.max(1,640/(svg.clientWidth||1000))), kb=k*boost, kp=k*Math.sqrt(boost);
   basins.forEach(function(b){
-    b.tName.setAttribute("font-size",((b.sm?10.5:13)*k).toFixed(2));
-    b.tVal.setAttribute("font-size",((b.sm?10.5:12)*k).toFixed(2));
-    b.tVal.setAttribute("y",(b.lab[1]+(b.sm?12:15)*k).toFixed(1));
+    b.tName.setAttribute("font-size",((b.sm?10.5:13)*kb).toFixed(2));
+    b.tVal.setAttribute("font-size",((b.sm?10.5:12)*kb).toFixed(2));
+    b.tVal.setAttribute("y",(b.lab[1]+(b.sm?12:15)*kb).toFixed(1));
+    b.tName.setAttribute("stroke-width",(3*kb).toFixed(2)); b.tVal.setAttribute("stroke-width",(3*kb).toFixed(2));
     b.edge.setAttribute("stroke-width",((b.id===selected?3:1.4)*k).toFixed(2));
   });
-  cEls.forEach(function(e){e.setAttribute("font-size",(9.5*k).toFixed(2));});
-  iEls.forEach(function(e){e.setAttribute("font-size",(7.5*k).toFixed(2));});
-  oEls.forEach(function(e){e.setAttribute("font-size",(8*k).toFixed(2));});
-  sEls.forEach(function(e){e.setAttribute("font-size",(7.5*k).toFixed(2));});
+  cEls.forEach(function(e){e.setAttribute("font-size",(9.5*kp).toFixed(2));});
+  iEls.forEach(function(e){e.setAttribute("font-size",(7.5*kp).toFixed(2));});
+  oEls.forEach(function(e){e.setAttribute("font-size",(8*kp).toFixed(2));});
+  sEls.forEach(function(e){e.setAttribute("font-size",(7.5*kp).toFixed(2));});
   sDots.forEach(function(e){e.setAttribute("r",(2.8*k).toFixed(2));e.setAttribute("stroke-width",(1.2*k).toFixed(2));});
   document.querySelector(".land").setAttribute("stroke-width",(0.8*k).toFixed(2));
 }
@@ -446,6 +455,7 @@ function zoomBy(f){
   var cx=view.x+view.w/2, cy=view.y+view.h/2, w=view.w*f, h=w*(HOME.h/HOME.w);
   goTo({x:cx-w/2,y:cy-h/2,w:w,h:h},true);
 }
+window.addEventListener("resize",applyView);
 document.getElementById("zin").addEventListener("click",function(){zoomBy(1/1.6);});
 document.getElementById("zout").addEventListener("click",function(){zoomBy(1.6);});
 document.getElementById("zreset").addEventListener("click",function(){goTo({x:HOME.x,y:HOME.y,w:HOME.w,h:HOME.h},true);});
@@ -501,7 +511,7 @@ function paintMap(){
     b.el.setAttribute("fill",col);
     b.edge.classList.toggle("on",b.id===selected);
     var ink=lum(col)<0.55?"#ffffff":"#0a2c3e";
-    b.tName.setAttribute("fill",ink);
+    b.tName.setAttribute("fill",ink); b.tName.setAttribute("stroke",col); b.tVal.setAttribute("stroke",col);
     b.tVal.setAttribute("fill",ink);
     b.tVal.textContent=m.fmt(b[metric]);
   });
