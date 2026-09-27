@@ -134,11 +134,13 @@ svg#map.drag{cursor:grabbing;}
 /* easter egg: a submarine that surfaces now and then */
 #sub{cursor:pointer;display:none;}
 #sub.up{display:inline;}
-#sub .rise{transform-box:fill-box;transform-origin:center;animation:subRise 7s ease-in-out forwards;}
+#sub .rise{transform-box:fill-box;transform-origin:center;animation:subRise 9s ease-in-out forwards;}
 #sub .bob{transform-box:fill-box;transform-origin:center;animation:subBob 1.6s ease-in-out infinite;}
 @keyframes subRise{0%{transform:translateY(60%);opacity:0}14%{transform:translateY(0);opacity:1}86%{transform:translateY(0);opacity:1}100%{transform:translateY(60%);opacity:0}}
+#sub .splash{transform-box:fill-box;transform-origin:center;animation:subSplash 1.2s ease-out forwards;}
+@keyframes subSplash{0%{transform:scale(.3);opacity:.9}100%{transform:scale(1.6);opacity:0}}
 @keyframes subBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6%)}}
-@media (prefers-reduced-motion: reduce){#sub .rise{animation:subFade 7s linear forwards;} #sub .bob{animation:none;}}
+@media (prefers-reduced-motion: reduce){#sub .rise{animation:subFade 9s linear forwards;} #sub .bob{animation:none;}}
 @keyframes subFade{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
 .subtoast{position:absolute;left:10px;top:10px;max-width:min(330px,calc(100% - 130px));background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:10px;padding:8px 11px;font-size:12px;line-height:1.5;box-shadow:0 10px 26px -10px rgba(10,44,62,.45);opacity:0;transform:translateY(-4px);transition:opacity .25s,transform .25s;pointer-events:none;}
 .subtoast.show{opacity:1;transform:none;}
@@ -725,6 +727,7 @@ var labelScale=1;
 var sub={spot:null,timer:null,fact:0};
 (function buildSub(){
   var g=mk("g",{id:"sub",role:"button","aria-label":"A submarine"},document.getElementById("labels").parentNode);
+  mk("ellipse",{"class":"splash",cx:0,cy:6,rx:26,ry:6,fill:"none",stroke:"#ffffff","stroke-width":1.6},g);
   var rise=mk("g",{"class":"rise"},g), bob=mk("g",{"class":"bob"},rise);
   var ink="#5c4300", hullC="#f2c230";
   mk("ellipse",{cx:0,cy:7,rx:25,ry:2.6,fill:"#ffffff",opacity:.55},bob);
@@ -744,7 +747,7 @@ var SUB_FACTS=[
   "<i>Limiting Factor</i> spent 43 minutes on the Calypso Deep floor in 2020, filming a 650 m run of seabed."
 ];
 function placeSub(){
-  var s=labelScale*0.9;
+  var s=labelScale*1.5;
   sub.g.setAttribute("transform","translate("+sub.spot[0].toFixed(1)+" "+sub.spot[1].toFixed(1)+") scale("+s.toFixed(3)+")");
 }
 function findSeaSpot(){
@@ -759,14 +762,20 @@ function findSeaSpot(){
   }
   return null;
 }
+var mapOnScreen=true;
+try{ new IntersectionObserver(function(e){ mapOnScreen=e[0].isIntersecting; },{threshold:0.4}).observe(svg); }catch(e){}
 function showSub(){
-  if(document.hidden||dragging){ scheduleSub(5000,10000); return; }
+  if(document.hidden||dragging||!mapOnScreen){ scheduleSub(1500,3000); return; }
   sub.spot=findSeaSpot();
   if(!sub.spot){ scheduleSub(5000,10000); return; }
   placeSub();
-  sub.g.classList.remove("up"); void sub.g.getBoundingClientRect(); sub.g.classList.add("up");
+  sub.g.classList.add("up");
+  /* restart the rise and splash from zero each time it surfaces */
+  [sub.rise, sub.g.querySelector(".splash")].forEach(function(el){
+    el.style.animation="none"; void el.getBoundingClientRect(); el.style.animation="";
+  });
 }
-function hideSub(){ sub.g.classList.remove("up"); sub.spot=null; scheduleSub(45000,90000); }
+function hideSub(){ sub.g.classList.remove("up"); sub.spot=null; scheduleSub(15000,25000); }
 function scheduleSub(min,max){ clearTimeout(sub.timer); sub.timer=setTimeout(showSub,min+Math.random()*(max-min)); }
 function spotSub(){
   var n=1; try{ n=(parseInt(localStorage.getItem("medseas.subs"),10)||0)+1; localStorage.setItem("medseas.subs",n); }catch(e){}
@@ -775,7 +784,7 @@ function spotSub(){
   t.classList.add("show");
   clearTimeout(sub.toastTimer); sub.toastTimer=setTimeout(function(){t.classList.remove("show");},6500);
 }
-scheduleSub(location.hash==="#sub"?800:25000, location.hash==="#sub"?1000:40000);
+scheduleSub(3000,6000);
 
 /* ---- warming timeline (Copernicus OMI, annual mean anomaly vs 1991-2020) ---- */
 (function(){
