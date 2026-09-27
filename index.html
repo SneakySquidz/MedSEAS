@@ -143,6 +143,18 @@ svg#map.drag{cursor:grabbing;}
 .subtoast{position:absolute;left:10px;top:10px;max-width:min(330px,calc(100% - 130px));background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:10px;padding:8px 11px;font-size:12px;line-height:1.5;box-shadow:0 10px 26px -10px rgba(10,44,62,.45);opacity:0;transform:translateY(-4px);transition:opacity .25s,transform .25s;pointer-events:none;}
 .subtoast.show{opacity:1;transform:none;}
 .subtoast b{color:var(--accent-strong);}
+.heat{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:18px;margin-top:10px;}
+@media (max-width:840px){.heat{grid-template-columns:1fr;}}
+.hsub{font-size:13px;color:var(--ink-2);line-height:1.55;margin:4px 0 0;max-width:70ch;}
+#heatChart{display:block;width:100%;height:auto;}
+#heatChart .ax{fill:var(--ink-muted);font-family:"IBM Plex Mono",monospace;font-size:11px;}
+#heatChart .vl{fill:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;text-anchor:middle;}
+#heatChart .grid{stroke:var(--border);stroke-width:1;}
+#heatChart .note{fill:var(--ink-2);font-size:11px;font-weight:600;}
+.hstats{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.hlist{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;}
+.hlist li{font-size:12.5px;color:var(--ink-2);line-height:1.5;padding-left:12px;border-left:3px solid var(--accent);}
+.hlist b{color:var(--ink);}
 summary{cursor:pointer;font-size:12.5px;color:var(--accent);font-weight:600;padding:9px 0 2px;}
 summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .tbl-scroll{overflow-x:auto;margin-top:8px;}
@@ -205,6 +217,33 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <span class="ramp-end" id="rampLo">&mdash;</span>
       <div class="ramp" id="ramp"></div>
       <span class="ramp-end" id="rampHi">&mdash;</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="ptitle">How fast the sea is warming</span>
+    <p class="hsub">Yearly sea-surface temperature of the whole Mediterranean, compared with the 1991&ndash;2020 average. Every year since 2015 has been warmer than that baseline, and the last three each set a new record.</p>
+    <div class="heat">
+      <div>
+        <svg id="heatChart" viewBox="0 0 560 250" role="img" aria-label="Bar chart of Mediterranean sea-surface temperature anomaly by year, 2015 to 2024, rising from +0.30 to +1.20 degrees"></svg>
+        <p class="note" style="margin-top:6px">Source: Copernicus Marine, <i>MEDSEA_OMI_TEMPSAL_sst_area_averaged_anomalies</i> (satellite, reprocessed), annual means of monthly anomalies. The series currently ends in December 2024.</p>
+      </div>
+      <div>
+        <div class="hstats">
+          <div class="tile"><span class="tl">2024 vs normal</span><span class="tv">+1.20<i>&deg;C</i></span></div>
+          <div class="tile"><span class="tl">Hottest month</span><span class="tv">+1.77<i>&deg;C &middot; Aug 2024</i></span></div>
+          <div class="tile"><span class="tl">Trend since 1982</span><span class="tv">+0.33<i>&deg;C/dec</i></span></div>
+          <div class="tile"><span class="tl">Trend 2015&ndash;2024</span><span class="tv">+0.88<i>&deg;C/dec</i></span></div>
+        </div>
+        <span class="ptitle" style="display:block;margin-top:14px">Recent extremes</span>
+        <ul class="hlist">
+          <li><b>2022</b> &mdash; record summer heatwave in the western basin; local anomalies up to +4.6&nbsp;&deg;C, reaching 1,500&nbsp;m deep.</li>
+          <li><b>2023</b> &mdash; intense heatwaves covered 96% of the sea.</li>
+          <li><b>2024</b> &mdash; warmest year on record, 21.32&nbsp;&deg;C mean; 99.8% of the sea hit by at least one heatwave, the most extreme year since 1993.</li>
+          <li><b>2025</b> &mdash; second warmest, 21.21&nbsp;&deg;C; intense heatwaves covered 93% of the sea.</li>
+        </ul>
+        <p class="note" style="margin-top:8px">Extremes from Copernicus Ocean State Report&nbsp;8 and Mercator Ocean annual bulletins. The 2015&ndash;2024 trend is a short window and exaggerates the long-run rate; the 43-year trend is the steadier figure.</p>
+      </div>
     </div>
   </div>
 
@@ -737,6 +776,25 @@ function spotSub(){
   clearTimeout(sub.toastTimer); sub.toastTimer=setTimeout(function(){t.classList.remove("show");},6500);
 }
 scheduleSub(location.hash==="#sub"?800:25000, location.hash==="#sub"?1000:40000);
+
+/* ---- warming timeline (Copernicus OMI, annual mean anomaly vs 1991-2020) ---- */
+(function(){
+  var DATA=[[2015,0.30],[2016,0.26],[2017,0.25],[2018,0.61],[2019,0.28],[2020,0.41],[2021,0.47],[2022,0.67],[2023,0.89],[2024,1.20]];
+  var c=document.getElementById("heatChart"), W=560,H=250,L=42,R=8,T=22,B=28, max=1.4;
+  var y=function(v){return T+(H-T-B)*(1-v/max);}, bw=(W-L-R)/DATA.length;
+  [0,0.5,1.0].forEach(function(g){
+    mk("line",{x1:L,x2:W-R,y1:y(g),y2:y(g),"class":"grid"},c);
+    var t=mk("text",{x:L-6,y:y(g)+4,"class":"ax","text-anchor":"end"},c); t.textContent=(g?"+":"")+g.toFixed(1)+"°";
+  });
+  DATA.forEach(function(d,i){
+    var x=L+i*bw+bw*0.15, w=bw*0.7, col=rampColor(0.15+0.85*d[1]/1.2);
+    var r=mk("rect",{x:x,y:y(d[1]),width:w,height:y(0)-y(d[1]),rx:3,fill:col},c);
+    mk("title",{},r).textContent=d[0]+": +"+d[1].toFixed(2)+" °C vs 1991–2020";
+    var v=mk("text",{x:x+w/2,y:y(d[1])-5,"class":"vl"},c); v.textContent="+"+d[1].toFixed(2);
+    var t=mk("text",{x:x+w/2,y:H-8,"class":"ax","text-anchor":"middle"},c); t.textContent=(i%2&&c.clientWidth<420)?"":"'"+String(d[0]).slice(2);
+  });
+  var n=mk("text",{x:L+2,y:13,"class":"note"},c); n.textContent="°C above the 1991–2020 average";
+})();
 
 renderSubs(); paintMap(); paintBars(); paintDetail(); paintTable();
 </script>
