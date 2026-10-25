@@ -9,20 +9,25 @@ Static site, no build step: `index.html` plus a vendored MapLibre GL JS (`vendor
 
 ## Map
 
-Rendered with MapLibre GL JS from vector data, not a drawn SVG. Ctrl/Cmd + scroll zooms (so the page still scrolls), drag pans, a basin click selects it, and the ranked list flies the map to a basin.
+Rendered with MapLibre GL JS from vector data, not a drawn SVG. Ctrl/Cmd + scroll zooms (so the page still scrolls), drag pans, a basin click selects it, and the ranked list flies the map to a basin. The view covers the broader Mediterranean: the Atlantic approaches, the Black Sea and Sea of Azov, the Sea of Marmara and the head of the Red Sea. Seas outside the eight basins are tinted grey.
 
 - **Basins:** eight limit polygons (IHO-style straight lines between capes) clipped to the Natural Earth 1:10m coastline, so outlines follow the real shore.
-- **Seabed button:** fades the shading to reveal Natural Earth depth bands (200 / 1,000 / 2,000 / 3,000 / 4,000 m). Hovering a basin also reports the depth band under the cursor. The bands are generalised: the 5,109 m Calypso Deep is not resolved.
+- **Measured figures:** each basin's area and mean depth are computed from its polygon and the terrain grid, so they describe what is drawn (the eight areas sum to the ~2.5 million km² of the sea). Maximum depths stay as literature values.
+- **Seabed button:** depth classes (0 to 4,000 m+) from the terrain grid under the basin shading, and the hover tooltip reports the depth under the cursor.
+- **Fun: raise or lower the sea:** a sea-level slider from 2,500 m below today to 200 m above, with presets (Last Ice Age, +10 m, ice-free Earth, a drained Mediterranean). Flooding uses a priority flood, so land only floods where the sea can reach it. It reports land gained or flooded and which of 33 cities the water reaches. It is a toy: today's terrain, no ice or crustal rebound, 4 km cells.
 - **Light and dark** follow the page theme.
 
-`data/geo.js` is generated; edit the limit polygons in `scripts/build_geo.py` and rebuild:
+Data files, both generated:
 
-    pip install shapely
-    python3 scripts/build_geo.py
+- `data/geo.js`: land, basins (with measured area and mean depth) and non-basin water.
+- `data/dem.js` (about 600 KB, fetched when the browser is idle): one PNG on the Web Mercator grid holding the sea-level at which each cell floods and some flags. Elevation and bathymetry come from the AWS/Mapzen terrain tiles ("terrarium", SRTM + GMTED + ETOPO1/GEBCO).
 
-The script downloads the Natural Earth files it needs on first run. It also prints each basin's polygon area. These differ from the literature `area` figures in `index.html` (the eight figures sum to ~1.7 million km² against ~2.5 million km² for the whole sea), which is left as is and flagged for review.
+To change basin limits or the map extent, edit `scripts/build_data.py` and rebuild:
 
-Data: Copernicus Marine, Argo, EMODnet, Natural Earth — sources listed in the page footer.
+    pip install shapely numpy pillow
+    python3 scripts/build_data.py
+
+It downloads the Natural Earth files and terrain tiles it needs on first run and prints each basin's area and mean depth.
 
 ## Keeping data current
 

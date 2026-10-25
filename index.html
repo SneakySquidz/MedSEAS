@@ -63,8 +63,8 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 
 /* map */
 .mapwrap{position:relative;border-radius:13px;overflow:hidden;border:1px solid var(--border);background:var(--sea-void);}
-#map{width:100%;aspect-ratio:2.15/1;min-height:300px;background:var(--sea-void);}
-@media (max-width:600px){#map{aspect-ratio:1.5/1;min-height:0;}
+#map{width:100%;aspect-ratio:2.1/1;min-height:300px;background:var(--sea-void);}
+@media (max-width:600px){#map{aspect-ratio:1.7/1;min-height:0;}
   .bmark .bn{font-size:9.5px;} .bmark .bv{font-size:9px;} .bmark.sm .bn,.bmark.sm .bv{font-size:8.5px;}
   #map.zfar .bv{display:none;}
   .clabel{font-size:7.5px;}}
@@ -93,8 +93,32 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .sill{pointer-events:none;display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:7.5px;font-weight:600;color:var(--ink-muted);text-shadow:0 0 3px var(--halo);}
 .sill i{width:6px;height:6px;border-radius:50%;border:1.2px solid var(--ink-muted);flex:none;}
 #map.zfar .zlo{display:none;}
+#map .city{display:none;pointer-events:none;align-items:center;gap:4px;white-space:nowrap;font-size:8.5px;font-weight:600;color:var(--ink);text-shadow:0 0 3px var(--halo),0 0 3px var(--halo);}
+#map.cities-on .city{display:flex;}
+#map.zfar .city span{display:none;}
+.city i{width:7px;height:7px;border-radius:50%;background:var(--surface);border:1.5px solid var(--ink-2);flex:none;box-shadow:0 0 0 1px var(--halo);}
+.city.wet i{background:#d1342b;border-color:#fff;}
+.city.wet span{color:#b3261e;}
+.fun{margin-top:14px;border-top:1px dashed var(--border);padding-top:13px;}
+.funbtn,.pbtn{border:1px solid var(--border);background:var(--surface-2);color:var(--accent-strong);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:99px;cursor:pointer;}
+.funbtn:hover,.pbtn:hover{border-color:var(--accent);}
+.funbtn[aria-expanded="true"],.pbtn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.funbtn:focus-visible,.pbtn:focus-visible,#lvl:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.funbody{margin-top:13px;display:flex;flex-direction:column;gap:11px;}
+.funbody[hidden]{display:none;}
+.funrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.funlabel{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;}
+.funout{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:22px;color:var(--accent-strong);min-width:7.5ch;font-variant-numeric:tabular-nums;}
+#lvl{flex:1 1 260px;min-width:0;accent-color:var(--accent);height:28px;cursor:pointer;}
+.presets{display:flex;gap:6px;flex-wrap:wrap;}
+.pbtn{padding:6px 12px;font-size:12px;}
+.funnote{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.55;max-width:80ch;}
+.funstats{display:flex;gap:8px;flex-wrap:wrap;}
+.funstats .tile{min-width:130px;}
+.funstats .tile.wide{flex:1 1 280px;}
+.funstats .qt{font-size:12.5px;color:var(--ink-2);line-height:1.5;display:block;margin-top:3px;}
 .zbtn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-.bkey{position:absolute;right:10px;bottom:26px;display:flex;flex-wrap:wrap;align-items:center;gap:3px 9px;max-width:calc(100% - 20px);
+.bkey{position:absolute;right:10px;bottom:34px;display:flex;flex-wrap:wrap;align-items:center;gap:3px 9px;max-width:calc(100% - 20px);
   background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 10px;font-size:10px;color:var(--ink-2);box-shadow:0 3px 10px -4px rgba(10,44,62,.4);}
 .bkey[hidden]{display:none;}
 .bkey b{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);}
@@ -229,6 +253,19 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <div class="ramp" id="ramp"></div>
       <span class="ramp-end" id="rampHi">&mdash;</span>
     </div>
+    <div class="fun">
+      <button class="funbtn" id="funBtn" type="button" aria-expanded="false" aria-controls="funBody">Fun: raise or lower the sea</button>
+      <div class="funbody" id="funBody" hidden>
+        <div class="funrow">
+          <label for="lvl" class="funlabel">Sea level</label>
+          <output id="lvlOut" class="funout" for="lvl">0 m</output>
+          <input type="range" id="lvl" min="-100" max="100" step="0.25" value="0" aria-valuetext="today's sea level">
+        </div>
+        <div class="presets" id="presets" role="group" aria-label="Sea-level presets"></div>
+        <p class="funnote" id="funNote" aria-live="polite"></p>
+        <div class="funstats" id="funStats"></div>
+      </div>
+    </div>
   </div>
 
   <div class="panel">
@@ -320,9 +357,15 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       </div>
       <div class="pcard">
         <span class="pn">Natural Earth</span>
-        <span class="pw">The coastline and the seabed depth bands drawn here &mdash; public-domain vectors, rendered with MapLibre GL JS.</span>
-        <span class="pd">ne_10m_land &middot; ne_10m_bathymetry (200&ndash;4,000 m) &middot; Web Mercator</span>
+        <span class="pw">The coastline drawn here &mdash; public-domain vector shorelines, rendered with MapLibre GL JS.</span>
+        <span class="pd">ne_10m_land &middot; Web Mercator</span>
         <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">naturalearthdata.com &rarr;</a>
+      </div>
+      <div class="pcard">
+        <span class="pn">Terrain Tiles (AWS Open Data)</span>
+        <span class="pw">Land elevation and seabed depth behind the Seabed view, the measured areas and mean depths, and the sea-level toggle.</span>
+        <span class="pd">&ldquo;terrarium&rdquo; tiles, z6 &middot; SRTM, GMTED2010, ETOPO1/GEBCO &middot; Mapzen</span>
+        <a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">registry.opendata.aws &rarr;</a>
       </div>
       <div class="pcard">
         <span class="pn">Basin monographs</span>
@@ -336,7 +379,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
   <footer>
     <p class="note"><b>Reading the numbers.</b> Summer and winter SST are typical open-water seasonal means, not coastal extremes &mdash; shallow corners of the northern Adriatic and the Levant run several degrees hotter in August. Salinity is surface salinity in practical salinity units (&asymp; g/kg); the Aegean mean hides a steep gradient, from brackish Black Sea outflow in the north (below 33) to over 39 in the Cretan Sea. The Calypso Deep figure is the 2020 direct measurement of 5,109 m &plusmn;1 m from the submersible <i>Limiting Factor</i>, superseding older 5,121&ndash;5,267 m sonar estimates; the litter found there was logged in a separate 2025 study of video filmed on that same dive. The map's &ldquo;Balearic Sea&rdquo; follows the broad sense of that name &mdash; Britannica treats it as a synonym for the Algerian/Alg&eacute;ro-Proven&ccedil;al Basin, the whole open basin between Algeria, France and the Balearic Islands, not just the strip around Mallorca &mdash; so its area is the sourced ~0.85 million km&sup2; western-basin total minus the separately-mapped Alboran, Ligurian and Tyrrhenian. Basin areas otherwise vary with where you draw the boundaries; all are given to the nearest thousand km&sup2;.</p>
     <p class="note"><b>Figures marked <span class="est">est.</span></b> are interpolated across a documented gradient rather than measured basin by basin. <i>Warming rate:</i> in the multi-decade satellite SST record, the Balearic, Tyrrhenian, Adriatic and northern Ionian trend fastest at 0.4&ndash;0.5 &deg;C/decade, while the Aegean and northern Levantine trend highest basin-wide, up to 0.6 &deg;C/decade (Copernicus Ocean State Report); the Alboran and Ligurian sit below that band. These are long-run averages &mdash; Argo float data for 2012&ndash;2025 alone show still steeper warming across the whole basin (up to 0.8&ndash;0.9 &deg;C/decade near the surface in the western Mediterranean and Ionian), reflecting how much faster the sea has warmed in just the last decade. <i>Net evaporation</i> is evaporation minus rainfall, and each sub-basin carries its parent basin&rsquo;s average: 0.88 mm/day (&asymp;0.32 m a year) over the western Mediterranean and 1.52 mm/day (&asymp;0.55 m a year) over the eastern, where drought since the late 1990s has intensified it. Comparable per-sub-basin figures are not published; the Adriatic in particular is so diluted by rivers that its real freshwater balance is far less negative than the eastern average suggests. Rivers replace only about a third of what the sea loses to evaporation &mdash; the Atlantic inflow at Gibraltar makes up the deficit, and that imbalance is why the sea gets saltier from west to east. <i>Plankton layer:</i> the deep chlorophyll maximum is measured at about 30 m in the Alboran Sea and 120 m in the easternmost Levantine; the basins between are placed along that west-to-east gradient. <i>Posidonia meadows</i> is a five-step presence rating, not an area: <i>Posidonia oceanica</i> is endemic to the Mediterranean and 1,224,707 ha of it have been mapped basin-wide (510,715 ha west, 713,992 ha east), but per-basin areas are not published on a comparable footing. The ratings follow the documented range limits &mdash; the Alboran is the species' western edge, meadows are rare or absent in the low-salinity northern Adriatic, and they stop at a sharp border in the Levantine, where records from the Syrian, Lebanese and Israeli coasts are now considered erroneous. Meadows have contracted by roughly a third in the last fifty years. <i>Biggest tide</i> is the largest spring range observed anywhere in the basin, not a basin-wide average &mdash; the Ionian figure is the Gulf of Gab&egrave;s, the Adriatic figure is the head of the gulf at Venice, and most of the sea sits nearer 0.2&ndash;0.3 m.</p>
-    <p class="note"><b>Basin outlines</b> follow the conventional hydrographic divisions at the sills &mdash; Gibraltar, the Sicily Channel, Otranto, the Dardanelles and the Cretan Arc &mdash; set as straight lines between capes, the convention the IHO uses, then clipped to the Natural Earth 1:10m coastline, simplified. Seabed bands are Natural Earth bathymetry at 200, 1,000, 2,000, 3,000 and 4,000 m; they are generalised, so the deepest holes, including the 5,109 m Calypso Deep, are not resolved. The shaded figures are literature values for each basin, not measurements of the outlined polygon, so the outlined areas can differ from the area figures. The map is thematic, not navigational. Compiled September 2026.</p>
+    <p class="note"><b>Basin outlines</b> follow the conventional hydrographic divisions at the sills &mdash; Gibraltar, the Sicily Channel, Otranto, the Dardanelles and the Cretan Arc &mdash; set as straight lines between capes, the convention the IHO uses, then clipped to the Natural Earth 1:10m coastline, simplified. The map also shows the surrounding seas (Atlantic, Black Sea, Sea of Marmara, Red Sea) in grey, outside the eight basins. <b>Area and mean depth</b> are measured from the outlined polygons and the terrain grid, so they describe what is drawn; they can differ from published figures for the same basin names, which use other limits. Maximum depths are literature values. The terrain grid is the AWS/Mapzen &ldquo;terrarium&rdquo; terrain tiles (SRTM, GMTED and ETOPO1/GEBCO), averaged to about 4&nbsp;km per cell, so depths under the cursor are approximate. <b>Sea-level toggle:</b> a toy built on today&rsquo;s terrain &mdash; no ice-sheet or crustal rebound, no erosion or sediment, no tides &mdash; and city flooding is judged on 4&nbsp;km cells, so low coastal cities flood later here than in reality. The map is thematic, not navigational. Compiled September 2026.</p>
   </footer>
 </div>
 
@@ -353,35 +396,35 @@ var basins=[
  {id:"alboran",name:"Alboran Sea",sm:true,
   desc:"The Atlantic's doorway. A jet of cool, fresh ocean water pours through Gibraltar and coils into two standing gyres, keeping this the coldest and least salty corner of the sea.",
   quirk:"Every drop of Mediterranean water entered through this basin. It is also the one stretch that blooms like a real ocean \u2014 the plankton layer sits just 30 m down, against 120 m at the far eastern end.",
-  summer:22.5,winter:15.5,salinity:36.5,avgDepth:445,maxDepth:1500,warming:0.30,area:53000,dcm:30,tide:0.3,posidonia:1},
+  summer:22.5,winter:15.5,salinity:36.5,maxDepth:1500,warming:0.30,dcm:30,tide:0.3,posidonia:1},
  {id:"balearic",name:"Balearic Sea",
   desc:"The Mediterranean's broadest open basin, running from the Algerian current to the Balearic Islands and the Gulf of Lion. In that northern corner, winter mistral storms make it one of the few places on Earth where surface water sinks all the way to the seafloor.",
   quirk:"A single seagrass meadow off Formentera, within this basin, has been cloning itself for an estimated 80,000 to 200,000 years and stretches 15 km. It is arguably the oldest living organism on the planet.",
-  summer:25.5,winter:13.5,salinity:37.8,avgDepth:1050,maxDepth:2800,warming:0.45,area:507000,dcm:50,tide:0.25,posidonia:4},
+  summer:25.5,winter:13.5,salinity:37.8,maxDepth:2800,warming:0.45,dcm:50,tide:0.25,posidonia:4},
  {id:"ligurian",name:"Ligurian Sea",sm:true,
   desc:"A small, steep basin in the crook of the Riviera. Deep water rises close to shore here, feeding the plankton blooms that draw fin whales in every summer.",
   quirk:"The Pelagos Sanctuary, 87,500 km\u00b2 of protected water centred on this basin, is the Mediterranean's only large marine-mammal reserve \u2014 and the reason fin whales still summer within sight of Monaco.",
-  summer:24.0,winter:13.5,salinity:38.1,avgDepth:1200,maxDepth:2850,warming:0.40,area:15000,dcm:50,tide:0.3,posidonia:3},
+  summer:24.0,winter:13.5,salinity:38.1,maxDepth:2850,warming:0.40,dcm:50,tide:0.3,posidonia:3},
  {id:"tyrrhenian",name:"Tyrrhenian Sea",
   desc:"Boxed in by Italy, Sicily, Sardinia and Corsica, and deep almost everywhere. Its water column is among the most stable in the sea.",
   quirk:"Marsili, 70 km long and rising 3,000 m off the seabed, is the largest volcano in Europe \u2014 bigger than Etna. Its crater sits 450 m below the surface and nothing on the water above gives it away.",
-  summer:25.0,winter:14.0,salinity:38.1,avgDepth:2000,maxDepth:3785,warming:0.45,area:275000,dcm:70,tide:0.4,posidonia:4},
+  summer:25.0,winter:14.0,salinity:38.1,maxDepth:3785,warming:0.45,dcm:70,tide:0.4,posidonia:4},
  {id:"adriatic",name:"Adriatic Sea",
   desc:"Shallow enough to wade far offshore in the north, then plunging past 1,200 m in the south. River water and winter cold give it the widest seasonal swing of any basin.",
   quirk:"It carries the Mediterranean's second-biggest tides \u2014 about 1.2 m at the head of the gulf, which, stacked on a storm surge, is what floods St Mark's Square \u2014 in a sea where 20 to 30 cm is the norm.",
-  summer:25.0,winter:11.5,salinity:38.3,avgDepth:252,maxDepth:1233,warming:0.50,area:139000,dcm:40,tide:1.2,posidonia:2},
+  summer:25.0,winter:11.5,salinity:38.3,maxDepth:1233,warming:0.50,dcm:40,tide:1.2,posidonia:2},
  {id:"ionian",name:"Ionian Sea",
   desc:"The abyss of the Mediterranean. The Hellenic Trench drops to the Calypso Deep, deeper than anywhere else in the sea.",
   quirk:"Its floor, 5,109 m down, is the lowest point in the Mediterranean. Video from the 2020 dive that measured it, analysed in a 2025 study, shows 167 objects on the seafloor \u2014 88% of the identified litter plastic \u2014 one of the highest litter densities ever recorded in the deep sea.",
-  summer:26.0,winter:16.0,salinity:38.7,avgDepth:2600,maxDepth:5109,warming:0.40,area:169000,dcm:90,tide:2.0,posidonia:4},
+  summer:26.0,winter:16.0,salinity:38.7,maxDepth:5109,warming:0.40,dcm:90,tide:2.0,posidonia:4},
  {id:"aegean",name:"Aegean Sea",
   desc:"Thousands of islands and a sharp north-south split: brackish Black Sea outflow chills the north, while the Cretan Sea in the south is warm, salty and over 3,500 m deep.",
   quirk:"Nobody agrees how many islands it holds \u2014 estimates run from about 1,200 to 6,000 depending on the minimum size counted. Only around 220 of them have anyone living on them.",
-  summer:24.5,winter:12.5,salinity:38.6,avgDepth:570,maxDepth:3543,warming:0.55,area:214000,dcm:80,tide:0.3,posidonia:3},
+  summer:24.5,winter:12.5,salinity:38.6,maxDepth:3543,warming:0.55,dcm:80,tide:0.3,posidonia:3},
  {id:"levantine",name:"Levantine Sea",
   desc:"The hot, salty end of the line. Relentless evaporation leaves the saltiest surface water in the Mediterranean, which then sinks and begins the long return journey west.",
   quirk:"The clearest and emptiest water in the sea \u2014 a Secchi disc once stayed visible 53 m down. It is also the front line of the Suez invasion that has pushed the Mediterranean past 1,000 alien species.",
-  summer:28.0,winter:17.5,salinity:39.2,avgDepth:1500,maxDepth:4384,warming:0.50,area:320000,dcm:120,tide:0.4,posidonia:1}
+  summer:28.0,winter:17.5,salinity:39.2,maxDepth:4384,warming:0.50,dcm:120,tide:0.4,posidonia:1}
 ];
 basins.forEach(function(b){ b.range=+(b.summer-b.winter).toFixed(1); });
 /* net evaporation (E - P), parent-basin averages: west 0.88 mm/day, east 1.52 mm/day */
@@ -434,30 +477,37 @@ var GEO=window.MEDGEO, byId={};
 basins.forEach(function(b){byId[b.id]=b;});
 GEO.basins.features.forEach(function(f){
   var b=byId[f.properties.id]; b.bounds=f.properties.bounds; b.lab=f.properties.label; b.feature=f;
+  /* measured from the outlined polygons and the terrain grid, so the figures match what the map shows */
+  b.area=f.properties.area_km2; b.avgDepth=f.properties.mean_depth_m;
 });
 function div(cls,text){var d=document.createElement("div");d.className=cls;if(text)d.textContent=text;return d;}
 function pin(el,lnglat,anchor){return new maplibregl.Marker({element:el,anchor:anchor||"center"}).setLngLat(lnglat).addTo(map);}
+function merc(lat){return Math.asinh(Math.tan(lat*Math.PI/180));}
+function unmerc(y){return Math.atan(Math.sinh(y))*180/Math.PI;}
 
-var HOME=[[-7.4,29.6],[38.0,46.0]];
+/* the whole broader Mediterranean: Atlantic approaches to the Black Sea, Red Sea head to the Alps */
+var HOME=[[-10.8,27.0],[44.5,47.6]];
 var mapEl=document.getElementById("map"), mapReady=false, hoverId=null;
 var map=new maplibregl.Map({
   container:mapEl,
   style:{version:8,sources:{},layers:[{id:"sea",type:"background",paint:{"background-color":"#d7ecf5"}}]},
-  bounds:HOME, maxBounds:[[-10,25],[39,51]], maxZoom:9,
+  bounds:HOME, maxBounds:[[GEO.bounds[0],GEO.bounds[1]],[GEO.bounds[2],GEO.bounds[3]]], maxZoom:9,
   cooperativeGestures:true, dragRotate:false, pitchWithRotate:false, renderWorldCopies:false,
   attributionControl:false, fadeDuration:0
 });
 map.touchZoomRotate.disableRotation();
-map.addControl(new maplibregl.AttributionControl({compact:true,customAttribution:"Natural Earth · MapLibre"}),"bottom-right");
+map.addControl(new maplibregl.AttributionControl({compact:true,customAttribution:"Natural Earth · Terrain Tiles (SRTM, GEBCO) · MapLibre"}),"bottom-right");
 
 /* labels are DOM markers: crisp text, no font server, styled with the page's own CSS */
-var countries={"Spain":[-3.5,39.6],"France":[2.4,45.4],"Italy":[12.6,42.7],"Croatia":[16.2,44.6],"Greece":[22.0,39.5],
- "Türkiye":[32.5,38.6],"Syria":[36.9,34.6],"Egypt":[29.8,30.4],"Libya":[16.0,30.8],"Tunisia":[9.3,34.5],
- "Algeria":[3.0,34.3],"Morocco":[-5.3,33.6]};
+var countries={"Spain":[-3.5,39.6],"Portugal":[-8.0,39.8],"France":[2.4,45.4],"Italy":[12.6,42.7],"Croatia":[16.2,44.6],
+ "Bulgaria":[25.3,42.8],"Romania":[25.5,45.7],"Ukraine":[32.0,47.2],"Georgia":[43.0,42.0],"Greece":[22.0,39.5],
+ "Türkiye":[33.8,38.9],"Syria":[38.3,35.2],"Egypt":[29.5,27.9],"Libya":[17.0,28.2],"Tunisia":[9.3,34.5],
+ "Algeria":[3.0,34.3],"Morocco":[-5.3,33.6],"Saudi Arabia":[38.3,27.8]};
 var islands={"Sicily":[14.0,37.55],"Sardinia":[9.0,40.0],"Corsica":[9.1,42.2],"Crete":[24.9,35.25],
- "Cyprus":[33.1,35.0],"Balearics":[2.9,39.6],"Rhodes":[28.0,36.2]};
-var others={"Black Sea":[34.0,43.5],"Sea of Marmara":[28.2,40.75],"Atlantic":[-8.2,35.6]};
-var sills={"Gibraltar":[-5.6,35.95],"Sicily Channel":[11.6,37.4],"Otranto":[18.9,40.1],"Dardanelles":[26.4,40.2],"Suez":[32.3,31.25]};
+ "Cyprus":[33.1,35.0],"Balearics":[2.9,39.6],"Rhodes":[28.0,36.2],"Crimea":[34.2,45.2],"Lebanon":[36.4,33.9],"Jordan":[37.0,31.2]};
+var others={"Black Sea":[34.5,43.0],"Sea of Azov":[37.3,46.0],"Sea of Marmara":[28.2,40.75],"Atlantic Ocean":[-8.8,35.4],
+ "Red Sea":[35.6,27.4],"Gulf of Suez":[32.65,28.4]};
+var sills={"Gibraltar":[-5.6,35.95],"Sicily Channel":[11.6,37.4],"Otranto":[18.9,40.1],"Dardanelles":[26.4,40.2],"Bosphorus":[29.05,41.15],"Suez":[32.3,31.25]};
 function addLabels(set,cls){Object.keys(set).forEach(function(k){pin(div(cls,k),set[k]);});}
 addLabels(countries,"clabel"); addLabels(islands,"ilabel zlo"); addLabels(others,"olabel zlo");
 Object.keys(sills).forEach(function(k){
@@ -487,48 +537,141 @@ document.getElementById("zreset").addEventListener("click",function(){homeView(t
 map.on("resize",syncZoomLimits);
 map.on("zoom",function(){ mapEl.classList.toggle("zfar",map.getZoom()<homeZoom+0.45); });
 
-/* ---- seabed relief: Natural Earth depth bands under the basin shading ---- */
-var seabed=false;
-var BATHY_LIGHT=["#d2e7f2","#bedaea","#a7cbe0","#8fb9d3","#76a5c4"];
-var BATHY_DARK=["#0b2432","#091e2b","#071823","#05131c","#030e14"];
-var BATHY_STOPS=[200,1000,2000,3000,4000];
-function bathyRamp(dark){
-  var cols=dark?BATHY_DARK:BATHY_LIGHT, e=["interpolate",["linear"],["get","depth"]];
-  BATHY_STOPS.forEach(function(d,i){e.push(d,cols[i]);});
-  return e;
+/* ---- terrain grid (data/dem.js, fetched when the browser is idle) ----
+   One PNG on the Web Mercator grid: red = the sea level that first covers the cell (the depth, for sea),
+   green = flags (1 sea today, 2 open ocean outside the Mediterranean). Built by scripts/build_data.py. */
+var dem=null, demWaiters=[], demLoading=false;
+function withDem(cb){
+  if(dem){ cb(dem); return; }
+  demWaiters.push(cb);
+  if(demLoading) return;
+  demLoading=true;
+  var s=document.createElement("script"); s.src="data/dem.js";
+  s.onerror=function(){ demLoading=false; demWaiters.length=0; };
+  s.onload=function(){
+    var D=window.MEDDEM, img=new Image();
+    img.onload=function(){
+      var c=document.createElement("canvas"); c.width=D.w; c.height=D.h;
+      var x=c.getContext("2d",{willReadFrequently:true}); x.drawImage(img,0,0);
+      var px=x.getImageData(0,0,D.w,D.h).data, n=D.w*D.h, F=new Uint8Array(n), K=new Uint8Array(n), i;
+      for(i=0;i<n;i++){ F[i]=px[i*4]; K[i]=px[i*4+1]; }
+      var lut=new Float32Array(256);
+      for(i=0;i<256;i++){ var t=(i-128)/127.5; lut[i]=(t<0?-1:1)*D.range*t*t; }
+      var d={w:D.w,h:D.h,F:F,K:K,lut:lut,W:D.bounds[0],S:D.bounds[1],E:D.bounds[2],N:D.bounds[3]};
+      d.mN=merc(d.N); d.mS=merc(d.S);
+      d.rowKm2=new Float64Array(d.h);
+      for(var y=0;y<d.h;y++){
+        var lat=unmerc(d.mN-(y+0.5)/d.h*(d.mN-d.mS)), cw=(d.E-d.W)/360*40075.017/d.w*Math.cos(lat*Math.PI/180);
+        d.rowKm2[y]=cw*cw;
+      }
+      dem=d; demWaiters.splice(0).forEach(function(f){f(d);});
+    };
+    img.src=D.png;
+  };
+  document.head.appendChild(s);
 }
+function demCell(lng,lat){
+  if(!dem) return -1;
+  var x=Math.floor((lng-dem.W)/(dem.E-dem.W)*dem.w), y=Math.floor((dem.mN-merc(lat))/(dem.mN-dem.mS)*dem.h);
+  return (x<0||y<0||x>=dem.w||y>=dem.h)?-1:y*dem.w+x;
+}
+function demCoords(){ return [[dem.W,dem.N],[dem.E,dem.N],[dem.E,dem.S],[dem.W,dem.S]]; }
+function isDark(){ return lum("rgb("+hex2rgb(cssVar("--bg")).join(",")+")")<0.3; }
 function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+function mapLayerOk(id){ return mapReady && map.getLayer(id); }
+
+/* ---- seabed relief: depth classes from the terrain grid, drawn under the basin shading ---- */
+var seabed=false, reliefCv=document.createElement("canvas"), reliefDone=false;
+var RELIEF_LIGHT=["#d7ecf5","#c4e0ee","#aed2e6","#96c2db","#7eafcb","#6498b9"];
+var RELIEF_DARK=["#0a2432","#0b2838","#0a2231","#081c29","#061621","#04101a"];
+var DEPTH_CLASS=[200,1000,2000,3000,4000];
+function depthClass(d){ var i=0; while(i<DEPTH_CLASS.length&&d>=DEPTH_CLASS[i]) i++; return i; }
+function drawRelief(){
+  var d=dem, S=2, W2=d.w*S, H2=d.h*S, i, x, y;
+  var pal=(isDark()?RELIEF_DARK:RELIEF_LIGHT).map(function(h){return hex2rgb(h);});
+  var D=new Float32Array(d.w*d.h), M=new Uint8Array(d.w*d.h);
+  for(i=0;i<D.length;i++){ if(d.K[i]&1){ D[i]=-d.lut[d.F[i]]; M[i]=1; } }
+  /* grow the sea by one cell so the relief reaches the (finer) vector coastline */
+  for(y=0;y<d.h;y++) for(x=0;x<d.w;x++){
+    i=y*d.w+x; if(M[i]) continue;
+    var s=0,c=0;
+    if(x>0&&M[i-1]){s+=D[i-1];c++;} if(x<d.w-1&&M[i+1]){s+=D[i+1];c++;}
+    if(y>0&&M[i-d.w]){s+=D[i-d.w];c++;} if(y<d.h-1&&M[i+d.w]){s+=D[i+d.w];c++;}
+    if(c){ D[i]=s/c; M[i]=2; }
+  }
+  reliefCv.width=W2; reliefCv.height=H2;
+  var ctx=reliefCv.getContext("2d"), im=ctx.createImageData(W2,H2), o=im.data;
+  for(var Y=0;Y<H2;Y++){
+    var v=(Y+0.5)/S-0.5, y0=Math.max(0,Math.floor(v)), y1=Math.min(d.h-1,y0+1), fy=Math.min(1,Math.max(0,v-y0));
+    for(var X=0;X<W2;X++){
+      var u=(X+0.5)/S-0.5, x0=Math.max(0,Math.floor(u)), x1=Math.min(d.w-1,x0+1), fx=Math.min(1,Math.max(0,u-x0));
+      var a=y0*d.w+x0, b=y0*d.w+x1, c2=y1*d.w+x0, e=y1*d.w+x1;
+      var wa=M[a]?(1-fx)*(1-fy):0, wb=M[b]?fx*(1-fy):0, wc=M[c2]?(1-fx)*fy:0, we=M[e]?fx*fy:0, ws=wa+wb+wc+we;
+      if(ws<0.3) continue;
+      var dep=(D[a]*wa+D[b]*wb+D[c2]*wc+D[e]*we)/ws, col=pal[depthClass(dep)], k=(Y*W2+X)*4;
+      o[k]=col[0]; o[k+1]=col[1]; o[k+2]=col[2]; o[k+3]=255;
+    }
+  }
+  ctx.putImageData(im,0,0);
+  reliefDone=true;
+}
+function refreshCanvas(id){
+  var src=map.getSource(id);
+  if(!src) return;
+  if(!src.play){ setTimeout(function(){ refreshCanvas(id); },50); return; }   /* canvas source still loading */
+  src.play(); src.pause(); map.triggerRepaint();
+}
+function ensureCanvasSources(){
+  if(map.getSource("relief")) return;
+  map.addSource("relief",{type:"canvas",canvas:reliefCv,coordinates:demCoords(),animate:false});
+  map.addLayer({id:"relief",type:"raster",source:"relief",paint:{"raster-opacity":seabed?1:0,"raster-fade-duration":0,"raster-resampling":"linear"}},"basins-fill");
+  floodCv.width=dem.w; floodCv.height=dem.h;
+  map.addSource("flood",{type:"canvas",canvas:floodCv,coordinates:demCoords(),animate:false});
+  map.addLayer({id:"flood",type:"raster",source:"flood",paint:{"raster-opacity":1,"raster-fade-duration":0,"raster-resampling":"linear"}});
+  map.addLayer({id:"coast-ghost",type:"line",source:"land",layout:{"visibility":"none"},
+    paint:{"line-color":cssVar("--ink"),"line-width":0.9,"line-opacity":0.55,"line-dasharray":[2,2]}});
+}
+function applySeabed(){
+  if(!mapReady||!dem) return;
+  ensureCanvasSources();
+  if(!reliefDone){ drawRelief(); refreshCanvas("relief"); }
+  map.setPaintProperty("relief","raster-opacity",seabed?1:0);
+  map.setPaintProperty("basins-fill","fill-opacity",seabed?0.28:0.9);
+}
+var key=document.createElement("div"); key.className="bkey"; key.hidden=true;
+key.innerHTML='<b>Seabed</b>'+["0–200","200–1,000","1,000–2,000","2,000–3,000","3,000–4,000","4,000+"].map(function(t){return '<span><i></i>'+t+'</span>';}).join("")+'<small>metres</small>';
+document.querySelector(".mapwrap").appendChild(key);
+var seaBtn=document.getElementById("zseabed");
+seaBtn.addEventListener("click",function(){
+  seabed=!seabed; seaBtn.setAttribute("aria-pressed",seabed); seaBtn.classList.toggle("on",seabed); key.hidden=!seabed;
+  if(seabed&&!dem){ seaBtn.textContent="Loading…"; }
+  withDem(function(){ seaBtn.textContent="Seabed"; applySeabed(); });
+});
+
+/* ---- theme ---- */
 function applyTheme(){
   if(!mapReady) return;
-  var dark=lum("rgb("+hex2rgb(cssVar("--bg")).join(",")+")")<0.3;
+  var dark=isDark();
   map.setPaintProperty("sea","background-color",cssVar("--sea-void"));
-  map.setPaintProperty("bathy","fill-color",bathyRamp(dark));
+  map.setPaintProperty("context","fill-color",cssVar("--ink-muted"));
   map.setPaintProperty("land","fill-color",cssVar("--land"));
   map.setPaintProperty("coast","line-color",cssVar("--land-line"));
   map.setPaintProperty("basin-edge","line-color",cssVar("--halo"));
   map.setPaintProperty("basin-sel","line-color",cssVar("--accent-strong"));
   map.setPaintProperty("basin-sel-case","line-color",cssVar("--halo"));
   map.setPaintProperty("basin-hover","fill-color",dark?"#ffffff":"#06202c");
-  var swatches=[cssVar("--sea-void")].concat(dark?BATHY_DARK:BATHY_LIGHT);
-  document.querySelectorAll(".bkey i").forEach(function(el,i){el.style.background=swatches[i];});
+  var sw=dark?RELIEF_DARK:RELIEF_LIGHT;
+  document.querySelectorAll(".bkey i").forEach(function(el,i){el.style.background=sw[i];});
+  if(dem){ reliefDone=false; if(seabed) applySeabed(); if(map.getLayer("coast-ghost")) map.setPaintProperty("coast-ghost","line-color",cssVar("--ink")); if(level!==0) drawLevel(); }
 }
 try{ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyTheme); }catch(e){}
 new MutationObserver(applyTheme).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
 
-var key=document.createElement("div"); key.className="bkey"; key.hidden=true;
-key.innerHTML='<b>Seabed</b>'+["0\u2013200","200\u20131,000","1,000\u20132,000","2,000\u20133,000","3,000\u20134,000","4,000+"].map(function(t){return '<span><i></i>'+t+'</span>';}).join("")+'<small>metres</small>';
-document.querySelector(".mapwrap").appendChild(key);
-var seaBtn=document.getElementById("zseabed");
-seaBtn.addEventListener("click",function(){
-  seabed=!seabed; seaBtn.setAttribute("aria-pressed",seabed); seaBtn.classList.toggle("on",seabed); key.hidden=!seabed;
-  if(mapReady) map.setPaintProperty("basins-fill","fill-opacity",seabed?0.28:0.9);
-});
-
 map.on("load",function(){
-  map.addSource("land",{type:"geojson",data:GEO.land});
-  map.addSource("basins",{type:"geojson",data:GEO.basins});
-  map.addSource("bathy",{type:"geojson",data:GEO.bathy});
-  map.addLayer({id:"bathy",type:"fill",source:"bathy",paint:{"fill-color":"#cfe6f1","fill-antialias":false}});
+  map.addSource("land",{type:"geojson",data:GEO.land,tolerance:0.1});
+  map.addSource("basins",{type:"geojson",data:GEO.basins,tolerance:0.1});
+  map.addSource("context",{type:"geojson",data:GEO.context,tolerance:0.1});
+  map.addLayer({id:"context",type:"fill",source:"context",paint:{"fill-color":"#6d8fa0","fill-opacity":0.2}});
   map.addLayer({id:"basins-fill",type:"fill",source:"basins",paint:{"fill-color":"#999999","fill-opacity":seabed?0.28:0.9}});
   map.addLayer({id:"basin-hover",type:"fill",source:"basins",filter:["==",["get","id"],""],paint:{"fill-color":"#06202c","fill-opacity":0.14}});
   map.addLayer({id:"basin-edge",type:"line",source:"basins",paint:{"line-color":"#ffffff","line-opacity":0.5,"line-width":1.2},layout:{"line-join":"round"}});
@@ -537,12 +680,13 @@ map.on("load",function(){
   map.addLayer({id:"land",type:"fill",source:"land",paint:{"fill-color":"#f1ebdd"}});
   map.addLayer({id:"coast",type:"line",source:"land",paint:{"line-color":"#cbbb99","line-width":0.8},layout:{"line-join":"round"}});
   mapReady=true; applyTheme(); syncZoomLimits(); paintMap();
+  if(dem){ applySeabed(); if(level!==0) drawLevel(); }
 
   map.on("mousemove","basins-fill",function(e){
     var id=e.features[0].properties.id;
     if(id!==hoverId){ hoverId=id; map.setFilter("basin-hover",["==",["get","id"],id]); }
     map.getCanvas().style.cursor="pointer";
-    showTip(byId[id],e.originalEvent,seabedAt(e.point));
+    showTip(byId[id],e.originalEvent,seabedAt(e.lngLat));
   });
   map.on("mouseleave","basins-fill",function(){
     hoverId=null; map.setFilter("basin-hover",["==",["get","id"],""]);
@@ -552,12 +696,125 @@ map.on("load",function(){
   map.on("movestart",function(){ tip.style.display="none"; });
 });
 
-/* depth class under the cursor, from the (cumulative) Natural Earth bands */
-function seabedAt(pt){
-  var fs=map.queryRenderedFeatures(pt,{layers:["bathy"]}), d=0;
-  fs.forEach(function(f){ if(f.properties.depth>d) d=f.properties.depth; });
-  return d?"deeper than "+fN(d)+" m":"shelf, under 200 m";
+/* depth under the cursor, from the terrain grid (about 4 km per cell) */
+function seabedAt(ll){
+  var i=demCell(ll.lng,ll.lat);
+  if(i<0||!(dem.K[i]&1)) return "";
+  var d=-dem.lut[dem.F[i]];
+  return d<5?"shelf, a few metres":"about "+fN(Math.round(d/10)*10)+" m deep";
 }
+withDemIdle();
+function withDemIdle(){
+  var go=function(){ try{ if(navigator.connection&&navigator.connection.saveData) return; }catch(e){} withDem(function(){ if(mapReady) applySeabed(); }); };
+  if("requestIdleCallback" in window) requestIdleCallback(go,{timeout:6000}); else setTimeout(go,2500);
+}
+
+/* ---- fun: raise or lower the sea ----
+   A cell is sea at level L when its flood level (red channel) is at or below L, so land only floods where the
+   sea can actually reach it, and inland hollows (Dead Sea, Qattara) stay dry until the rim is overtopped.
+   Today's coast is the vector map; only cells whose state changed are painted. */
+var level=0, floodCv=document.createElement("canvas"), OCEAN_FLOOR=-130;
+var CITIES=[["Venice",12.34,45.44],["Ravenna",12.20,44.42],["Trieste",13.77,45.65],["Genoa",8.93,44.41],["Nice",7.27,43.70],
+ ["Marseille",5.37,43.30],["Barcelona",2.17,41.39],["Valencia",-0.38,39.47],["Málaga",-4.42,36.72],["Seville",-5.99,37.39],
+ ["Lisbon",-9.14,38.72],["Tangier",-5.80,35.77],["Algiers",3.06,36.75],["Tunis",10.18,36.81],["Tripoli",13.19,32.89],
+ ["Benghazi",20.07,32.12],["Alexandria",29.92,31.20],["Port Said",32.30,31.26],["Cairo",31.24,30.04],["Tel Aviv",34.78,32.08],
+ ["Beirut",35.50,33.89],["Izmir",27.14,38.42],["Istanbul",28.98,41.01],["Athens",23.73,37.98],["Thessaloniki",22.94,40.64],
+ ["Naples",14.27,40.85],["Rome",12.50,41.90],["Palermo",13.36,38.12],["Valletta",14.51,35.90],["Split",16.44,43.51],
+ ["Odesa",30.73,46.48],["Constanța",28.65,44.18],["Sevastopol",33.52,44.62]].map(function(c){
+  var el=div("city"), dot=document.createElement("i"), nm=document.createElement("span"); nm.textContent=c[0];
+  el.appendChild(dot); el.appendChild(nm);
+  return {name:c[0],lng:c[1],lat:c[2],el:el,marker:pin(el,[c[1],c[2]],"left"),fl:null};
+});
+function slider2level(s){ return s<0?-2500*Math.pow(-s/100,2.2):200*Math.pow(s/100,1.6); }
+function level2slider(L){ return L<0?-100*Math.pow(-L/2500,1/2.2):100*Math.pow(L/200,1/1.6); }
+function niceLevel(L){ var a=Math.abs(L); return L===0?0:(L<0?-1:1)*(a<20?Math.round(a*2)/2:a<200?Math.round(a/5)*5:Math.round(a/50)*50); }
+function fmtLevel(L){ return L===0?"0 m":(L>0?"+":"−")+fN(Math.abs(L))+" m"; }
+function cityFloodLevels(){
+  CITIES.forEach(function(c){
+    var i=demCell(c.lng,c.lat); if(i<0){c.fl=Infinity;return;}
+    var x=i%dem.w, y=Math.floor(i/dem.w), best=Infinity;
+    for(var dy=-1;dy<=1;dy++) for(var dx=-1;dx<=1;dx++){
+      var xx=x+dx, yy=y+dy; if(xx<0||yy<0||xx>=dem.w||yy>=dem.h) continue;
+      var j=yy*dem.w+xx; if(!(dem.K[j]&1)) best=Math.min(best,dem.lut[dem.F[j]]);
+    }
+    c.fl=best===Infinity?0.25:best;
+  });
+}
+function drawLevel(){
+  var d=dem, L=level, dark=isDark();
+  if(CITIES[0].fl===null) cityFloodLevels();
+  if(floodCv.width!==d.w){ floodCv.width=d.w; floodCv.height=d.h; }
+  var ctx=floodCv.getContext("2d"), im=ctx.createImageData(d.w,d.h), o=im.data;
+  var spread=Math.max(3,Math.abs(L)*0.06), Lout=Math.max(L,OCEAN_FLOOR);
+  var fc=dark?[34,120,170]:[58,150,205], lo=dark?[96,84,56]:[238,226,186], hi=dark?[64,56,38]:[190,166,116];
+  var gained=0, lost=0, F=d.F, K=d.K, lut=d.lut, span=Math.max(10,Math.abs(L));
+  for(var y=0;y<d.h;y++){
+    var km2=d.rowKm2[y];
+    for(var x=0;x<d.w;x++){
+      var i=y*d.w+x, flg=K[i], f=lut[F[i]], sea=flg&1, Lr=(flg&2)?Lout:L, a=0;
+      if(L>0){
+        if(!sea){ var m=(Lr-f)/spread+0.5; if(m>0){ a=Math.min(0.9,m); lost+=km2*Math.min(1,m); } }
+        if(a>0){ var k=i*4; o[k]=fc[0]; o[k+1]=fc[1]; o[k+2]=fc[2]; o[k+3]=a*255; }
+      }else if(L<0){
+        if(sea){ var m2=(f-Lr)/spread+0.5; if(m2>0){ a=Math.min(1,m2); gained+=km2*Math.min(1,m2);
+          var t=Math.min(1,Math.max(0,(f-Lr)/span)), k2=i*4;
+          o[k2]=lo[0]+(hi[0]-lo[0])*t; o[k2+1]=lo[1]+(hi[1]-lo[1])*t; o[k2+2]=lo[2]+(hi[2]-lo[2])*t; o[k2+3]=a*255; } }
+      }
+    }
+  }
+  ctx.putImageData(im,0,0);
+  refreshCanvas("flood");
+  if(map.getLayer("coast-ghost")) map.setLayoutProperty("coast-ghost","visibility",level!==0?"visible":"none");
+  paintFunStats(gained,lost);
+}
+var lvlEl=document.getElementById("lvl"), lvlOut=document.getElementById("lvlOut"), funNote=document.getElementById("funNote"),
+    funStats=document.getElementById("funStats"), funBtn=document.getElementById("funBtn"), funBody=document.getElementById("funBody");
+var PRESETS=[["Last Ice Age",-120],["Today",0],["+10 m",10],["Ice-free Earth",70],["Med dries out",-1500]];
+function paintFunStats(gained,lost){
+  var h="", n=0, wet=[];
+  CITIES.forEach(function(c){ var w=level>0&&c.fl<=level; c.el.classList.toggle("wet",w); if(w) wet.push(c); });
+  wet.sort(function(a,b){return a.fl-b.fl;});
+  if(level<0) h+='<div class="tile"><span class="tl">New land (whole map)</span><span class="tv">'+fN(Math.round(gained/1000))+'<i>k km²</i></span></div>';
+  if(level>0) h+='<div class="tile"><span class="tl">Land flooded (whole map)</span><span class="tv">'+fN(Math.round(lost/1000))+'<i>k km²</i></span></div>';
+  if(level>0) h+='<div class="tile wide"><span class="tl">Water reaches ('+wet.length+' of '+CITIES.length+' cities)</span><span class="qt">'+
+    (wet.length?wet.slice(0,12).map(function(c){return c.name;}).join(", ")+(wet.length>12?" and "+(wet.length-12)+" more":""):"none yet")+'</span></div>';
+  funStats.innerHTML=h;
+  var note;
+  if(level===0) note="Today. Drag the slider, or pick a moment in Earth's history. The dashed line marks today's coast.";
+  else if(level>0) note="Every cell the sea can reach below "+fmtLevel(level)+" is flooded. Land only floods if it is connected to the sea; inland hollows stay dry until the rim is overtopped.";
+  else if(level>=OCEAN_FLOOR) note="Sea level "+fmtLevel(level)+(level<=-100?", as at the last glacial maximum (about 20,000 years ago): the northern Adriatic is dry land, and Sicily, Malta and Tunisia are almost joined.":". The sand-coloured band is seabed that is now dry land.");
+  else note="Below −130 m the world ocean cannot fall, so only the Mediterranean drains here, as it did when Gibraltar closed in the Messinian salinity crisis (about 6 million years ago). Illustrative: today's seabed, no salt layer, no crustal rebound.";
+  funNote.textContent=note;
+}
+function setLevel(L,fromSlider){
+  level=L; lvlOut.textContent=fmtLevel(L);
+  if(!fromSlider) lvlEl.value=level2slider(L);
+  lvlEl.setAttribute("aria-valuetext",L===0?"today's sea level":fmtLevel(L)+" relative to today");
+  document.querySelectorAll(".pbtn").forEach(function(b){ b.classList.toggle("on",+b.dataset.l===L); });
+  var go=function(){ if(mapReady){ ensureCanvasSources(); drawLevel(); } };
+  if(dem) go(); else if(L!==0||!funBody.hidden) withDem(go);
+}
+var lvlRaf=0;
+lvlEl.addEventListener("input",function(){
+  var L=niceLevel(slider2level(+lvlEl.value));
+  if(lvlRaf) return; lvlRaf=requestAnimationFrame(function(){ lvlRaf=0; setLevel(L,true); });
+});
+PRESETS.forEach(function(p){
+  var b=document.createElement("button"); b.type="button"; b.className="pbtn"; b.dataset.l=p[1];
+  b.textContent=p[0]+(p[1]&&p[0].charAt(0)!=="+"?" ("+fmtLevel(p[1])+")":"");
+  b.addEventListener("click",function(){ setLevel(p[1],false); });
+  document.getElementById("presets").appendChild(b);
+});
+funBtn.addEventListener("click",function(){
+  var open=funBody.hidden;
+  funBody.hidden=!open; funBtn.setAttribute("aria-expanded",open); mapEl.classList.toggle("cities-on",open);
+  if(open){
+    setLevel(level,false);
+  }else if(level!==0){
+    setLevel(0,false);
+  }
+});
+lvlOut.textContent=fmtLevel(0);
 
 /* ---- painting ---- */
 var tip=document.getElementById("tip");
