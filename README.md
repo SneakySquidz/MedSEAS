@@ -5,7 +5,22 @@ Interactive dashboard of the Mediterranean's eight sub-basins: shade the map by 
 - **Live:** https://sneakysquidz.github.io/MedSEAS/
 - **Master copy:** this repo. The "Mediterranean Basins" Claude artifact is an older snapshot — edit here, not there.
 
-Single static `index.html`, no build step. Deploys to GitHub Pages on every push to `main` (`.github/workflows/deploy-pages.yml`).
+Static site, no build step: `index.html` plus a vendored MapLibre GL JS (`vendor/maplibre-gl/`, BSD-3-Clause) and generated map geometry (`data/geo.js`). Opens straight from disk. Deploys to GitHub Pages on every push to `main` (`.github/workflows/deploy-pages.yml`).
+
+## Map
+
+Rendered with MapLibre GL JS from vector data, not a drawn SVG. Ctrl/Cmd + scroll zooms (so the page still scrolls), drag pans, a basin click selects it, and the ranked list flies the map to a basin.
+
+- **Basins:** eight limit polygons (IHO-style straight lines between capes) clipped to the Natural Earth 1:10m coastline, so outlines follow the real shore.
+- **Seabed button:** fades the shading to reveal Natural Earth depth bands (200 / 1,000 / 2,000 / 3,000 / 4,000 m). Hovering a basin also reports the depth band under the cursor. The bands are generalised: the 5,109 m Calypso Deep is not resolved.
+- **Light and dark** follow the page theme.
+
+`data/geo.js` is generated; edit the limit polygons in `scripts/build_geo.py` and rebuild:
+
+    pip install shapely
+    python3 scripts/build_geo.py
+
+The script downloads the Natural Earth files it needs on first run. It also prints each basin's polygon area. These differ from the literature `area` figures in `index.html` (the eight figures sum to ~1.7 million km² against ~2.5 million km² for the whole sea), which is left as is and flagged for review.
 
 Data: Copernicus Marine, Argo, EMODnet, Natural Earth — sources listed in the page footer.
 
