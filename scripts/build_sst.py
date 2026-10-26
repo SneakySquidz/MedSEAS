@@ -35,8 +35,10 @@ def monthly_temperature_datasets():
     cat = copernicusmarine.describe(product_id=PRODUCT, disable_progress_bar=True)
     ids = [d.dataset_id for p in cat.products for d in p.datasets]
     print("datasets in", PRODUCT + ":", ids)
-    pick = [i for i in ids if "temp" in i.lower() and "p1m" in i.lower()
-            or ("tem" in i.lower() and i.lower().endswith("-m"))]
+    low = {i: i.lower() for i in ids}
+    # monthly only: "P1M" in the new names, or the old "...-rean-m" / "...-int-m"; never the daily P1D / -d sets
+    pick = [i for i in ids if ("temp" in low[i] or "-tem-" in low[i]) and
+            ("p1m" in low[i] or low[i].endswith("-m") and "p1d" not in low[i])]
     pick.sort(key=lambda i: ("int" in i.lower(), i))
     if not pick:
         raise SystemExit("no monthly temperature dataset found among: %s" % ids)
@@ -69,7 +71,11 @@ def main():
         try:
             fetch(ds, a.start + "-01T00:00:00" if len(a.start) == 7 else a.start,
                   datetime.date.today().isoformat() + "T00:00:00", a.tmp)
-            parts.append(xr.open_dataset(os.path.join(a.tmp, ds + ".nc")))
+            part = xr.open_dataset(os.path.join(a.tmp, ds + ".nc"))
+            if part.sizes.get("time", 0) > 700:   # more than ~58 years of monthly steps means this is not a monthly set
+                raise SystemExit("%s has %d time steps; expected monthly data" % (ds, part.sizes["time"]))
+            print(ds, "->", part.sizes.get("time"), "time steps")
+            parts.append(part)
         except Exception as e:  # a dataset may have no data in the range
             print("skipping", ds, "->", e)
     if not parts:
