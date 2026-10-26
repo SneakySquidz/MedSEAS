@@ -1,29 +1,37 @@
 name: Update SST grid
 
-# Rebuilds data/sst.png from Copernicus Marine and opens a pull request for review.
-# One-off setup: add repository secrets COPERNICUSMARINE_SERVICE_USERNAME and
+# Monthly only. Appends any new months to data/sst.png and opens a pull request
+# if there are any; otherwise it exits having done almost nothing.
+#
+# One-off setup: repository secrets COPERNICUSMARINE_SERVICE_USERNAME and
 # COPERNICUSMARINE_SERVICE_PASSWORD (free account at marine.copernicus.eu), and under
 # Settings > Actions > General allow "Read and write permissions" and
 # "Allow GitHub Actions to create and approve pull requests".
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "17 5 7 * *"   # monthly, once the previous month is published
+    - cron: "17 5 7 * *"   # 07:17 UTC on the 7th of each month
 
 permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: update-sst
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements-sst.txt
       - name: Install
-        run: pip install copernicusmarine xarray netcdf4 numpy pillow
+        run: pip install -r scripts/requirements-sst.txt
       - name: Build SST grid
         env:
           COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUSMARINE_SERVICE_USERNAME }}
