@@ -1,15 +1,19 @@
 name: Update SST grid
 
-# Monthly only. Appends any new months to data/sst.png and opens a pull request
-# if there are any; otherwise it exits having done almost nothing.
+# Manual only. Appends any new months to data/sst.png and opens a pull request if
+# there are any. Tick "rebuild_climatology" to also rebuild the 1991-2020 baseline.
 #
 # One-off setup: repository secrets COPERNICUSMARINE_SERVICE_USERNAME and
 # COPERNICUSMARINE_SERVICE_PASSWORD (free account at marine.copernicus.eu), and under
 # Settings > Actions > General allow "Read and write permissions" and
 # "Allow GitHub Actions to create and approve pull requests".
 on:
-  schedule:
-    - cron: "17 5 7 * *"   # 07:17 UTC on the 7th of each month
+  workflow_dispatch:
+    inputs:
+      rebuild_climatology:
+        description: "Rebuild the 1991-2020 climatology (about 30 extra yearly downloads)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -36,7 +40,13 @@ jobs:
         env:
           COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUSMARINE_SERVICE_USERNAME }}
           COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUSMARINE_SERVICE_PASSWORD }}
-        run: python scripts/build_sst.py
+          REBUILD: ${{ inputs.rebuild_climatology }}
+        run: |
+          if [ "$REBUILD" = "true" ]; then
+            python scripts/build_sst.py --rebuild-climatology
+          else
+            python scripts/build_sst.py
+          fi
       - name: Open pull request
         uses: peter-evans/create-pull-request@v6
         with:
