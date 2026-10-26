@@ -14,7 +14,7 @@ Rendered with MapLibre GL JS from vector data, not a drawn SVG. Ctrl/Cmd + scrol
 - **Basins:** eight limit polygons (IHO-style straight lines between capes) clipped to the Natural Earth 1:10m coastline, so outlines follow the real shore.
 - **Measured figures:** each basin's area and mean depth are computed from its polygon and the terrain grid, so they describe what is drawn (the eight areas sum to the ~2.5 million km² of the sea). Maximum depths stay as literature values.
 - **Seabed button:** depth classes (0 to 4,000 m+) from the terrain grid under the basin shading, and the hover tooltip reports the depth under the cursor.
-- **Fun: raise or lower the sea:** a sea-level slider from 2,500 m below today to 200 m above, with presets (Last Ice Age, +10 m, ice-free Earth, a drained Mediterranean). Flooding uses a priority flood, so land only floods where the sea can reach it. It reports land gained or flooded and which of 33 cities the water reaches. It is a toy: today's terrain, no ice or crustal rebound, 4 km cells.
+- **Sea-level scenarios:** a sea-level slider from 2,500 m below today to 200 m above, with presets (Last Ice Age, +10 m, ice-free Earth, a drained Mediterranean). Flooding uses a priority flood, so land only floods where the sea can reach it. It reports land gained or flooded and which of 33 cities the water reaches. It is a toy: today's terrain, no ice or crustal rebound, 4 km cells.
 - **Light and dark** follow the page theme.
 
 Data files, both generated:
@@ -28,6 +28,19 @@ To change basin limits or the map extent, edit `scripts/build_data.py` and rebui
     python3 scripts/build_data.py
 
 It downloads the Natural Earth files and terrain tiles it needs on first run and prints each basin's area and mean depth.
+
+## Sea-surface temperature through time
+
+A month slider (with Play, an anomaly mode against 1991 to 2020, and a per-basin time series) over Copernicus Marine monthly surface temperature on a 0.25 degree grid. It stays hidden until `data/sst.png` and `data/sst.json` exist.
+
+One-off setup to publish the data:
+
+1. Create a free Copernicus Marine account (marine.copernicus.eu).
+2. Add repository secrets `COPERNICUSMARINE_SERVICE_USERNAME` and `COPERNICUSMARINE_SERVICE_PASSWORD`.
+3. Settings > Actions > General: allow read and write permissions and "Allow GitHub Actions to create and approve pull requests".
+4. Run the "Update SST grid" workflow. It runs `scripts/build_sst.py` and opens a pull request with the data; merge it after checking the preview. It then reruns monthly.
+
+`scripts/build_sst.py` has not been run against the live service yet (the dataset ids `med-cmcc-tem-rean-m` and `med-cmcc-tem-int-m` and the `thetao` variable are from the product documentation); the first workflow run is the real test.
 
 ## Keeping data current
 
