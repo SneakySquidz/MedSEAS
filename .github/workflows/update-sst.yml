@@ -39,3 +39,4 @@ jobs:
           add-paths: |
             data/sst.png
             data/sst.json
+            data/sst_clim.png

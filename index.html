@@ -868,30 +868,35 @@ function sstFail(msg){
   document.getElementById("sstNote").textContent=msg||"No SST grid has been published yet. Run the “Update SST grid” workflow (it needs a free Copernicus Marine login), then merge the pull request it opens. The page must also be served over http(s).";
   document.getElementById("sstSlider").disabled=true; document.getElementById("sstPlay").disabled=true;
 }
+function atlasCodes(img,n,cols,w,h){
+  var W=img.naturalWidth, H=img.naturalHeight, c=document.createElement("canvas"); c.width=W; c.height=H;
+  var cx=c.getContext("2d",{willReadFrequently:true}); cx.drawImage(img,0,0);
+  var px=cx.getImageData(0,0,W,H).data, codes=new Uint8Array(n*w*h), i, x, y;
+  for(i=0;i<n;i++){
+    var r0=Math.floor(i/cols)*h, c0=(i%cols)*w;
+    for(y=0;y<h;y++) for(x=0;x<w;x++) codes[(i*h+y)*w+x]=px[((r0+y)*W+c0+x)*4];
+  }
+  return codes;
+}
+function loadImage(src,ok,bad){ var im=new Image(); im.onload=function(){ ok(im); }; im.onerror=bad; im.src=src; }
 function withSst(cb){
   if(sst){ cb(sst); return; }
   sstWaiters.push(cb);
   if(sstState==="loading") return;
   sstState="loading";
   fetch("data/sst.json").then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(meta){
-    var img=new Image();
-    img.onerror=function(){ sstFail(); };
-    img.onload=function(){
+    loadImage("data/sst.png",function(img){
       try{
-        var W=img.naturalWidth, H=img.naturalHeight, c=document.createElement("canvas"); c.width=W; c.height=H;
-        var cx=c.getContext("2d",{willReadFrequently:true}); cx.drawImage(img,0,0);
-        var px=cx.getImageData(0,0,W,H).data, n=meta.n, w=meta.w, h=meta.h, codes=new Uint8Array(n*w*h), i, x, y;
-        for(i=0;i<n;i++){
-          var r0=Math.floor(i/meta.cols)*h, c0=(i%meta.cols)*w;
-          for(y=0;y<h;y++) for(x=0;x<w;x++) codes[(i*h+y)*w+x]=px[((r0+y)*W+c0+x)*4];
-        }
-        sstPrepare(meta,codes);
+        var codes=atlasCodes(img,meta.n,meta.cols,meta.w,meta.h);
+        if(!meta.clim){ sstPrepare(meta,codes,null); return; }
+        loadImage("data/"+meta.clim,function(ci){
+          try{ sstPrepare(meta,codes,atlasCodes(ci,12,12,meta.w,meta.h)); }catch(e){ sstFail(); }
+        },function(){ sstPrepare(meta,codes,null); });
       }catch(e){ sstFail(); }
-    };
-    img.src="data/sst.png";
+    },function(){ sstFail(); });
   }).catch(function(){ sstFail(); });
 }
-function sstPrepare(meta,codes){
+function sstPrepare(meta,codes,climCodes){
   var n=meta.n, w=meta.w, h=meta.h, N=w*h, b=meta.bounds, i, k, y, x;
   var s={meta:meta,codes:codes,n:n,w:w,h:h,y0:+meta.start.slice(0,4),m0:+meta.start.slice(5)-1};
   sst=s;
@@ -907,15 +912,9 @@ function sstPrepare(meta,codes){
       var j=y*w+x; if(cb[j]<0 && inBasin(bs,lon[x],lat[y])) cb[j]=bi;
     }
   });
-  /* 1991-2020 monthly climatology per cell */
-  var sum=new Float32Array(12*N), cnt=new Uint16Array(12*N);
-  for(i=0;i<n;i++){
-    var yr=s.y0+Math.floor((s.m0+i)/12), m=(s.m0+i)%12;
-    if(yr<1991||yr>2020) continue;
-    for(k=0;k<N;k++){ var cd=codes[i*N+k]; if(cd){ sum[m*N+k]+=meta.base+cd/meta.scale; cnt[m*N+k]++; } }
-  }
-  var clim=new Float32Array(12*N);
-  for(k=0;k<12*N;k++) clim[k]=cnt[k]?sum[k]/cnt[k]:NaN;
+  /* 1991-2020 monthly climatology per cell: published as 12 frames (the series itself is only the recent years) */
+  var clim=new Float32Array(12*N), k2;
+  for(k2=0;k2<12*N;k2++) clim[k2]=climCodes&&climCodes[k2]?meta.base+climCodes[k2]/meta.scale:NaN;
   /* area-weighted series per basin (index 8 = all eight) */
   var ser=[], ans=[], B=basins.length+1;
   for(var bi=0;bi<B;bi++){ ser.push(new Float32Array(n)); ans.push(new Float32Array(n)); }
@@ -937,6 +936,7 @@ function sstPrepare(meta,codes){
   s.cb=cb; s.clim=clim; s.ser=ser; s.ans=ans; s.cw=cw; s.ch=ch; s.rowF=rowF; s.colF=colF;
   var last=n-1; document.getElementById("sstSlider").max=last; document.getElementById("sstSlider").disabled=false; document.getElementById("sstPlay").disabled=false;
   sstIdx=last; document.getElementById("sstSlider").value=last;
+  document.getElementById("sstMode").disabled=!climCodes;
   sstState="ready"; sstWaiters.splice(0).forEach(function(f){f(s);});
 }
 function drawSst(){

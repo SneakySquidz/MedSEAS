@@ -31,7 +31,7 @@ It downloads the Natural Earth files and terrain tiles it needs on first run and
 
 ## Sea-surface temperature through time
 
-A month slider (with Play, an anomaly mode against 1991 to 2020, and a per-basin time series) over Copernicus Marine monthly surface temperature on a 0.25 degree grid. It stays hidden until `data/sst.png` and `data/sst.json` exist.
+A month slider (with Play, an anomaly mode against 1991 to 2020, and a per-basin time series) over the last 12 years of Copernicus Marine monthly surface temperature on a 0.25 degree grid (about 150 small frames, not the full record). Anomalies use a 12-frame 1991 to 2020 climatology. It stays hidden until `data/sst.png`, `data/sst.json` and `data/sst_clim.png` exist.
 
 One-off setup to publish the data:
 
@@ -40,7 +40,7 @@ One-off setup to publish the data:
 3. Settings > Actions > General: allow read and write permissions and "Allow GitHub Actions to create and approve pull requests".
 4. Run the "Update SST grid" workflow. It runs `scripts/build_sst.py` and opens a pull request with the data; merge it after checking the preview. It then reruns monthly.
 
-`scripts/build_sst.py` has not been run against the live service yet (the dataset ids `med-cmcc-tem-rean-m` and `med-cmcc-tem-int-m` and the `thetao` variable are from the product documentation); the first workflow run is the real test.
+`scripts/build_sst.py` is kept light: it fetches one year at a time, reduces it and deletes the file, so memory stays small; the climatology is built once and reused. The dataset ids are looked up at run time. It has not yet completed a run against the live service.
 
 ## Keeping data current
 
