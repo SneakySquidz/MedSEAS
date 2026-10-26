@@ -75,7 +75,7 @@ def one_year(datasets, year, folder):
                     da = da.isel(depth=0)
                 if da.sizes["time"] > 13:
                     raise SystemExit("%s returned %d time steps for one year; not monthly data" % (ds, da.sizes["time"]))
-                da = da.coarsen(longitude=COARSEN, latitude=COARSEN, boundary="trim").mean(skipna=True)
+                da = da.coarsen(longitude=COARSEN, latitude=COARSEN, boundary="trim").mean()
                 da = da.sortby("latitude", ascending=False).load()
         finally:
             if os.path.exists(path):
