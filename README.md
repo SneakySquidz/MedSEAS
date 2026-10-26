@@ -5,7 +5,7 @@ Interactive dashboard of the Mediterranean's eight sub-basins: shade the map by 
 - **Live:** https://sneakysquidz.github.io/MedSEAS/
 - **Master copy:** this repo. The "Mediterranean Basins" Claude artifact is an older snapshot — edit here, not there.
 
-Static site, no build step: `index.html` plus a vendored MapLibre GL JS (`vendor/maplibre-gl/`, BSD-3-Clause) and generated map geometry (`data/geo.js`). Opens straight from disk. Deploys to GitHub Pages on every push to `main` (`.github/workflows/deploy-pages.yml`).
+Static site, no build step: `index.html` plus a vendored MapLibre GL JS (`vendor/maplibre-gl/`, BSD-3-Clause) and generated map geometry (`data/geo.js`). The map opens from disk; the terrain features need a web server. Deploys to GitHub Pages on every push to `main` (`.github/workflows/deploy-pages.yml`).
 
 ## Map
 
@@ -20,7 +20,7 @@ Rendered with MapLibre GL JS from vector data, not a drawn SVG. Ctrl/Cmd + scrol
 Data files, both generated:
 
 - `data/geo.js`: land, basins (with measured area and mean depth) and non-basin water.
-- `data/dem.js` (about 600 KB, fetched when the browser is idle): one PNG on the Web Mercator grid holding the sea-level at which each cell floods and some flags. Elevation and bathymetry come from the AWS/Mapzen terrain tiles ("terrarium", SRTM + GMTED + ETOPO1/GEBCO).
+- `data/dem.png` (about 440 KB, fetched when the browser is idle; needs http(s), so the Seabed and sea-level features are off if the page is opened from disk): one PNG on the Web Mercator grid holding the sea-level at which each cell floods and some flags. Elevation and bathymetry come from the AWS/Mapzen terrain tiles ("terrarium", SRTM + GMTED + ETOPO1/GEBCO).
 
 To change basin limits or the map extent, edit `scripts/build_data.py` and rebuild:
 
