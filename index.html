@@ -93,12 +93,21 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .sill{pointer-events:none;display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:7.5px;font-weight:600;color:var(--ink-muted);text-shadow:0 0 3px var(--halo);}
 .sill i{width:6px;height:6px;border-radius:50%;border:1.2px solid var(--ink-muted);flex:none;}
 #map.zfar .zlo{display:none;}
+#map.sst-on .bmark{color:#06202c !important;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 6px #fff !important;}
+#map.sst-on .bv{display:none;}
+.sstkey{display:flex;align-items:center;gap:8px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-muted);}
+.sstkey i{flex:1;max-width:340px;height:10px;border-radius:99px;border:1px solid var(--border);}
+#sstSpark{display:block;width:100%;max-width:640px;height:auto;cursor:pointer;background:var(--surface-2);border-radius:10px;}
+#sstSlider{flex:1 1 260px;min-width:0;accent-color:var(--accent);height:28px;cursor:pointer;}
+#sstSlider:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+#sst .funbtn:disabled,.pbtn:disabled{opacity:.5;cursor:default;}
 #map .city{display:none;pointer-events:none;align-items:center;gap:4px;white-space:nowrap;font-size:8.5px;font-weight:600;color:var(--ink);text-shadow:0 0 3px var(--halo),0 0 3px var(--halo);}
 #map.cities-on .city{display:flex;}
 #map.zfar .city span{display:none;}
 .city i{width:7px;height:7px;border-radius:50%;background:var(--surface);border:1.5px solid var(--ink-2);flex:none;box-shadow:0 0 0 1px var(--halo);}
 .city.wet i{background:#d1342b;border-color:#fff;}
 .city.wet span{color:#b3261e;}
+.fun[hidden]{display:none;}
 .fun{margin-top:14px;border-top:1px dashed var(--border);padding-top:13px;}
 .funbtn,.pbtn{border:1px solid var(--border);background:var(--surface-2);color:var(--accent-strong);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:99px;cursor:pointer;}
 .funbtn:hover,.pbtn:hover{border-color:var(--accent);}
@@ -254,8 +263,26 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <div class="ramp" id="ramp"></div>
       <span class="ramp-end" id="rampHi">&mdash;</span>
     </div>
+    <div class="fun" id="sst" hidden>
+      <button class="funbtn" id="sstBtn" type="button" aria-expanded="false" aria-controls="sstBody">Sea-surface temperature through time</button>
+      <div class="funbody" id="sstBody" hidden>
+        <div class="funrow">
+          <button class="pbtn" id="sstPlay" type="button">Play</button>
+          <output id="sstOut" class="funout" for="sstSlider">&mdash;</output>
+          <input type="range" id="sstSlider" min="0" max="0" step="1" value="0" aria-label="Month">
+        </div>
+        <div class="presets">
+          <button class="pbtn" id="sstMode" type="button" aria-pressed="false">Anomaly vs 1991&ndash;2020</button>
+          <button class="pbtn" id="sstLatest" type="button">Latest month</button>
+        </div>
+        <div class="sstkey" id="sstKey"></div>
+        <p class="funnote" id="sstNote" aria-live="polite"></p>
+        <div class="funstats" id="sstStats"></div>
+        <svg id="sstSpark" viewBox="0 0 560 70" role="img" aria-label="Selected basin through time"></svg>
+      </div>
+    </div>
     <div class="fun">
-      <button class="funbtn" id="funBtn" type="button" aria-expanded="false" aria-controls="funBody">Fun: raise or lower the sea</button>
+      <button class="funbtn" id="funBtn" type="button" aria-expanded="false" aria-controls="funBody">Sea-level scenarios</button>
       <div class="funbody" id="funBody" hidden>
         <div class="funrow">
           <label for="lvl" class="funlabel">Sea level</label>
@@ -264,7 +291,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         </div>
         <div class="presets" id="presets" role="group" aria-label="Sea-level presets"></div>
         <p class="funnote" id="funNote" aria-live="polite"></p>
-        <p class="funnote small">A toy on today&rsquo;s terrain at about 4 km per cell: no ice sheets, sediment, tides or crustal rebound, so low coastal cities flood later here than in reality. Needs the page served over http(s), not opened from disk.</p>
+        <p class="funnote small">A simple scenario model on today&rsquo;s terrain at about 4 km per cell: no ice sheets, sediment, tides or crustal rebound, so low coastal cities flood later here than in reality. Needs the page served over http(s), not opened from disk.</p>
         <div class="funstats" id="funStats"></div>
       </div>
     </div>
@@ -331,6 +358,12 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <span class="pn">Copernicus Marine Service</span>
         <span class="pw">Mediterranean Sea Physics Reanalysis &mdash; the reference gridded temperature and salinity field.</span>
         <span class="pd">MEDSEA_MULTIYEAR_PHY_006_004 &middot; NEMO + OceanVAR &middot; 1/24&deg; (&asymp;4 km) &middot; 141 depth levels</span>
+        <a href="https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description" target="_blank" rel="noopener">data.marine.copernicus.eu &rarr;</a>
+      </div>
+      <div class="pcard">
+        <span class="pn">Sea-surface temperature through time</span>
+        <span class="pw">Monthly surface temperature behind the time slider, 0.25&deg; grid. Appears once the Update SST grid workflow has run.</span>
+        <span class="pd">MEDSEA_MULTIYEAR_PHY_006_004 &middot; monthly mean &middot; 1987 to present &middot; climatology 1991&ndash;2020</span>
         <a href="https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description" target="_blank" rel="noopener">data.marine.copernicus.eu &rarr;</a>
       </div>
       <div class="pcard">
@@ -709,7 +742,7 @@ function withDemIdle(){
   if("requestIdleCallback" in window) requestIdleCallback(go,{timeout:6000}); else setTimeout(go,2500);
 }
 
-/* ---- fun: raise or lower the sea ----
+/* ---- sea-level scenarios: raise or lower the sea ----
    A cell is sea at level L when its flood level (red channel) is at or below L, so land only floods where the
    sea can actually reach it, and inland hollows (Dead Sea, Qattara) stay dry until the rim is overtopped.
    Today's coast is the vector map; only cells whose state changed are painted. */
@@ -816,6 +849,180 @@ funBtn.addEventListener("click",function(){
 });
 lvlOut.textContent=fmtLevel(0);
 
+/* ---- sea-surface temperature through time ----
+   data/sst.png + data/sst.json are built by scripts/build_sst.py from Copernicus Marine monthly means:
+   a grey atlas of 0.25-degree frames (code = (T - base) * scale, 0 = land / no data). */
+var sst=null, sstState="idle", sstWaiters=[], sstMode="abs", sstIdx=0, sstOn=false, sstTimer=0, sstCv=document.createElement("canvas");
+var MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var SST_ABS=["#2b3f9c","#3d86c6","#7cc5d8","#ecf3b4","#f7c455","#ee8039","#c5301f"], SST_ABS_RANGE=[12,29];
+var SST_ANOM=["#2b5fae","#79b3dd","#f4f4f4","#f2a07a","#c5301f"], SST_ANOM_RANGE=[-3,3];
+function rampRGB(cols,t){
+  t=Math.max(0,Math.min(1,t)); var x=t*(cols.length-1), i=Math.min(cols.length-2,Math.floor(x)), f=x-i, a=hex2rgb(cols[i]), b=hex2rgb(cols[i+1]);
+  return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f];
+}
+function lutFor(cols,r){ var l=new Uint8Array(256*3); for(var i=0;i<256;i++){ var c=rampRGB(cols,i/255); l[i*3]=c[0]; l[i*3+1]=c[1]; l[i*3+2]=c[2]; } return l; }
+var SST_LUT={abs:lutFor(SST_ABS),anom:lutFor(SST_ANOM)};
+function sstLabel(i){ var m=(sst.m0+i)%12, y=sst.y0+Math.floor((sst.m0+i)/12); return MONTHS[m]+" "+y; }
+function sstFail(msg){
+  sstState="idle"; sstWaiters.length=0;
+  document.getElementById("sstNote").textContent=msg||"No SST grid has been published yet. Run the “Update SST grid” workflow (it needs a free Copernicus Marine login), then merge the pull request it opens. The page must also be served over http(s).";
+  document.getElementById("sstSlider").disabled=true; document.getElementById("sstPlay").disabled=true;
+}
+function withSst(cb){
+  if(sst){ cb(sst); return; }
+  sstWaiters.push(cb);
+  if(sstState==="loading") return;
+  sstState="loading";
+  fetch("data/sst.json").then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(meta){
+    var img=new Image();
+    img.onerror=function(){ sstFail(); };
+    img.onload=function(){
+      try{
+        var W=img.naturalWidth, H=img.naturalHeight, c=document.createElement("canvas"); c.width=W; c.height=H;
+        var cx=c.getContext("2d",{willReadFrequently:true}); cx.drawImage(img,0,0);
+        var px=cx.getImageData(0,0,W,H).data, n=meta.n, w=meta.w, h=meta.h, codes=new Uint8Array(n*w*h), i, x, y;
+        for(i=0;i<n;i++){
+          var r0=Math.floor(i/meta.cols)*h, c0=(i%meta.cols)*w;
+          for(y=0;y<h;y++) for(x=0;x<w;x++) codes[(i*h+y)*w+x]=px[((r0+y)*W+c0+x)*4];
+        }
+        sstPrepare(meta,codes);
+      }catch(e){ sstFail(); }
+    };
+    img.src="data/sst.png";
+  }).catch(function(){ sstFail(); });
+}
+function sstPrepare(meta,codes){
+  var n=meta.n, w=meta.w, h=meta.h, N=w*h, b=meta.bounds, i, k, y, x;
+  var s={meta:meta,codes:codes,n:n,w:w,h:h,y0:+meta.start.slice(0,4),m0:+meta.start.slice(5)-1};
+  sst=s;
+  var lat=new Float32Array(h), lon=new Float32Array(w), wt=new Float32Array(h);
+  for(y=0;y<h;y++){ lat[y]=b[3]-(y+0.5)*(b[3]-b[1])/h; wt[y]=Math.cos(lat[y]*Math.PI/180); }
+  for(x=0;x<w;x++) lon[x]=b[0]+(x+0.5)*(b[2]-b[0])/w;
+  /* which basin each cell centre sits in */
+  var cb=new Int8Array(N).fill(-1);
+  basins.forEach(function(bs,bi){
+    var bd=bs.bounds;
+    for(y=0;y<h;y++) for(x=0;x<w;x++){
+      if(lon[x]<bd[0]||lon[x]>bd[2]||lat[y]<bd[1]||lat[y]>bd[3]) continue;
+      var j=y*w+x; if(cb[j]<0 && inBasin(bs,lon[x],lat[y])) cb[j]=bi;
+    }
+  });
+  /* 1991-2020 monthly climatology per cell */
+  var sum=new Float32Array(12*N), cnt=new Uint16Array(12*N);
+  for(i=0;i<n;i++){
+    var yr=s.y0+Math.floor((s.m0+i)/12), m=(s.m0+i)%12;
+    if(yr<1991||yr>2020) continue;
+    for(k=0;k<N;k++){ var cd=codes[i*N+k]; if(cd){ sum[m*N+k]+=meta.base+cd/meta.scale; cnt[m*N+k]++; } }
+  }
+  var clim=new Float32Array(12*N);
+  for(k=0;k<12*N;k++) clim[k]=cnt[k]?sum[k]/cnt[k]:NaN;
+  /* area-weighted series per basin (index 8 = all eight) */
+  var ser=[], ans=[], B=basins.length+1;
+  for(var bi=0;bi<B;bi++){ ser.push(new Float32Array(n)); ans.push(new Float32Array(n)); }
+  for(i=0;i<n;i++){
+    var mi=(s.m0+i)%12, ts=new Float64Array(B), as=new Float64Array(B), ws=new Float64Array(B);
+    for(y=0;y<h;y++) for(x=0;x<w;x++){
+      var j2=y*w+x, c2=codes[i*N+j2], bq=cb[j2]; if(!c2||bq<0) continue;
+      var t=meta.base+c2/meta.scale, an=t-clim[mi*N+j2]; if(an!==an) continue;
+      var ww=wt[y];
+      ts[bq]+=t*ww; as[bq]+=an*ww; ws[bq]+=ww; ts[B-1]+=t*ww; as[B-1]+=an*ww; ws[B-1]+=ww;
+    }
+    for(var q=0;q<B;q++){ ser[q][i]=ws[q]?ts[q]/ws[q]:NaN; ans[q][i]=ws[q]?as[q]/ws[q]:NaN; }
+  }
+  /* output canvas on the Web Mercator grid so the raster lines up with the map */
+  var cw=w*4, ch=Math.round(cw*(merc(b[3])-merc(b[1]))/((b[2]-b[0])*Math.PI/180));
+  var rowF=new Float32Array(ch), colF=new Float32Array(cw);
+  for(y=0;y<ch;y++){ var la=unmerc(merc(b[3])-(y+0.5)/ch*(merc(b[3])-merc(b[1]))); rowF[y]=(b[3]-la)/(b[3]-b[1])*h-0.5; }
+  for(x=0;x<cw;x++) colF[x]=(x+0.5)/cw*w-0.5;
+  s.cb=cb; s.clim=clim; s.ser=ser; s.ans=ans; s.cw=cw; s.ch=ch; s.rowF=rowF; s.colF=colF;
+  var last=n-1; document.getElementById("sstSlider").max=last; document.getElementById("sstSlider").disabled=false; document.getElementById("sstPlay").disabled=false;
+  sstIdx=last; document.getElementById("sstSlider").value=last;
+  sstState="ready"; sstWaiters.splice(0).forEach(function(f){f(s);});
+}
+function drawSst(){
+  var s=sst, w=s.w, h=s.h, N=w*h, cw=s.cw, ch=s.ch, meta=s.meta, i=sstIdx, mi=(s.m0+i)%12, k;
+  var F=new Float32Array(N), anom=sstMode==="anom";
+  for(k=0;k<N;k++){ var cd=s.codes[i*N+k]; if(!cd){F[k]=NaN;continue;} var t=meta.base+cd/meta.scale; F[k]=anom?t-s.clim[mi*N+k]:t; }
+  if(sstCv.width!==cw){ sstCv.width=cw; sstCv.height=ch; }
+  var ctx=sstCv.getContext("2d"), im=ctx.createImageData(cw,ch), o=im.data, lut=SST_LUT[anom?"anom":"abs"], rg=anom?SST_ANOM_RANGE:SST_ABS_RANGE;
+  for(var y=0;y<ch;y++){
+    var fy=s.rowF[y], y0=Math.max(0,Math.min(h-1,Math.floor(fy))), y1=Math.min(h-1,y0+1), ty=Math.max(0,Math.min(1,fy-y0));
+    for(var x=0;x<cw;x++){
+      var fx=s.colF[x], x0=Math.max(0,Math.min(w-1,Math.floor(fx))), x1=Math.min(w-1,x0+1), tx=Math.max(0,Math.min(1,fx-x0));
+      var v00=F[y0*w+x0], v10=F[y0*w+x1], v01=F[y1*w+x0], v11=F[y1*w+x1], ws=0, vs=0, a;
+      a=(1-tx)*(1-ty); if(v00===v00){ws+=a;vs+=a*v00;}
+      a=tx*(1-ty); if(v10===v10){ws+=a;vs+=a*v10;}
+      a=(1-tx)*ty; if(v01===v01){ws+=a;vs+=a*v01;}
+      a=tx*ty; if(v11===v11){ws+=a;vs+=a*v11;}
+      if(ws<0.25) continue;
+      var ci=Math.round(Math.max(0,Math.min(1,(vs/ws-rg[0])/(rg[1]-rg[0])))*255)*3, p=(y*cw+x)*4;
+      o[p]=lut[ci]; o[p+1]=lut[ci+1]; o[p+2]=lut[ci+2]; o[p+3]=235;
+    }
+  }
+  ctx.putImageData(im,0,0);
+  if(!map.getSource("sst")){
+    var b=meta.bounds;
+    map.addSource("sst",{type:"canvas",canvas:sstCv,coordinates:[[b[0],b[3]],[b[2],b[3]],[b[2],b[1]],[b[0],b[1]]],animate:false});
+    map.addLayer({id:"sst",type:"raster",source:"sst",paint:{"raster-opacity":1,"raster-fade-duration":0,"raster-resampling":"linear"}},"basin-hover");
+  }
+  map.setLayoutProperty("sst","visibility","visible");
+  refreshCanvas("sst");
+}
+function paintSst(){
+  if(!sstOn||!sst) return;
+  var s=sst, anom=sstMode==="anom", bi=basins.map(function(b){return b.id;}).indexOf(selected), B=basins.length;
+  document.getElementById("sstOut").textContent=sstLabel(sstIdx);
+  document.getElementById("sstSlider").setAttribute("aria-valuetext",sstLabel(sstIdx));
+  var rg=anom?SST_ANOM_RANGE:SST_ABS_RANGE, fmt=function(v){return (anom&&v>=0?"+":"")+v.toFixed(1)+" "+DEG+"C";};
+  document.getElementById("sstKey").innerHTML='<span>'+fmt(rg[0])+'</span><i style="background:linear-gradient(90deg,'+(anom?SST_ANOM:SST_ABS).join(",")+')"></i><span>'+fmt(rg[1])+'</span>';
+  function tile(label,name){
+    var i=sstIdx, a=s.ser[name][i], d=s.ans[name][i];
+    return '<div class="tile"><span class="tl">'+label+'</span><span class="tv">'+(a===a?a.toFixed(1):"—")+'<i>'+DEG+'C</i></span><span class="tl">'+(d===d?(d>=0?"+":"")+d.toFixed(1)+" vs 1991–2020":"")+'</span></div>';
+  }
+  document.getElementById("sstStats").innerHTML=tile("Mediterranean, "+sstLabel(sstIdx),B)+tile(byId[selected].name,bi);
+  /* selected basin through time, with the chosen month marked */
+  var series=(anom?s.ans:s.ser)[bi], W=560, H=70, L=4, T=6, mn=Infinity, mx=-Infinity, i;
+  for(i=0;i<s.n;i++){ var v=series[i]; if(v===v){ if(v<mn)mn=v; if(v>mx)mx=v; } }
+  var d="", X=function(i){return L+i/(s.n-1)*(W-2*L);}, Y=function(v){return T+(1-(v-mn)/(mx-mn||1))*(H-2*T);};
+  for(i=0;i<s.n;i++){ var vv=series[i]; if(vv===vv) d+=(d?"L":"M")+X(i).toFixed(1)+" "+Y(vv).toFixed(1); }
+  var sp=document.getElementById("sstSpark");
+  sp.innerHTML='<path d="'+d+'" fill="none" stroke="var(--accent)" stroke-width="1.2"/>'+
+    (anom?'<line x1="'+L+'" x2="'+(W-L)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'" stroke="var(--border)"/>':"")+
+    '<line x1="'+X(sstIdx).toFixed(1)+'" x2="'+X(sstIdx).toFixed(1)+'" y1="0" y2="'+H+'" stroke="var(--ink)" stroke-width="1.2"/>';
+  sp.setAttribute("aria-label",byId[selected].name+" "+(anom?"temperature anomaly":"sea-surface temperature")+", "+sst.meta.start+" to "+sst.meta.end);
+  if(mapReady&&sst) drawSst();
+}
+function setSst(i){ sstIdx=Math.max(0,Math.min(sst.n-1,i)); document.getElementById("sstSlider").value=sstIdx; paintSst(); }
+function sstPlayStop(){ clearInterval(sstTimer); sstTimer=0; document.getElementById("sstPlay").textContent="Play"; }
+document.getElementById("sstSlider").addEventListener("input",function(){ sstPlayStop(); setSst(+this.value); });
+document.getElementById("sstPlay").addEventListener("click",function(){
+  if(sstTimer){ sstPlayStop(); return; }
+  this.textContent="Pause"; if(sstIdx>=sst.n-1) setSst(0);
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  sstTimer=setInterval(function(){ if(sstIdx>=sst.n-1){ sstPlayStop(); return; } setSst(sstIdx+(reduce?12:1)); },reduce?600:140);
+});
+document.getElementById("sstMode").addEventListener("click",function(){
+  sstMode=sstMode==="abs"?"anom":"abs"; this.setAttribute("aria-pressed",sstMode==="anom"); this.classList.toggle("on",sstMode==="anom"); paintSst();
+});
+document.getElementById("sstLatest").addEventListener("click",function(){ sstPlayStop(); setSst(sst.n-1); });
+document.getElementById("sstSpark").addEventListener("click",function(ev){
+  if(!sst) return; var r=this.getBoundingClientRect(); sstPlayStop();
+  setSst(Math.round(((ev.clientX-r.left)/r.width*560-4)/552*(sst.n-1)));
+});
+/* the control only appears once a grid has been published */
+try{ if(location.protocol!=="file:") fetch("data/sst.json",{method:"HEAD"}).then(function(r){ if(r.ok) document.getElementById("sst").hidden=false; }).catch(function(){}); }catch(e){}
+document.getElementById("sstBtn").addEventListener("click",function(){
+  var body=document.getElementById("sstBody"), open=body.hidden;
+  body.hidden=!open; this.setAttribute("aria-expanded",open); sstOn=open; mapEl.classList.toggle("sst-on",open);
+  if(open){
+    document.getElementById("sstNote").textContent="Monthly mean sea-surface temperature, Copernicus Marine reanalysis, 0.25° grid. Drag the slider, press Play, or click the chart.";
+    withSst(function(){ paintSst(); });
+  }else{
+    sstPlayStop();
+    if(mapReady&&map.getLayer("sst")) map.setLayoutProperty("sst","visibility","none");
+  }
+});
+
 /* ---- painting ---- */
 var tip=document.getElementById("tip");
 function paintMap(){
@@ -895,7 +1102,7 @@ function paintTable(){
   document.getElementById("dataTable").innerHTML=h+"</tbody>";
 }
 function select(id,fly){
-  selected=id; paintMap(); paintBars(); paintDetail();
+  selected=id; paintMap(); paintBars(); paintDetail(); paintSst();
   if(fly){ fitBasin(byId[id]); }
 }
 
