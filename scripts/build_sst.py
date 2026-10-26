@@ -5,12 +5,14 @@ Source: Copernicus Marine, Mediterranean Sea Physics Reanalysis (MEDSEA_MULTIYEA
 monthly mean potential temperature at the surface, coarsened to 0.25 degree.
 Needs a free Copernicus Marine login (env COPERNICUSMARINE_SERVICE_USERNAME / _PASSWORD).
 
-Kept light on purpose:
-  * only the last --years years are published (default 12), about 150 small frames;
+Incremental on purpose:
+  * the first run builds the last --years years (default 12);
+  * every later run reads the existing data/sst.png, keeps every month already there
+    unchanged, and only fetches months after the last one, appending them;
   * the data is fetched one year at a time, reduced straight away and the file deleted,
-    so memory stays at a few tens of MB and nothing large is ever held;
-  * the 1991-2020 monthly climatology (for anomalies) is 12 frames, built once into
-    data/sst_clim.png and reused until you pass --rebuild-climatology.
+    so memory stays small and nothing large is ever held;
+  * the 1991-2020 monthly climatology (12 frames, data/sst_clim.png) is built once and
+    reused until you pass --rebuild-climatology.
 
     pip install copernicusmarine xarray netcdf4 numpy pillow
     python3 scripts/build_sst.py [--years 12] [--rebuild-climatology]
@@ -99,6 +101,26 @@ def write_atlas(frames, path, cols):
     Image.fromarray(atlas, "L").save(path, optimize=True)
 
 
+def load_existing(out):
+    """Read the published atlas back into codes, so old months are kept byte for byte."""
+    meta_path, png_path = os.path.join(out, "sst.json"), os.path.join(out, "sst.png")
+    if not (os.path.exists(meta_path) and os.path.exists(png_path)):
+        return None
+    with open(meta_path) as fh:
+        meta = json.load(fh)
+    n, w, h, cols = meta["n"], meta["w"], meta["h"], meta["cols"]
+    atlas = np.asarray(Image.open(png_path).convert("L"))
+    frames = []
+    for i in range(n):
+        r, c = divmod(i, cols)
+        frames.append(atlas[r * h:(r + 1) * h, c * w:(c + 1) * w].copy())
+    months = [str(m) for m in np.array(
+        [("%04d-%02d" % (int(meta["start"][:4]) + (int(meta["start"][5:]) - 1 + i) // 12,
+                         (int(meta["start"][5:]) - 1 + i) % 12 + 1)) for i in range(n)])]
+    print("existing:", n, "months,", meta["start"], "to", meta["end"])
+    return {"meta": meta, "frames": frames, "months": months}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--years", type=int, default=12)
@@ -111,21 +133,35 @@ def main():
     datasets = monthly_temperature_datasets()
     clim_path = os.path.join(a.out, "sst_clim.png")
 
-    grid = {}
-    # ---- recent months, one year at a time ----
+    # ---- months to add: the whole window on the first run, only newer months after that ----
     this_year = datetime.date.today().year
-    frames, months = [], []
-    for year in range(this_year - a.years + 1, this_year + 1):
+    prev = load_existing(a.out)
+    if prev:
+        frames, months = list(prev["frames"]), list(prev["months"])
+        last = months[-1]
+        years = range(int(last[:4]), this_year + 1)
+    else:
+        frames, months, last = [], [], None
+        years = range(this_year - a.years + 1, this_year + 1)
+    grid = {}
+    for year in years:
         da = one_year(datasets, year, a.tmp)
         if da is None:
             print(year, "no data")
             continue
+        if prev and (da.sizes["latitude"], da.sizes["longitude"]) != (prev["meta"]["h"], prev["meta"]["w"]):
+            raise SystemExit("grid changed: %s vs %s" % ((da.sizes["latitude"], da.sizes["longitude"]),
+                                                       (prev["meta"]["h"], prev["meta"]["w"])))
         grid = grid or {"lon": da["longitude"].values, "lat": da["latitude"].values}
         t = da["time"].dt.strftime("%Y-%m").values
+        added = 0
         for i in range(da.sizes["time"]):
+            if last and str(t[i]) <= last:
+                continue
             frames.append(encode(da.values[i].astype(np.float32)))
             months.append(str(t[i]))
-        print(year, da.sizes["time"], "months")
+            added += 1
+        print(year, added, "new months")
     if not frames:
         raise SystemExit("no data downloaded")
 
@@ -151,12 +187,16 @@ def main():
     assert all((b[0] * 12 + b[1]) - (x[0] * 12 + x[1]) == 1 for x, b in zip(ym, ym[1:])), "gap in months"
     n, (h, w) = len(frames), frames[0].shape
     write_atlas(np.stack(frames), os.path.join(a.out, "sst.png"), COLS)
-    lon, lat = grid["lon"], grid["lat"]
-    dlon, dlat = float(abs(lon[1] - lon[0])), float(abs(lat[1] - lat[0]))
+    if prev:
+        bounds = prev["meta"]["bounds"]
+    else:
+        lon, lat = grid["lon"], grid["lat"]
+        dlon, dlat = float(abs(lon[1] - lon[0])), float(abs(lat[1] - lat[0]))
+        bounds = [round(float(lon[0] - dlon / 2), 4), round(float(lat[-1] - dlat / 2), 4),
+                  round(float(lon[-1] + dlon / 2), 4), round(float(lat[0] + dlat / 2), 4)]
     meta = {
         "start": months[0], "end": months[-1], "n": n, "w": int(w), "h": int(h), "cols": COLS,
-        "bounds": [round(float(lon[0] - dlon / 2), 4), round(float(lat[-1] - dlat / 2), 4),
-                   round(float(lon[-1] + dlon / 2), 4), round(float(lat[0] + dlat / 2), 4)],
+        "bounds": bounds,
         "base": BASE, "scale": SCALE, "clim": "sst_clim.png", "climYears": list(CLIM_YEARS),
         "source": "Copernicus Marine " + PRODUCT, "built": datetime.date.today().isoformat(),
     }
