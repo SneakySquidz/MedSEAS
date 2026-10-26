@@ -23,10 +23,24 @@ from PIL import Image
 
 BASE, SCALE = 8.0, 10.0           # code = round((T - 8) * 10): 8.1 .. 33.4 C, 0.1 C steps
 LON, LAT = (-6.0, 36.5), (30.0, 46.0)
-# Reanalysis (to the last validated year), then the interim extension for the months after it.
-DATASETS = ["med-cmcc-tem-rean-m", "med-cmcc-tem-int-m"]
+PRODUCT = "MEDSEA_MULTIYEAR_PHY_006_004"
 VAR = "thetao"
 COARSEN = 6
+
+
+def monthly_temperature_datasets():
+    """Dataset ids are renamed from time to time, so look them up: monthly temperature,
+    the reanalysis first and any interim extension (which covers the later months) after it."""
+    import copernicusmarine
+    cat = copernicusmarine.describe(product_id=PRODUCT, disable_progress_bar=True)
+    ids = [d.dataset_id for p in cat.products for d in p.datasets]
+    print("datasets in", PRODUCT + ":", ids)
+    pick = [i for i in ids if "temp" in i.lower() and "p1m" in i.lower()
+            or ("tem" in i.lower() and i.lower().endswith("-m"))]
+    pick.sort(key=lambda i: ("int" in i.lower(), i))
+    if not pick:
+        raise SystemExit("no monthly temperature dataset found among: %s" % ids)
+    return pick
 
 
 def fetch(dataset_id, start, end, folder):
@@ -51,7 +65,7 @@ def main():
     os.makedirs(a.out, exist_ok=True)
 
     parts = []
-    for ds in DATASETS:
+    for ds in monthly_temperature_datasets():
         try:
             fetch(ds, a.start + "-01T00:00:00" if len(a.start) == 7 else a.start,
                   datetime.date.today().isoformat() + "T00:00:00", a.tmp)
