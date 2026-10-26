@@ -112,6 +112,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 #lvl{flex:1 1 260px;min-width:0;accent-color:var(--accent);height:28px;cursor:pointer;}
 .presets{display:flex;gap:6px;flex-wrap:wrap;}
 .pbtn{padding:6px 12px;font-size:12px;}
+.funnote.small{font-size:11px;color:var(--ink-muted);}
 .funnote{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.55;max-width:80ch;}
 .funstats{display:flex;gap:8px;flex-wrap:wrap;}
 .funstats .tile{min-width:130px;}
@@ -263,6 +264,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         </div>
         <div class="presets" id="presets" role="group" aria-label="Sea-level presets"></div>
         <p class="funnote" id="funNote" aria-live="polite"></p>
+        <p class="funnote small">A toy on today&rsquo;s terrain at about 4 km per cell: no ice sheets, sediment, tides or crustal rebound, so low coastal cities flood later here than in reality. Needs the page served over http(s), not opened from disk.</p>
         <div class="funstats" id="funStats"></div>
       </div>
     </div>
@@ -537,7 +539,7 @@ document.getElementById("zreset").addEventListener("click",function(){homeView(t
 map.on("resize",syncZoomLimits);
 map.on("zoom",function(){ mapEl.classList.toggle("zfar",map.getZoom()<homeZoom+0.45); });
 
-/* ---- terrain grid (data/dem.js, fetched when the browser is idle) ----
+/* ---- terrain grid (data/dem.png, fetched when the browser is idle) ----
    One PNG on the Web Mercator grid: red = the sea level that first covers the cell (the depth, for sea),
    green = flags (1 sea today, 2 open ocean outside the Mediterranean). Built by scripts/build_data.py. */
 var dem=null, demWaiters=[], demLoading=false;
@@ -546,18 +548,17 @@ function withDem(cb){
   demWaiters.push(cb);
   if(demLoading) return;
   demLoading=true;
-  var s=document.createElement("script"); s.src="data/dem.js";
-  s.onerror=function(){ demLoading=false; demWaiters.length=0; };
-  s.onload=function(){
-    var D=window.MEDDEM, img=new Image();
-    img.onload=function(){
-      var c=document.createElement("canvas"); c.width=D.w; c.height=D.h;
+  var img=new Image();
+  img.onerror=function(){ demLoading=false; demWaiters.length=0; };
+  img.onload=function(){
+    try{
+      var w=img.naturalWidth, h=img.naturalHeight, c=document.createElement("canvas"); c.width=w; c.height=h;
       var x=c.getContext("2d",{willReadFrequently:true}); x.drawImage(img,0,0);
-      var px=x.getImageData(0,0,D.w,D.h).data, n=D.w*D.h, F=new Uint8Array(n), K=new Uint8Array(n), i;
+      var px=x.getImageData(0,0,w,h).data, n=w*h, F=new Uint8Array(n), K=new Uint8Array(n), i;
       for(i=0;i<n;i++){ F[i]=px[i*4]; K[i]=px[i*4+1]; }
       var lut=new Float32Array(256);
-      for(i=0;i<256;i++){ var t=(i-128)/127.5; lut[i]=(t<0?-1:1)*D.range*t*t; }
-      var d={w:D.w,h:D.h,F:F,K:K,lut:lut,W:D.bounds[0],S:D.bounds[1],E:D.bounds[2],N:D.bounds[3]};
+      for(i=0;i<256;i++){ var t=(i-128)/127.5; lut[i]=(t<0?-1:1)*GEO.demRange*t*t; }
+      var d={w:w,h:h,F:F,K:K,lut:lut,W:GEO.bounds[0],S:GEO.bounds[1],E:GEO.bounds[2],N:GEO.bounds[3]};
       d.mN=merc(d.N); d.mS=merc(d.S);
       d.rowKm2=new Float64Array(d.h);
       for(var y=0;y<d.h;y++){
@@ -565,10 +566,9 @@ function withDem(cb){
         d.rowKm2[y]=cw*cw;
       }
       dem=d; demWaiters.splice(0).forEach(function(f){f(d);});
-    };
-    img.src=D.png;
+    }catch(e){ demLoading=false; demWaiters.length=0; }   /* opened from disk: the browser blocks reading pixels */
   };
-  document.head.appendChild(s);
+  img.src="data/dem.png";
 }
 function demCell(lng,lat){
   if(!dem) return -1;
