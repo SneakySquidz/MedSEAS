@@ -5,25 +5,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#edf6fa; --surface:#ffffff; --surface-2:#e4f2f9; --surface-3:#d2e8f3;
-  --ink:#0a2c3e; --ink-2:#3a6377; --ink-muted:#4a6b7d; --border:#b5d6e6; --on-accent:#ffffff;
-  --accent:#12688f; --accent-strong:#0a4a68;
+  --bg:#f6f4ee; --surface:#ffffff; --surface-2:#f0eee7; --surface-3:#e2dfd5;
+  --ink:#1f1d18; --ink-2:#4d4a42; --ink-muted:#5e5a50; --border:#d8d3c6; --on-accent:#ffffff;
+  --accent:#9a4a22; --accent-strong:#7a3a18;
   --land:#f1ebdd; --land-line:#b7a57c; --land-ink:#6b5a33;
-  --sea-void:#d7ecf5; --shadow:0 12px 30px -18px rgba(10,44,62,.35); --halo:#ffffff;
+  --sea-void:#d7ecf5; --shadow:0 12px 30px -18px rgba(31,29,24,.3); --halo:#ffffff;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#06171f; --surface:#0c242f; --surface-2:#102f3d; --surface-3:#16404f;
-    --ink:#e9f5fa; --ink-2:#b2d3e1; --ink-muted:#8fb3c3; --border:#23505f; --on-accent:#06171f;
-    --accent:#5cbfe4; --accent-strong:#8fd8f0;
+    --bg:#16150f; --surface:#1f1e18; --surface-2:#282720; --surface-3:#363429;
+    --ink:#f4f1ea; --ink-2:#d2cdc0; --ink-muted:#aca79a; --border:#3b3930; --on-accent:#1f1d18;
+    --accent:#f0a674; --accent-strong:#ffc9a3;
     --land:#3a3626; --land-line:#6e6446; --land-ink:#d2c6a0;
     --sea-void:#0a2432; --shadow:0 14px 34px -18px rgba(0,0,0,.6); --halo:#06171f;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#06171f; --surface:#0c242f; --surface-2:#102f3d; --surface-3:#16404f;
-  --ink:#e9f5fa; --ink-2:#b2d3e1; --ink-muted:#8fb3c3; --border:#23505f; --on-accent:#06171f;
-  --accent:#5cbfe4; --accent-strong:#8fd8f0;
+  --bg:#16150f; --surface:#1f1e18; --surface-2:#282720; --surface-3:#363429;
+  --ink:#f4f1ea; --ink-2:#d2cdc0; --ink-muted:#aca79a; --border:#3b3930; --on-accent:#1f1d18;
+  --accent:#f0a674; --accent-strong:#ffc9a3;
   --land:#3a3626; --land-line:#6e6446; --land-ink:#d2c6a0;
   --sea-void:#0a2432; --shadow:0 14px 34px -18px rgba(0,0,0,.6); --halo:#06171f;
 }
@@ -40,6 +40,33 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .reviewed{font-size:12px;color:var(--ink-muted);margin:10px 0 0;}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px 18px 20px;}
 .ptitle{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;}
+
+
+/* play strip: three ways in, one accent colour */
+.play{display:flex;flex-direction:column;gap:12px;}
+.play-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;}
+.play-sub{margin:0;font-size:14.5px;color:var(--ink-2);}
+.play-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.play-card{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:14px;padding:16px 16px 18px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow);}
+.pk{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-strong);font-weight:700;}
+.pt{margin:2px 0 0;font-family:"Fraunces",Georgia,serif;font-size:21px;font-weight:600;line-height:1.2;}
+.play-card .pw{font-size:14px;color:var(--ink-2);line-height:1.5;margin:0;}
+.pacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:8px;}
+@media (max-width:840px){.play-grid{grid-template-columns:1fr;}}
+/* salinity drivers: a ranked list, not a chart, because evaporation is only two estimates */
+.drivers{margin-top:14px;border-top:1px dashed var(--border);padding-top:13px;display:flex;flex-direction:column;gap:9px;}
+.drivers[hidden]{display:none;}
+.salt-rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+.salt-rank li{font-size:13.5px;}
+.srow{all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr) 52px;gap:10px;align-items:center;padding:3px 4px;border-radius:8px;}
+.srow:hover{background:var(--surface-2);}
+.srow:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+.salt-rank .sn{color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.salt-rank .sb{height:12px;border-radius:99px;background:var(--surface-3);overflow:hidden;}
+.salt-rank .sb i{display:block;height:100%;border-radius:99px;background:var(--ink-2);}
+.salt-rank .sv{font-family:"IBM Plex Mono",monospace;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums;}
+.srow.on .sn{color:var(--accent-strong);}
+.srow.on .sb i{background:var(--accent);}
 
 /* two-level filter */
 .filter{display:flex;flex-direction:column;gap:9px;margin-bottom:13px;}
@@ -112,15 +139,6 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .funbtn,.pbtn{border:1px solid var(--border);background:var(--surface-2);color:var(--accent-strong);font-family:inherit;font-size:14px;font-weight:600;padding:9px 16px;border-radius:99px;cursor:pointer;}
 .funbtn:hover,.pbtn:hover{border-color:var(--accent);}
 .funbtn[aria-expanded="true"],.pbtn.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
-/* explore cue: an inline prompt plus a short outline pulse on the two buttons; stops after 3 beats or on first click */
-.explore-cue{display:flex;align-items:center;gap:9px;margin:16px 0 0;padding:8px 12px;border:1px dashed var(--border);border-radius:10px;font-size:13.5px;color:var(--ink-2);line-height:1.45;}
-.explore-cue b{color:var(--accent-strong);font-weight:700;}
-.cue-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none;animation:cueDot 1.6s ease-in-out 3;}
-@keyframes cueDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.45}}
-.funbtn.nudge{animation:nudgeRing 1.6s ease-out 3;}
-.funbtn[aria-expanded="true"]{animation:none;}
-@keyframes nudgeRing{0%{box-shadow:0 0 0 0 rgba(18,104,143,.45)}100%{box-shadow:0 0 0 9px rgba(18,104,143,0)}}
-@media (prefers-reduced-motion: reduce){.cue-dot,.funbtn.nudge{animation:none;}}
 .funbtn:focus-visible,.pbtn:focus-visible,#lvl:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .funbody{margin-top:13px;display:flex;flex-direction:column;gap:11px;}
 .funbody[hidden]{display:none;}
@@ -250,6 +268,36 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
     <p class="reviewed">Data last reviewed: <time datetime="2026-09">September 2026</time></p>
   </header>
 
+  <section class="play" aria-labelledby="playTitle">
+    <div class="play-head">
+      <span class="ptitle" id="playTitle">Play with the sea</span>
+      <p class="play-sub">Three things to try. Each one changes the map.</p>
+    </div>
+    <div class="play-grid">
+      <article class="play-card">
+        <span class="pk">Salinity</span>
+        <h2 class="pt">Taste the sea</h2>
+        <p class="pw">Compare how salty each basin is, then see what drives it.</p>
+        <div class="pacts">
+          <button class="pbtn" type="button" data-play="salt">Surface salt</button>
+          <button class="pbtn" type="button" data-play="drivers">What drives it</button>
+        </div>
+      </article>
+      <article class="play-card">
+        <span class="pk">Temperature</span>
+        <h2 class="pt">Watch the sea warm</h2>
+        <p class="pw">Scrub through monthly sea temperatures since 2015, or press Play for a film.</p>
+        <div class="pacts"><button class="pbtn" type="button" data-play="temp">Open the monthly map</button></div>
+      </article>
+      <article class="play-card">
+        <span class="pk">Flooding</span>
+        <h2 class="pt">Raise the sea</h2>
+        <p class="pw">Drag the sea level from an ice-age low to an ice-free Earth and see which coasts go under.</p>
+        <div class="pacts"><button class="pbtn" type="button" data-play="flood">Open sea-level</button></div>
+      </article>
+    </div>
+  </section>
+
   <div class="panel">
     <div class="filter">
       <div class="groups" id="groups" role="tablist" aria-label="Measure category"></div>
@@ -272,9 +320,13 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <div class="ramp" id="ramp"></div>
       <span class="ramp-end" id="rampHi">&mdash;</span>
     </div>
-    <p class="explore-cue"><span class="cue-dot" aria-hidden="true"></span><span><b>Explore the two what-ifs below:</b> how sea level would reshape the coast, and how the sea has warmed month by month.</span></p>
+    <div class="drivers" id="drivers" hidden>
+      <span class="ptitle">What drives salt</span>
+      <p class="funnote">The sea loses more water to evaporation than rain and rivers return, and the water left behind gets saltier. Evaporation is estimated per side of the sea, so the eastern basins lose more (0.55 m/yr, estimate) than the western ones (0.32 m/yr, estimate).</p>
+      <ol class="salt-rank" id="saltRank"></ol>
+    </div>
     <div class="fun" id="sst" hidden>
-      <button class="funbtn nudge" id="sstBtn" type="button" aria-expanded="false" aria-controls="sstBody">Sea-surface temperature through time</button>
+      <button class="funbtn" id="sstBtn" type="button" aria-expanded="false" aria-controls="sstBody">Sea-surface temperature through time</button>
       <div class="funbody" id="sstBody" hidden>
         <div class="funrow">
           <button class="pbtn" id="sstPlay" type="button">Play</button>
@@ -292,7 +344,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       </div>
     </div>
     <div class="fun">
-      <button class="funbtn nudge" id="funBtn" type="button" aria-expanded="false" aria-controls="funBody">Sea-level scenarios</button>
+      <button class="funbtn" id="funBtn" type="button" aria-expanded="false" aria-controls="funBody">Sea-level scenarios</button>
       <div class="funbody" id="funBody" hidden>
         <div class="funrow">
           <label for="lvl" class="funlabel">Sea level</label>
@@ -1056,7 +1108,23 @@ function paintMap(){
   document.getElementById("rampHi").textContent=m.fmt(e[1]);
   document.getElementById("rampCap").textContent=m.full;
 }
+function renderDrivers(){
+  var box=document.getElementById("drivers"); box.hidden=group!=="salt"; if(box.hidden) return;
+  var list=document.getElementById("saltRank"), sorted=basins.slice().sort(function(a,b){return b.salinity-a.salinity;});
+  var lo=36, hi=39.5;
+  list.innerHTML="";
+  sorted.forEach(function(b){
+    var li=document.createElement("li"), row=document.createElement("button");
+    var pct=Math.max(4,Math.min(100,(b.salinity-lo)/(hi-lo)*100));
+    row.type="button"; row.className="srow"+(b.id===selected?" on":"");
+    row.setAttribute("aria-label",b.name+", "+b.salinity.toFixed(1)+" psu");
+    row.innerHTML='<span class="sn">'+b.name.replace(" Sea","")+'</span><span class="sb"><i style="width:'+pct.toFixed(1)+'%"></i></span><span class="sv">'+b.salinity.toFixed(1)+'</span>';
+    row.addEventListener("click",function(){ select(b.id,false); });
+    li.appendChild(row); list.appendChild(li);
+  });
+}
 function paintBars(){
+  renderDrivers();
   var m=M(), host=document.getElementById("bars");
   host.innerHTML="";
   var max=extent()[1];
@@ -1157,6 +1225,24 @@ groups.forEach(function(g){
     renderSubs(); paintMap(); paintBars();
   });
   gHost.appendChild(b);
+});
+
+/* ---- play strip: each card opens an existing module ---- */
+document.querySelectorAll("[data-play]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var k=btn.getAttribute("data-play");
+    if(k==="salt"||k==="drivers"){
+      document.getElementById("g-salt").click();
+      if(k==="drivers"){ var sub=document.querySelector("#subs .sbtn:nth-child(2)"); if(sub) sub.click(); }
+      document.getElementById("map").scrollIntoView({behavior:"smooth",block:"center"});
+    }else if(k==="temp"){
+      var t=document.getElementById("sstBtn"); if(t.getAttribute("aria-expanded")!=="true") t.click();
+      t.scrollIntoView({behavior:"smooth",block:"center"});
+    }else if(k==="flood"){
+      var f=document.getElementById("funBtn"); if(f.getAttribute("aria-expanded")!=="true") f.click();
+      f.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+  });
 });
 
 /* ---- CSV download ---- */
