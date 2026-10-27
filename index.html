@@ -197,7 +197,13 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .tile .tv{font-family:"IBM Plex Mono",monospace;font-size:16px;font-weight:600;color:var(--accent-strong);display:block;margin-top:2px;}
 .tile .tv i{font-size:9.5px;font-style:normal;color:var(--ink-muted);margin-left:1px;}
 .prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:11px;margin-top:11px;}
-.pcard{background:var(--surface-2);border-radius:11px;padding:11px 12px;display:flex;flex-direction:column;gap:4px;}
+.pcard{background:var(--surface-2);border-radius:11px;padding:11px 12px;display:block;}
+.pcard > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.pcard > summary::-webkit-details-marker{display:none;}
+.pcard > summary::after{content:"+";font-size:16px;font-weight:600;color:var(--accent-strong);line-height:1;}
+.pcard[open] > summary::after{content:"\2212";}
+.pcard > summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+.pcard > .pw,.pcard > .pd,.pcard > a{display:block;margin-top:5px;}
 .pcard .pn{font-size:12.5px;font-weight:700;}
 .pcard .pw{font-size:11.5px;color:var(--ink-2);line-height:1.5;}
 .pcard .pd{font-size:10.5px;color:var(--ink-muted);font-family:"IBM Plex Mono",monospace;line-height:1.5;}
@@ -416,60 +422,60 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
   <div class="panel">
     <span class="ptitle">Where the data comes from</span>
     <div class="prov">
-      <div class="pcard">
-        <span class="pn">Copernicus Marine Service</span>
+      <details class="pcard">
+        <summary class="pn">Copernicus Marine Service</summary>
         <span class="pw">Mediterranean Sea Physics Reanalysis &mdash; the reference gridded temperature and salinity field.</span>
         <span class="pd">MEDSEA_MULTIYEAR_PHY_006_004 &middot; NEMO + OceanVAR &middot; 1/24&deg; (&asymp;4 km) &middot; 141 depth levels</span>
         <a href="https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description" target="_blank" rel="noopener">data.marine.copernicus.eu &rarr;</a>
-      </div>
-      <div class="pcard">
-        <span class="pn">Sea-surface temperature through time</span>
+      </details>
+      <details class="pcard">
+        <summary class="pn">Sea-surface temperature through time</summary>
         <span class="pw">Monthly surface temperature behind the time slider, 0.25&deg; grid. Appears once the Update SST grid workflow has run.</span>
         <span class="pd">MEDSEA_MULTIYEAR_PHY_006_004 &middot; monthly mean &middot; 1987 to present &middot; climatology 1991&ndash;2020</span>
         <a href="https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description" target="_blank" rel="noopener">data.marine.copernicus.eu &rarr;</a>
-      </div>
-      <div class="pcard">
-        <span class="pn">Argo float network</span>
+      </details>
+      <details class="pcard">
+        <summary class="pn">Argo float network</summary>
         <span class="pw">Profilers diving to 2,000 m every ten days &mdash; the in-situ backbone for salinity and warming trends.</span>
         <span class="pd">Argo vs. reanalysis &middot; W. Med / Ionian / Levantine, 2012&ndash;2025</span>
         <a href="https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2026.1846069/full" target="_blank" rel="noopener">Argo vs. reanalysis trends &rarr;</a>
-      </div>
-      <div class="pcard">
-        <span class="pn">EMODnet Bathymetry</span>
+      </details>
+      <details class="pcard">
+        <summary class="pn">EMODnet Bathymetry</summary>
         <span class="pw">The European seabed terrain model behind the depth figures.</span>
         <span class="pd">DTM 2022 &middot; 21,937 surveys &middot; 64 providers &middot; 28 countries</span>
         <a href="https://emodnet.ec.europa.eu/en/bathymetry" target="_blank" rel="noopener">emodnet.ec.europa.eu &rarr;</a>
-      </div>
-      <div class="pcard">
-        <span class="pn">Mercator Ocean &amp; Copernicus C3S</span>
+      </details>
+      <details class="pcard">
+        <summary class="pn">Mercator Ocean &amp; Copernicus C3S</summary>
         <span class="pw">Annual SST bulletins and marine-heatwave monitoring.</span>
         <span class="pd">2025 mean 21.2 &deg;C, 2nd warmest after 21.3 &deg;C in 2024; intense heatwaves covered 93% of the basin, 3rd widest after 2023 and 2024</span>
         <a href="https://marine.copernicus.eu/bulletin/2025-annual-ocean-health-bulletin" target="_blank" rel="noopener">2025 Ocean Health Bulletin &rarr;</a>
-      </div>
-      <div class="pcard">
-        <span class="pn">Mediterranean water budget</span>
+      </details>
+      <details class="pcard">
+        <summary class="pn">Mediterranean water budget</summary>
         <span class="pw">Net evaporation (evaporation minus rain) for the western and eastern basins.</span>
         <span class="pd">West 0.88 mm/day &middot; East 1.52 mm/day &middot; Frontiers in Climate, 2025</span>
         <a href="https://www.frontiersin.org/journals/climate/articles/10.3389/fclim.2025.1472731/full" target="_blank" rel="noopener">Eastern Med water budget &rarr;</a>
-      </div>
-      <div class="pcard">
-        <span class="pn">Natural Earth</span>
+      </details>
+      <details class="pcard">
+        <summary class="pn">Natural Earth</summary>
         <span class="pw">The coastline drawn here &mdash; public-domain vector shorelines, rendered with MapLibre GL JS.</span>
         <span class="pd">ne_10m_land &middot; Web Mercator</span>
         <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">naturalearthdata.com &rarr;</a>
-      </div>
-      <div class="pcard">
-        <span class="pn">Terrain Tiles (AWS Open Data)</span>
+      </details>
+      <details class="pcard">
+        <summary class="pn">Terrain Tiles (AWS Open Data)</summary>
         <span class="pw">Land elevation and seabed depth behind the Seabed view, the measured areas and mean depths, and the sea-level toggle.</span>
         <span class="pd">&ldquo;terrarium&rdquo; tiles, z6 &middot; SRTM, GMTED2010, ETOPO1/GEBCO &middot; Mapzen</span>
         <a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">registry.opendata.aws &rarr;</a>
-      </div>
-      <div class="pcard">
-        <span class="pn">Basin monographs</span>
+      </details>
+      <details class="pcard">
+        <summary class="pn">Basin monographs</summary>
         <span class="pw">Per-basin depth, area, tide, plankton and seasonal figures from the regional literature.</span>
         <span class="pd">Adriatic, Aegean, Tyrrhenian, Ligurian, Alboran, Levantine studies; CIESM; Britannica</span>
         <a href="https://www.britannica.com/place/Mediterranean-Sea/Hydrologic-features-and-climate" target="_blank" rel="noopener">Britannica &rarr;</a>
-      </div>
+      </details>
     </div>
   </div>
 
