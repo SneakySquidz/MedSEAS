@@ -16,7 +16,7 @@
     --bg:#06171f; --surface:#0c242f; --surface-2:#102f3d; --surface-3:#16404f;
     --ink:#e9f5fa; --ink-2:#b2d3e1; --ink-muted:#8fb3c3; --border:#23505f; --on-accent:#06171f;
     --accent:#5cbfe4; --accent-strong:#8fd8f0;
-    --land:#2f2a20; --land-line:#5c5236; --land-ink:#9b8c66;
+    --land:#3a3626; --land-line:#6e6446; --land-ink:#d2c6a0;
     --sea-void:#0a2432; --shadow:0 14px 34px -18px rgba(0,0,0,.6); --halo:#06171f;
   }
 }
@@ -24,7 +24,7 @@
   --bg:#06171f; --surface:#0c242f; --surface-2:#102f3d; --surface-3:#16404f;
   --ink:#e9f5fa; --ink-2:#b2d3e1; --ink-muted:#8fb3c3; --border:#23505f; --on-accent:#06171f;
   --accent:#5cbfe4; --accent-strong:#8fd8f0;
-  --land:#2f2a20; --land-line:#5c5236; --land-ink:#9b8c66;
+  --land:#3a3626; --land-line:#6e6446; --land-ink:#d2c6a0;
   --sea-void:#0a2432; --shadow:0 14px 34px -18px rgba(0,0,0,.6); --halo:#06171f;
 }
 *{box-sizing:border-box;}
@@ -109,11 +109,11 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .city.wet span{color:#b3261e;}
 .fun[hidden]{display:none;}
 .fun{margin-top:14px;border-top:1px dashed var(--border);padding-top:13px;}
-.funbtn,.pbtn{border:1.5px solid var(--accent);background:var(--surface-2);color:var(--accent-strong);font-family:inherit;font-size:14px;font-weight:600;padding:9px 16px;border-radius:99px;cursor:pointer;}
+.funbtn,.pbtn{border:1px solid var(--border);background:var(--surface-2);color:var(--accent-strong);font-family:inherit;font-size:14px;font-weight:600;padding:9px 16px;border-radius:99px;cursor:pointer;}
 .funbtn:hover,.pbtn:hover{border-color:var(--accent);}
 .funbtn[aria-expanded="true"],.pbtn.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
 /* explore cue: an inline prompt plus a short outline pulse on the two buttons; stops after 3 beats or on first click */
-.explore-cue{display:flex;align-items:center;gap:9px;margin:16px 0 0;padding:8px 12px;border:1px dashed var(--accent);border-radius:10px;font-size:13.5px;color:var(--ink-2);line-height:1.45;}
+.explore-cue{display:flex;align-items:center;gap:9px;margin:16px 0 0;padding:8px 12px;border:1px dashed var(--border);border-radius:10px;font-size:13.5px;color:var(--ink-2);line-height:1.45;}
 .explore-cue b{color:var(--accent-strong);font-weight:700;}
 .cue-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none;animation:cueDot 1.6s ease-in-out 3;}
 @keyframes cueDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.45}}
