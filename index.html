@@ -6,15 +6,15 @@
 <style>
 :root{
   --bg:#edf6fa; --surface:#ffffff; --surface-2:#e4f2f9; --surface-3:#d2e8f3;
-  --ink:#0a2c3e; --ink-2:#3a6377; --ink-muted:#6d8fa0; --border:#c6e1ee;
+  --ink:#0a2c3e; --ink-2:#3a6377; --ink-muted:#4a6b7d; --border:#b5d6e6; --on-accent:#ffffff;
   --accent:#12688f; --accent-strong:#0a4a68;
-  --land:#f1ebdd; --land-line:#cbbb99; --land-ink:#a08f68;
+  --land:#f1ebdd; --land-line:#b7a57c; --land-ink:#6b5a33;
   --sea-void:#d7ecf5; --shadow:0 12px 30px -18px rgba(10,44,62,.35); --halo:#ffffff;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#06171f; --surface:#0c242f; --surface-2:#102f3d; --surface-3:#16404f;
-    --ink:#e9f5fa; --ink-2:#b2d3e1; --ink-muted:#7ba0b1; --border:#1a3d4d;
+    --ink:#e9f5fa; --ink-2:#b2d3e1; --ink-muted:#8fb3c3; --border:#23505f; --on-accent:#06171f;
     --accent:#5cbfe4; --accent-strong:#8fd8f0;
     --land:#2f2a20; --land-line:#5c5236; --land-ink:#9b8c66;
     --sea-void:#0a2432; --shadow:0 14px 34px -18px rgba(0,0,0,.6); --halo:#06171f;
@@ -22,24 +22,24 @@
 }
 :root[data-theme="dark"]{
   --bg:#06171f; --surface:#0c242f; --surface-2:#102f3d; --surface-3:#16404f;
-  --ink:#e9f5fa; --ink-2:#b2d3e1; --ink-muted:#7ba0b1; --border:#1a3d4d;
+  --ink:#e9f5fa; --ink-2:#b2d3e1; --ink-muted:#8fb3c3; --border:#23505f; --on-accent:#06171f;
   --accent:#5cbfe4; --accent-strong:#8fd8f0;
   --land:#2f2a20; --land-line:#5c5236; --land-ink:#9b8c66;
   --sea-void:#0a2432; --shadow:0 14px 34px -18px rgba(0,0,0,.6); --halo:#06171f;
 }
 *{box-sizing:border-box;}
-body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;padding:26px 18px 52px;}
-.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;padding:26px 18px 52px;}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px;}
 h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-size:clamp(29px,4.2vw,44px);font-weight:600;line-height:1.05;}
 .eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;}
-.sub{color:var(--ink-2);font-size:15px;line-height:1.55;max-width:62ch;margin:9px 0 0;}
+.sub{color:var(--ink-2);font-size:16px;line-height:1.6;max-width:62ch;margin:12px 0 0;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;}
 .chip{display:flex;align-items:baseline;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:7px 15px;box-shadow:var(--shadow);}
 .chip b{white-space:nowrap;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--accent-strong);font-size:14px;}
 .chip span{font-size:12px;color:var(--ink-muted);}
 .reviewed{font-size:12px;color:var(--ink-muted);margin:10px 0 0;}
-.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:15px 15px 17px;}
-.ptitle{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px 18px 20px;}
+.ptitle{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;}
 
 /* two-level filter */
 .filter{display:flex;flex-direction:column;gap:9px;margin-bottom:13px;}
@@ -47,14 +47,14 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .gbtn{text-align:left;flex:1 1 0;min-width:112px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink-2);
   font-family:inherit;font-size:13.5px;font-weight:600;padding:11px 12px;border-radius:11px;cursor:pointer;
   display:flex;flex-direction:column;gap:2px;align-items:flex-start;transition:background .15s,border-color .15s;}
-.gbtn .gs{font-size:10.5px;font-weight:500;color:var(--ink-muted);letter-spacing:.02em;}
+.gbtn .gs{font-size:12px;font-weight:500;color:var(--ink-muted);letter-spacing:.02em;}
 .gbtn:hover{border-color:var(--accent);}
-.gbtn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-.gbtn.on .gs{color:rgba(255,255,255,.8);}
+.gbtn.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
+.gbtn.on .gs{color:var(--on-accent);opacity:.85;}
 .gbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .subs{display:flex;gap:5px;flex-wrap:wrap;}
-.sbtn{border:1px solid transparent;background:var(--surface-2);color:var(--ink-2);font-family:inherit;font-size:12px;
-  font-weight:600;padding:6px 12px;border-radius:99px;cursor:pointer;}
+.sbtn{border:1px solid transparent;background:var(--surface-2);color:var(--ink-2);font-family:inherit;font-size:13px;
+  font-weight:600;padding:8px 14px;border-radius:99px;cursor:pointer;}
 .sbtn:hover{color:var(--ink);}
 .sbtn.on{background:var(--surface);border-color:var(--accent);color:var(--accent-strong);}
 .sbtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
@@ -64,10 +64,10 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 /* map */
 .mapwrap{position:relative;border-radius:13px;overflow:hidden;border:1px solid var(--border);background:var(--sea-void);}
 #map{width:100%;aspect-ratio:2.1/1;min-height:300px;background:var(--sea-void);}
-@media (max-width:600px){#map{aspect-ratio:1.7/1;min-height:0;}
-  .bmark .bn{font-size:9.5px;} .bmark .bv{font-size:9px;} .bmark.sm .bn,.bmark.sm .bv{font-size:8.5px;}
+@media (max-width:600px){#map{aspect-ratio:1.2/1;min-height:0;}
+  .bmark .bn{font-size:11.5px;} .bmark .bv{font-size:10.5px;} .bmark.sm .bn,.bmark.sm .bv{font-size:10px;}
   #map.zfar .bv{display:none;}
-  .clabel{font-size:7.5px;}}
+  .clabel{font-size:9px;} .ilabel{font-size:8.5px;} .olabel{font-size:9.5px;} .sill{font-size:9px;} #map .city{font-size:10px;}}
 #map .maplibregl-canvas{outline:none;}
 #map .maplibregl-ctrl-attrib{font-size:10px;background:var(--surface);color:var(--ink-muted);opacity:.9;}
 #map .maplibregl-ctrl-attrib a{color:var(--ink-2);}
@@ -79,7 +79,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .zbtn:hover{border-color:var(--accent);color:var(--accent-strong);}
 .zbtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
 .zbtn.wide{width:auto;padding:0 10px;font-size:11px;font-weight:600;}
-.maphint{position:absolute;left:10px;bottom:9px;font-size:10.5px;color:var(--ink-muted);background:var(--surface);
+.maphint{position:absolute;left:10px;bottom:9px;font-size:11.5px;color:var(--ink-muted);background:var(--surface);
   border:1px solid var(--border);border-radius:99px;padding:4px 11px;opacity:.9;}
 .bmark{pointer-events:none;text-align:center;line-height:1.15;white-space:nowrap;
   text-shadow:0 0 2px var(--halo-c),0 0 2px var(--halo-c),0 0 5px var(--halo-c),0 0 5px var(--halo-c);}
@@ -87,10 +87,10 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .bmark .bv{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;margin-top:1px;}
 .bmark.sm .bn,.bmark.sm .bv{font-size:10.5px;}
 .clabel,.ilabel,.olabel{pointer-events:none;white-space:nowrap;text-shadow:0 0 3px var(--halo);}
-.clabel{color:var(--land-ink);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:9.5px;}
-.ilabel{color:var(--land-ink);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:7.5px;}
-.olabel{color:var(--ink-muted);font-weight:500;letter-spacing:.09em;font-style:italic;font-size:8px;opacity:.75;}
-.sill{pointer-events:none;display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:7.5px;font-weight:600;color:var(--ink-muted);text-shadow:0 0 3px var(--halo);}
+.clabel{color:var(--land-ink);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:10.5px;}
+.ilabel{color:var(--land-ink);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:9px;}
+.olabel{color:var(--ink-muted);font-weight:500;letter-spacing:.06em;font-style:italic;font-size:9.5px;opacity:.9;}
+.sill{pointer-events:none;display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:9px;font-weight:600;color:var(--ink-muted);text-shadow:0 0 3px var(--halo);}
 .sill i{width:6px;height:6px;border-radius:50%;border:1.2px solid var(--ink-muted);flex:none;}
 #map.zfar .zlo{display:none;}
 #map.sst-on .bmark{color:#06202c !important;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 6px #fff !important;}
@@ -109,9 +109,18 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .city.wet span{color:#b3261e;}
 .fun[hidden]{display:none;}
 .fun{margin-top:14px;border-top:1px dashed var(--border);padding-top:13px;}
-.funbtn,.pbtn{border:1px solid var(--border);background:var(--surface-2);color:var(--accent-strong);font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:99px;cursor:pointer;}
+.funbtn,.pbtn{border:1.5px solid var(--accent);background:var(--surface-2);color:var(--accent-strong);font-family:inherit;font-size:14px;font-weight:600;padding:9px 16px;border-radius:99px;cursor:pointer;}
 .funbtn:hover,.pbtn:hover{border-color:var(--accent);}
-.funbtn[aria-expanded="true"],.pbtn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.funbtn[aria-expanded="true"],.pbtn.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
+/* explore cue: an inline prompt plus a short outline pulse on the two buttons; stops after 3 beats or on first click */
+.explore-cue{display:flex;align-items:center;gap:9px;margin:16px 0 0;padding:8px 12px;border:1px dashed var(--accent);border-radius:10px;font-size:13.5px;color:var(--ink-2);line-height:1.45;}
+.explore-cue b{color:var(--accent-strong);font-weight:700;}
+.cue-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none;animation:cueDot 1.6s ease-in-out 3;}
+@keyframes cueDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.45}}
+.funbtn.nudge{animation:nudgeRing 1.6s ease-out 3;}
+.funbtn[aria-expanded="true"]{animation:none;}
+@keyframes nudgeRing{0%{box-shadow:0 0 0 0 rgba(18,104,143,.45)}100%{box-shadow:0 0 0 9px rgba(18,104,143,0)}}
+@media (prefers-reduced-motion: reduce){.cue-dot,.funbtn.nudge{animation:none;}}
 .funbtn:focus-visible,.pbtn:focus-visible,#lvl:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .funbody{margin-top:13px;display:flex;flex-direction:column;gap:11px;}
 .funbody[hidden]{display:none;}
@@ -127,7 +136,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .funstats .tile{min-width:130px;}
 .funstats .tile.wide{flex:1 1 280px;}
 .funstats .qt{font-size:12.5px;color:var(--ink-2);line-height:1.5;display:block;margin-top:3px;}
-.zbtn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.zbtn.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
 .bkey{position:absolute;right:10px;bottom:34px;display:flex;flex-wrap:wrap;align-items:center;gap:3px 9px;max-width:calc(100% - 20px);
   background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 10px;font-size:10px;color:var(--ink-2);box-shadow:0 3px 10px -4px rgba(10,44,62,.4);}
 .bkey[hidden]{display:none;}
@@ -263,8 +272,9 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <div class="ramp" id="ramp"></div>
       <span class="ramp-end" id="rampHi">&mdash;</span>
     </div>
+    <p class="explore-cue"><span class="cue-dot" aria-hidden="true"></span><span><b>Explore the two what-ifs below:</b> how sea level would reshape the coast, and how the sea has warmed month by month.</span></p>
     <div class="fun" id="sst" hidden>
-      <button class="funbtn" id="sstBtn" type="button" aria-expanded="false" aria-controls="sstBody">Sea-surface temperature through time</button>
+      <button class="funbtn nudge" id="sstBtn" type="button" aria-expanded="false" aria-controls="sstBody">Sea-surface temperature through time</button>
       <div class="funbody" id="sstBody" hidden>
         <div class="funrow">
           <button class="pbtn" id="sstPlay" type="button">Play</button>
@@ -282,7 +292,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       </div>
     </div>
     <div class="fun">
-      <button class="funbtn" id="funBtn" type="button" aria-expanded="false" aria-controls="funBody">Sea-level scenarios</button>
+      <button class="funbtn nudge" id="funBtn" type="button" aria-expanded="false" aria-controls="funBody">Sea-level scenarios</button>
       <div class="funbody" id="funBody" hidden>
         <div class="funrow">
           <label for="lvl" class="funlabel">Sea level</label>
