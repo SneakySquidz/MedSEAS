@@ -1,46 +1,96 @@
 # MedSEAS
 
-Interactive dashboard of the Mediterranean's eight sub-basins: shade the map by temperature, salinity, depth or curiosities, zoom in, and click a basin for its profile.
+An interactive, educational atlas of the Mediterranean's eight sub-basins: how they differ and how they change. It is not a beach-weather service, a flood warning or a risk assessment. The sea-level tool is an illustrative scenario only.
 
 - **Live:** https://sneakysquidz.github.io/MedSEAS/
 - **Master copy:** this repo. The "Mediterranean Basins" Claude artifact is an older snapshot — edit here, not there.
 
-Static site, no build step: `index.html` plus a vendored MapLibre GL JS (`vendor/maplibre-gl/`, BSD-3-Clause) and generated map geometry (`data/geo.js`). The map opens from disk; the terrain features need a web server. Deploys to GitHub Pages on every push to `main` (`.github/workflows/deploy-pages.yml`).
+Static site, no build step: `index.html` plus a vendored MapLibre GL JS (`vendor/maplibre-gl/`, BSD-3-Clause) and generated map geometry (`data/geo.js`). The map opens from disk; the monthly temperature and terrain features need a web server. Deploys to GitHub Pages on every push to `main` (`.github/workflows/deploy-pages.yml`).
+
+## How the page is organised
+
+Four modes sit above the map. The map, the ranking, the selected-basin panel and the context line stay in step, and the selected basin is kept when you switch mode.
+
+- **Temperature**, with three tabs:
+  - *Seasonal patterns*: summer, winter and the seasonal swing (summer value minus winter value) per basin.
+  - *Monthly timeline*: a month slider over the monthly sea-surface temperature grid, with Play/Pause, an anomaly mode against 1991–2020 and a series for the selected basin. Playback stops when you leave the tab or the browser tab is hidden. The colour scale is fixed (12–29 °C, or ±3 °C for anomalies).
+  - *Warming*: each basin's estimated long-run warming rate on the map, and the whole-Mediterranean anomaly chart with trends and recent extremes.
+- **Salinity**: surface salinity and net evaporation, with a ranked "what drives salt" list.
+- **Depth**: mean depth, maximum depth and surface area.
+- **Sea level**: the sea-level scenarios (below).
+
+A **context line** under the mode buttons states, for what is on screen: measure, unit, data category, period and source. The **selected-basin panel** keeps the measured figures, a "Curiosities" block (plankton layer, biggest tide, Posidonia meadows) and the basin's story.
+
+## Data categories and sources
+
+Every figure is classed as one of: satellite observation, reanalysis/model output, literature value, derived (computed here from other values or from the terrain), interpolated estimate (marked **est.**) or scenario output.
+
+Sources are kept as one record per dataset in `index.html` (`DATASETS`): id, name, product, variable, unit, coverage, baseline, aggregation, resolution, method, retrieval or build date, data category and limitations. The context line, the "Where the data comes from" section and the CSV all read from these records. A field with no documented value shows "not documented"; nothing is filled in by guesswork.
+
+Known gaps, stated on the page:
+
+- The seasonal summer and winter values have no documented season definition or reference period.
+- Per-figure references for the basin literature values are not documented.
+- EMODnet Bathymetry is listed as a reference only. The measured depths and the sea-level scenarios use the AWS Terrain Tiles.
 
 ## Map
 
-Rendered with MapLibre GL JS from vector data, not a drawn SVG. Ctrl/Cmd + scroll zooms (so the page still scrolls), drag pans, a basin click selects it, and the ranked list flies the map to a basin. The view covers the broader Mediterranean: the Atlantic approaches, the Black Sea and Sea of Azov, the Sea of Marmara and the head of the Red Sea. Seas outside the eight basins are tinted grey.
+Rendered with MapLibre GL JS from vector data. Ctrl/Cmd + scroll zooms (so the page still scrolls), drag pans, and a basin click selects it. The ranked list and the full data table give the same figures without the map, and ranking rows work from the keyboard. The view covers the broader Mediterranean, with the seas outside the eight basins tinted grey.
 
-- **Basins:** eight limit polygons (IHO-style straight lines between capes) clipped to the Natural Earth 1:10m coastline, so outlines follow the real shore.
-- **Measured figures:** each basin's area and mean depth are computed from its polygon and the terrain grid, so they describe what is drawn (the eight areas sum to the ~2.5 million km² of the sea). Maximum depths stay as literature values.
-- **Seabed button:** depth classes (0 to 4,000 m+) from the terrain grid under the basin shading, and the hover tooltip reports the depth under the cursor.
-- **Sea-level scenarios:** a sea-level slider from 2,500 m below today to 200 m above, with presets (Last Ice Age, +10 m, ice-free Earth, a drained Mediterranean). Flooding uses a priority flood, so land only floods where the sea can reach it. It reports land gained or flooded and which of 33 cities the water reaches. It is a toy: today's terrain, no ice or crustal rebound, 4 km cells.
+- **Basins:** eight limit polygons (IHO-style straight lines between capes) clipped to the Natural Earth 1:10m coastline.
+- **Measured figures:** each basin's area and mean depth are computed from its polygon and the terrain grid, so they describe what is drawn. Maximum depths are literature values.
+- **Ranking:** the reference marker is the unweighted mean of the eight basins, and is labelled as such.
+- **Seabed button:** depth classes from the terrain grid; the hover tooltip reports the approximate depth under the cursor.
 - **Light and dark** follow the page theme.
+
+## Sea-level scenarios
+
+A slider and a numeric offset in metres (kept in sync), a "Reset to today" button and neutral presets (−120 m, today, +10 m, +70 m, −1,500 m). The supported range is −2,500 m to +200 m relative to today's sea level as represented in the terrain tiles, whose vertical datum is not documented here. Typed values are rounded to 0.5 m; values outside the range are set to the nearest limit with a message, and non-numbers are refused with a message.
+
+What the code does:
+
+- Each terrain cell (about 4 km) stores the sea level at which it first floods, computed by a **priority flood** from the open sea in `scripts/build_data.py`. Land floods only where the sea can reach it over lower ground, so inland hollows (Dead Sea, Qattara) stay dry until the rim is overtopped.
+- Below −130 m the world ocean is held at −130 m and only the Mediterranean is lowered.
+- The legend separates today's sea (no overlay), land flooded in the scenario, seabed exposed in the scenario and today's coastline (dashed).
+- A city counts as reached when the water reaches any land cell within one cell (about 4 km) of it. A city whose surrounding cells are all sea on this grid counts as reached at the first rise.
+- Not modelled: coastal defences, drainage, tides, waves, ice sheets, sediment and crustal rebound.
 
 Data files, both generated:
 
 - `data/geo.js`: land, basins (with measured area and mean depth) and non-basin water.
-- `data/dem.png` (about 440 KB, fetched when the browser is idle; needs http(s), so the Seabed and sea-level features are off if the page is opened from disk): one PNG on the Web Mercator grid holding the sea-level at which each cell floods and some flags. Elevation and bathymetry come from the AWS/Mapzen terrain tiles ("terrarium", SRTM + GMTED + ETOPO1/GEBCO).
+- `data/dem.png` (about 440 KB, fetched when the browser is idle; needs http(s)): one PNG on the Web Mercator grid holding each cell's flood level and some flags. Elevation and bathymetry come from the AWS/Mapzen terrain tiles ("terrarium", SRTM + GMTED + ETOPO1/GEBCO). If it cannot load, the page says so instead of drawing anything.
 
 To change basin limits or the map extent, edit `scripts/build_data.py` and rebuild:
 
     pip install shapely numpy pillow
     python3 scripts/build_data.py
 
-It downloads the Natural Earth files and terrain tiles it needs on first run and prints each basin's area and mean depth.
+## Monthly sea-surface temperature
 
-## Sea-surface temperature through time
+Monthly means from Copernicus Marine `MEDSEA_MULTIYEAR_PHY_006_004` (reanalysis, model output), coarsened to a 0.25° grid, for recent years only (the coverage is read from `data/sst.json`; the current grid runs 2015-01 to 2026-09 and was built on 2026-10-26). Anomalies use a 12-frame 1991–2020 monthly climatology (`data/sst_clim.png`).
 
-A month slider (with Play, an anomaly mode against 1991 to 2020, and a per-basin time series) over the last 12 years of Copernicus Marine monthly surface temperature on a 0.25 degree grid (about 150 small frames, not the full record). Anomalies use a 12-frame 1991 to 2020 climatology. It stays hidden until `data/sst.png`, `data/sst.json` and `data/sst_clim.png` exist.
+- **Basin series:** the mean of the 0.25° cells whose centre lies in the basin, weighted by cos(latitude), computed from the grid itself (never from the Mediterranean-wide series). Months without data are left as gaps.
+- **Missing data:** a stored code of 0 means land or no data, and such cells stay blank, never coloured as cold water. A true value of exactly the encoding base temperature would also read as missing; that is below any Mediterranean surface value on the scale.
+- If the files cannot load, the tab shows an "unavailable" message instead of sample values.
 
 One-off setup to publish the data:
 
 1. Create a free Copernicus Marine account (marine.copernicus.eu).
 2. Add repository secrets `COPERNICUSMARINE_SERVICE_USERNAME` and `COPERNICUSMARINE_SERVICE_PASSWORD`.
 3. Settings > Actions > General: allow read and write permissions and "Allow GitHub Actions to create and approve pull requests".
-4. Run the "Update SST grid" workflow. It runs `scripts/build_sst.py` and opens a pull request with the data; merge it after checking the preview. It then reruns monthly.
+4. Run the "Update SST grid" workflow (manual). It runs `scripts/build_sst.py` and opens a pull request with the data; merge it after checking the preview.
 
-`scripts/build_sst.py` is kept light: it fetches one year at a time, reduces it and deletes the file, so memory stays small; the climatology is built once and reused. The dataset ids are looked up at run time. It has not yet completed a run against the live service.
+`scripts/build_sst.py` fetches one year at a time, reduces it and deletes the file, so memory stays small; the climatology is built once and reused.
+
+## Warming chart
+
+A bar chart of the Mediterranean's yearly sea-surface temperature anomaly (vs 1991–2020), 2015–2024, from Copernicus Marine's OMI file `MEDSEA_OMI_TEMPSAL_sst_area_averaged_anomalies` (satellite, reprocessed; monthly anomalies averaged per year here). Trends shown: +0.33 °C/decade over 1982–2024 and +0.88 °C/decade over 2015–2024; the short window overstates the long-run rate, and the trend method and uncertainty are not documented here. No per-basin anomalies are derived from this series. A "Recent extremes" list adds 2022–2025 heatwave facts from Copernicus Ocean State Report 8 and Mercator Ocean bulletins.
+
+To refresh: the Copernicus file is re-issued yearly (currently ends Dec 2024). Download the new `.nc` from the product page, recompute annual means, and update `DATA` in the timeline script.
+
+## CSV download
+
+The button under the data table saves `medseas-basin-measures.csv`: one row per basin and measure, with `basin_id, basin, variable, value, unit, season, reference_period, anomaly_baseline, source_id, method, data_category, est_flag`. Text fields are quoted where needed; unavailable values would be left blank, never zero. (It replaces the older wide `medseas-basins.csv`.)
 
 ## Keeping data current
 
@@ -48,16 +98,6 @@ The page shows a "Data last reviewed" date under the headline figures. Only the 
 
 To refresh: ask Claude to review the figures against the latest bulletins. Changes are proposed as a pull request for approval, never pushed straight to `main`, and the review date is updated in the same PR.
 
-## Added
+## Extras
 
-- **CSV download** — a button under the data table exports all 8 basins' figures (temperature, salinity, evaporation, depth, area, warming rate, etc.) as a spreadsheet-ready CSV.
-- **Net evaporation** — a new measure under Salinity, sourced from the eastern/western Mediterranean water budget (Frontiers in Climate, 2025). Only known at the whole-basin level (west vs. east), not per sub-basin, so every western basin shares one figure and every eastern basin shares another — noted in the footnotes and marked "est." in the UI.
-- **Submarine easter egg** — a yellow submarine surfaces at a random spot on the map a few seconds after the map comes into view, then every ~20 seconds; clicking it shows a Calypso Deep dive fact. Purely decorative, `prefers-reduced-motion` friendly, adds no dependencies.
-
-## Warming timeline
-
-A bar chart of the Mediterranean's yearly sea-surface temperature anomaly (vs 1991–2020), 2015–2024, from Copernicus Marine's public OMI file `MEDSEA_OMI_TEMPSAL_sst_area_averaged_anomalies` (monthly anomalies, averaged per year here). Trends: +0.33 °C/decade over 1982–2024, +0.88 °C/decade over 2015–2024. A "Recent extremes" list adds 2022–2025 heatwave facts from Copernicus Ocean State Report 8 and Mercator Ocean bulletins.
-
-Not included: a year-by-year heatwave *extent* series. Copernicus publishes no Mediterranean marine-heatwave extent indicator file, only yearly bulletin figures.
-
-To refresh: the Copernicus file is re-issued yearly (currently ends Dec 2024). Download the new `.nc` from the product page, recompute annual means, and update `DATA` in the timeline script.
+- **Submarine easter egg:** a yellow submarine surfaces at a random spot on the map now and then; clicking it shows a Calypso Deep fact. Decorative, `prefers-reduced-motion` friendly, no dependencies.

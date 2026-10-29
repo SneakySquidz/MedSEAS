@@ -42,17 +42,6 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .ptitle{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;}
 
 
-/* play strip: three ways in, one accent colour */
-.play{display:flex;flex-direction:column;gap:12px;}
-.play-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;}
-.play-sub{margin:0;font-size:14.5px;color:var(--ink-2);}
-.play-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
-.play-card{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:14px;padding:16px 16px 18px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow);}
-.pk{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-strong);font-weight:700;}
-.pt{margin:2px 0 0;font-family:"Fraunces",Georgia,serif;font-size:21px;font-weight:600;line-height:1.2;}
-.play-card .pw{font-size:14px;color:var(--ink-2);line-height:1.5;margin:0;}
-.pacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:8px;}
-@media (max-width:840px){.play-grid{grid-template-columns:1fr;}}
 /* salinity drivers: a ranked list, not a chart, because evaporation is only two estimates */
 .drivers{margin-top:14px;border-top:1px dashed var(--border);padding-top:13px;display:flex;flex-direction:column;gap:9px;}
 .drivers[hidden]{display:none;}
@@ -147,7 +136,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .funout{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:22px;color:var(--accent-strong);min-width:7.5ch;font-variant-numeric:tabular-nums;}
 #lvl{flex:1 1 260px;min-width:0;accent-color:var(--accent);height:28px;cursor:pointer;}
 .presets{display:flex;gap:6px;flex-wrap:wrap;}
-.pbtn{padding:6px 12px;font-size:12px;}
+.pbtn{padding:8px 14px;font-size:13.5px;min-height:40px;}
 .funnote.small{font-size:11px;color:var(--ink-muted);}
 .funnote{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.55;max-width:80ch;}
 .funstats{display:flex;gap:8px;flex-wrap:wrap;}
@@ -262,20 +251,29 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
 @media (max-width:600px){
   .maphint{position:static;display:block;border:0;border-top:1px solid var(--border);border-radius:0;opacity:1;padding:6px 10px;}
   .zoomui{top:6px;right:6px;flex-direction:row;gap:4px;}
-  .zbtn{width:26px;height:26px;font-size:13px;border-radius:7px;}
+  .zbtn{width:36px;height:36px;font-size:15px;border-radius:8px;}
   .zbtn.wide{font-size:10px;padding:0 7px;}
 }
 .ctx{margin:12px 0 4px;font-size:15px;line-height:1.5;color:var(--ink-muted);}
-.jump{display:flex;flex-wrap:wrap;gap:8px 16px;margin:18px 0 6px;}
-.jlink{font-family:inherit;font-size:15px;font-weight:600;color:var(--accent-strong);background:none;border:0;border-bottom:1px solid var(--accent);padding:6px 0;cursor:pointer;min-height:44px;}
+.view{margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+.vh{font-family:"Fraunces",Georgia,serif;font-size:21px;font-weight:600;line-height:1.25;margin:0 0 8px;}
+.tviews{margin-top:8px;}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:8px 0;font-size:14px;color:var(--ink-2);}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.legend i{display:inline-block;width:18px;height:12px;border-radius:3px;border:1px solid var(--border);}
+.legend i.dash{border:0;border-top:2px dashed var(--ink-muted);height:0;border-radius:0;}
+#lvlNum{width:7.5em;font:inherit;font-size:15px;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--ink);}
+.dl{display:grid;grid-template-columns:minmax(6em,max-content) minmax(0,1fr);gap:2px 10px;margin:6px 0;font-size:13.5px;line-height:1.45;}
+.dl dt{color:var(--ink-muted);} .dl dd{margin:0;color:var(--ink-2);overflow-wrap:anywhere;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
 </style>
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Physical oceanography &middot; Copernicus Marine &middot; Argo &middot; EMODnet</div>
+    <div class="eyebrow">Physical oceanography &middot; Copernicus Marine &middot; Argo &middot; open terrain data</div>
     <h1>Mediterranean Basins</h1>
-    <p class="sub">The Mediterranean behaves as eight distinct seas. Choose a measure, and the map shades every basin by it &mdash; then zoom in, or click a basin to read it on its own.</p>
+    <p class="sub">Explore how eight Mediterranean basins differ &mdash; and how they change.</p>
     <div class="chips">
       <div class="chip"><b>21.2 &deg;C</b><span>mean sea-surface temperature in 2025, second warmest on record</span></div>
       <div class="chip"><b>5,109 m</b><span>Calypso Deep, Ionian Sea, measured to &plusmn;1 m</span></div>
@@ -284,21 +282,15 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
     <p class="reviewed">Data last reviewed: <time datetime="2026-09">September 2026</time></p>
   </header>
 
-  <nav class="jump" aria-label="Jump to a tool">
-    <button class="jlink" type="button" data-play="salt">Salinity: surface salt</button>
-    <button class="jlink" type="button" data-play="drivers">Salinity: what drives it</button>
-    <button class="jlink" type="button" data-play="temp">Temperature: monthly map</button>
-    <button class="jlink" type="button" data-play="flood">Sea level: scenarios</button>
-  </nav>
-
   <div class="panel">
     <div class="filter">
-      <div class="groups" id="groups" role="tablist" aria-label="Measure category"></div>
+      <div class="groups" id="groups" role="group" aria-label="Mode"></div>
+      <div class="subs tviews" id="tviews" role="group" aria-label="Temperature view"></div>
       <div class="subs" id="subs" role="group" aria-label="Measure"></div>
     </div>
     <p class="ctx" id="ctx" aria-live="polite"></p>
     <div class="mapwrap">
-      <div id="map" role="region" aria-label="Map of the Mediterranean Sea divided into eight sub-basins, shaded by the selected measure. The ranked list below gives the same figures."></div>
+      <div id="map" role="region" aria-label="Map of the Mediterranean Sea divided into eight sub-basins, shaded by the selected measure. The ranked list and the full data table below give the same figures."></div>
       <div class="zoomui">
         <button class="zbtn" id="zin" type="button" aria-label="Zoom in">+</button>
         <button class="zbtn" id="zout" type="button" aria-label="Zoom out">&minus;</button>
@@ -319,9 +311,9 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <p class="funnote">The sea loses more water to evaporation than rain and rivers return, and the water left behind gets saltier. Evaporation is estimated per side of the sea, so the eastern basins lose more (0.55 m/yr, estimate) than the western ones (0.32 m/yr, estimate).</p>
       <ol class="salt-rank" id="saltRank"></ol>
     </div>
-    <div class="fun" id="sst" hidden>
-      <button class="funbtn" id="sstBtn" type="button" aria-expanded="false" aria-controls="sstBody">Sea-surface temperature through time</button>
-      <div class="funbody" id="sstBody" hidden>
+    <div class="view" id="sst" hidden>
+      <h2 class="vh">Monthly sea-surface temperature</h2>
+      <div class="funbody" id="sstBody">
         <div class="funrow">
           <button class="pbtn" id="sstPlay" type="button">Play</button>
           <output id="sstOut" class="funout" for="sstSlider">&mdash;</output>
@@ -335,26 +327,40 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <p class="funnote" id="sstNote" aria-live="polite"></p>
         <div class="funstats" id="sstStats"></div>
         <svg id="sstSpark" viewBox="0 0 560 70" role="img" aria-label="Selected basin through time"></svg>
+        <p class="funnote small" id="sstSparkCap"></p>
       </div>
     </div>
-    <div class="fun">
-      <button class="funbtn" id="funBtn" type="button" aria-expanded="false" aria-controls="funBody">Sea-level scenarios</button>
-      <div class="funbody" id="funBody" hidden>
+    <div class="view" id="seaView" hidden>
+      <h2 class="vh">Sea-level scenarios</h2>
+      <p class="funnote">Redraw the coastline for a chosen sea level. An educational scenario explorer, not a flood forecast or a risk assessment.</p>
+      <div class="funbody" id="funBody">
         <div class="funrow">
           <label for="lvl" class="funlabel">Sea level</label>
           <output id="lvlOut" class="funout" for="lvl">0 m</output>
           <input type="range" id="lvl" min="-100" max="100" step="0.25" value="0" aria-valuetext="today's sea level">
         </div>
+        <div class="funrow">
+          <label for="lvlNum" class="funlabel">Offset (m)</label>
+          <input type="number" id="lvlNum" min="-2500" max="200" step="0.5" value="0" inputmode="decimal">
+          <button class="pbtn" id="lvlReset" type="button">Reset to today</button>
+        </div>
+        <p class="funnote small">Supported range: &minus;2,500&nbsp;m to +200&nbsp;m, relative to today&rsquo;s sea level as represented in the terrain tiles (their vertical datum is not documented here). Typed offsets are rounded to 0.5&nbsp;m; the slider steps more coarsely far from today.</p>
+        <p class="funnote small" id="lvlMsg" role="status"></p>
         <div class="presets" id="presets" role="group" aria-label="Sea-level presets"></div>
+        <div class="legend">
+          <span><i></i>Sea today (no overlay)</span>
+          <span><i id="lgFlood" style="background:rgb(58,150,205)"></i>Land flooded in this scenario</span>
+          <span><i id="lgSeabed" style="background:rgb(238,226,186)"></i>Seabed exposed in this scenario</span>
+          <span><i class="dash"></i>Today&rsquo;s coastline</span>
+        </div>
         <p class="funnote" id="funNote" aria-live="polite"></p>
-        <p class="funnote small">A simple scenario model on today&rsquo;s terrain at about 4 km per cell: no ice sheets, sediment, tides or crustal rebound, so low coastal cities flood later here than in reality. Needs the page served over http(s), not opened from disk.</p>
+        <p class="funnote small">How it works: a connected-threshold model on today&rsquo;s terrain at about 4&nbsp;km per cell. A cell floods only when the sea can reach it over lower ground (priority flood), so inland hollows stay dry until the rim is overtopped. Below &minus;130&nbsp;m the world ocean is held at &minus;130&nbsp;m and only the Mediterranean is lowered. Not modelled: coastal defences, drainage, tides, waves, ice sheets, sediment and crustal rebound. A city counts as reached when the water reaches any land cell within one cell (about 4&nbsp;km) of it; a city whose surrounding cells are all sea on this grid counts as reached at the first rise. Needs the page served over http(s).</p>
         <div class="funstats" id="funStats"></div>
       </div>
     </div>
-  </div>
-
-  <div class="panel">
-    <span class="ptitle">How fast the sea is warming</span>
+    <div class="view" id="warmView" hidden>
+    <h2 class="vh">How fast the sea is warming</h2>
+    <p class="funnote">The map shows each basin&rsquo;s estimated long-run warming rate (est., &deg;C per decade). The chart below is the whole-Mediterranean anomaly against 1991&ndash;2020; it is not split by basin.</p>
     <p class="hsub">Yearly sea-surface temperature of the whole Mediterranean, compared with the 1991&ndash;2020 average. Every year since 2015 has been warmer than that baseline, and the last three each set a new record.</p>
     <div class="heat">
       <div>
@@ -378,6 +384,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <p class="note" style="margin-top:8px">Extremes from Copernicus Ocean State Report&nbsp;8 and Mercator Ocean annual bulletins. The 2015&ndash;2024 trend is a short window and exaggerates the long-run rate; the 43-year trend is the steadier figure.</p>
       </div>
     </div>
+  </div>
   </div>
 
   <div class="lower">
@@ -415,68 +422,13 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
 
   <div class="panel">
     <span class="ptitle">Where the data comes from</span>
-    <div class="prov">
-      <details class="pcard">
-        <summary class="pn">Copernicus Marine Service</summary>
-        <span class="pw">Mediterranean Sea Physics Reanalysis &mdash; the reference gridded temperature and salinity field.</span>
-        <span class="pd">MEDSEA_MULTIYEAR_PHY_006_004 &middot; NEMO + OceanVAR &middot; 1/24&deg; (&asymp;4 km) &middot; 141 depth levels</span>
-        <a href="https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description" target="_blank" rel="noopener">data.marine.copernicus.eu &rarr;</a>
-      </details>
-      <details class="pcard">
-        <summary class="pn">Sea-surface temperature through time</summary>
-        <span class="pw">Monthly surface temperature behind the time slider, 0.25&deg; grid. Appears once the Update SST grid workflow has run.</span>
-        <span class="pd">MEDSEA_MULTIYEAR_PHY_006_004 &middot; monthly mean &middot; 1987 to present &middot; climatology 1991&ndash;2020</span>
-        <a href="https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description" target="_blank" rel="noopener">data.marine.copernicus.eu &rarr;</a>
-      </details>
-      <details class="pcard">
-        <summary class="pn">Argo float network</summary>
-        <span class="pw">Profilers diving to 2,000 m every ten days &mdash; the in-situ backbone for salinity and warming trends.</span>
-        <span class="pd">Argo vs. reanalysis &middot; W. Med / Ionian / Levantine, 2012&ndash;2025</span>
-        <a href="https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2026.1846069/full" target="_blank" rel="noopener">Argo vs. reanalysis trends &rarr;</a>
-      </details>
-      <details class="pcard">
-        <summary class="pn">EMODnet Bathymetry</summary>
-        <span class="pw">The European seabed terrain model behind the depth figures.</span>
-        <span class="pd">DTM 2022 &middot; 21,937 surveys &middot; 64 providers &middot; 28 countries</span>
-        <a href="https://emodnet.ec.europa.eu/en/bathymetry" target="_blank" rel="noopener">emodnet.ec.europa.eu &rarr;</a>
-      </details>
-      <details class="pcard">
-        <summary class="pn">Mercator Ocean &amp; Copernicus C3S</summary>
-        <span class="pw">Annual SST bulletins and marine-heatwave monitoring.</span>
-        <span class="pd">2025 mean 21.2 &deg;C, 2nd warmest after 21.3 &deg;C in 2024; intense heatwaves covered 93% of the basin, 3rd widest after 2023 and 2024</span>
-        <a href="https://marine.copernicus.eu/bulletin/2025-annual-ocean-health-bulletin" target="_blank" rel="noopener">2025 Ocean Health Bulletin &rarr;</a>
-      </details>
-      <details class="pcard">
-        <summary class="pn">Mediterranean water budget</summary>
-        <span class="pw">Net evaporation (evaporation minus rain) for the western and eastern basins.</span>
-        <span class="pd">West 0.88 mm/day &middot; East 1.52 mm/day &middot; Frontiers in Climate, 2025</span>
-        <a href="https://www.frontiersin.org/journals/climate/articles/10.3389/fclim.2025.1472731/full" target="_blank" rel="noopener">Eastern Med water budget &rarr;</a>
-      </details>
-      <details class="pcard">
-        <summary class="pn">Natural Earth</summary>
-        <span class="pw">The coastline drawn here &mdash; public-domain vector shorelines, rendered with MapLibre GL JS.</span>
-        <span class="pd">ne_10m_land &middot; Web Mercator</span>
-        <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">naturalearthdata.com &rarr;</a>
-      </details>
-      <details class="pcard">
-        <summary class="pn">Terrain Tiles (AWS Open Data)</summary>
-        <span class="pw">Land elevation and seabed depth behind the Seabed view, the measured areas and mean depths, and the sea-level toggle.</span>
-        <span class="pd">&ldquo;terrarium&rdquo; tiles, z6 &middot; SRTM, GMTED2010, ETOPO1/GEBCO &middot; Mapzen</span>
-        <a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">registry.opendata.aws &rarr;</a>
-      </details>
-      <details class="pcard">
-        <summary class="pn">Basin monographs</summary>
-        <span class="pw">Per-basin depth, area, tide, plankton and seasonal figures from the regional literature.</span>
-        <span class="pd">Adriatic, Aegean, Tyrrhenian, Ligurian, Alboran, Levantine studies; CIESM; Britannica</span>
-        <a href="https://www.britannica.com/place/Mediterranean-Sea/Hydrologic-features-and-climate" target="_blank" rel="noopener">Britannica &rarr;</a>
-      </details>
-    </div>
+    <div class="prov" id="prov"></div>
   </div>
 
   <footer>
     <details class="note-fold"><summary>Reading the numbers: seasonal means, surface salinity, and how the Calypso Deep depth was measured.</summary><p class="note">Summer and winter SST are typical open-water seasonal means, not coastal extremes &mdash; shallow corners of the northern Adriatic and the Levant run several degrees hotter in August. Salinity is surface salinity in practical salinity units (&asymp; g/kg); the Aegean mean hides a steep gradient, from brackish Black Sea outflow in the north (below 33) to over 39 in the Cretan Sea. The Calypso Deep figure is the 2020 direct measurement of 5,109 m &plusmn;1 m from the submersible <i>Limiting Factor</i>, superseding older 5,121&ndash;5,267 m sonar estimates; the litter found there was logged in a separate 2025 study of video filmed on that same dive. The map's &ldquo;Balearic Sea&rdquo; follows the broad sense of that name &mdash; Britannica treats it as a synonym for the Algerian/Alg&eacute;ro-Proven&ccedil;al Basin, the whole open basin between Algeria, France and the Balearic Islands, not just the strip around Mallorca &mdash; so its area is the sourced ~0.85 million km&sup2; western-basin total minus the separately-mapped Alboran, Ligurian and Tyrrhenian. Basin areas otherwise vary with where you draw the boundaries; all are given to the nearest thousand km&sup2;.</p></details>
     <details class="note-fold"><summary>Estimates marked est.: how warming rate and net evaporation were derived, and where they stop.</summary><p class="note">are interpolated across a documented gradient rather than measured basin by basin. <i>Warming rate:</i> in the multi-decade satellite SST record, the Balearic, Tyrrhenian, Adriatic and northern Ionian trend fastest at 0.4&ndash;0.5 &deg;C/decade, while the Aegean and northern Levantine trend highest basin-wide, up to 0.6 &deg;C/decade (Copernicus Ocean State Report); the Alboran and Ligurian sit below that band. These are long-run averages &mdash; Argo float data for 2012&ndash;2025 alone show still steeper warming across the whole basin (up to 0.8&ndash;0.9 &deg;C/decade near the surface in the western Mediterranean and Ionian), reflecting how much faster the sea has warmed in just the last decade. <i>Net evaporation</i> is evaporation minus rainfall, and each sub-basin carries its parent basin&rsquo;s average: 0.88 mm/day (&asymp;0.32 m a year) over the western Mediterranean and 1.52 mm/day (&asymp;0.55 m a year) over the eastern, where drought since the late 1990s has intensified it. Comparable per-sub-basin figures are not published; the Adriatic in particular is so diluted by rivers that its real freshwater balance is far less negative than the eastern average suggests. Rivers replace only about a third of what the sea loses to evaporation &mdash; the Atlantic inflow at Gibraltar makes up the deficit, and that imbalance is why the sea gets saltier from west to east. <i>Plankton layer:</i> the deep chlorophyll maximum is measured at about 30 m in the Alboran Sea and 120 m in the easternmost Levantine; the basins between are placed along that west-to-east gradient. <i>Posidonia meadows</i> is a five-step presence rating, not an area: <i>Posidonia oceanica</i> is endemic to the Mediterranean and 1,224,707 ha of it have been mapped basin-wide (510,715 ha west, 713,992 ha east), but per-basin areas are not published on a comparable footing. The ratings follow the documented range limits &mdash; the Alboran is the species' western edge, meadows are rare or absent in the low-salinity northern Adriatic, and they stop at a sharp border in the Levantine, where records from the Syrian, Lebanese and Israeli coasts are now considered erroneous. Meadows have contracted by roughly a third in the last fifty years. <i>Biggest tide</i> is the largest spring range observed anywhere in the basin, not a basin-wide average &mdash; the Ionian figure is the Gulf of Gab&egrave;s, the Adriatic figure is the head of the gulf at Venice, and most of the sea sits nearer 0.2&ndash;0.3 m.</p></details>
-    <details class="note-fold"><summary>Basin outlines and depths: how the boundaries and terrain were drawn, and what the sea-level toy leaves out.</summary><p class="note">follow the conventional hydrographic divisions at the sills &mdash; Gibraltar, the Sicily Channel, Otranto, the Dardanelles and the Cretan Arc &mdash; set as straight lines between capes, the convention the IHO uses, then clipped to the Natural Earth 1:10m coastline, simplified. The map also shows the surrounding seas (Atlantic, Black Sea, Sea of Marmara, Red Sea) in grey, outside the eight basins. <b>Area and mean depth</b> are measured from the outlined polygons and the terrain grid, so they describe what is drawn; they can differ from published figures for the same basin names, which use other limits. Maximum depths are literature values. The terrain grid is the AWS/Mapzen &ldquo;terrarium&rdquo; terrain tiles (SRTM, GMTED and ETOPO1/GEBCO), averaged to about 4&nbsp;km per cell, so depths under the cursor are approximate. <b>Sea-level toggle:</b> a toy built on today&rsquo;s terrain &mdash; no ice-sheet or crustal rebound, no erosion or sediment, no tides &mdash; and city flooding is judged on 4&nbsp;km cells, so low coastal cities flood later here than in reality. The map is thematic, not navigational. Compiled September 2026.</p></details>
+    <details class="note-fold"><summary>Basin outlines and depths: how the boundaries and terrain were drawn, and what the sea-level scenarios leave out.</summary><p class="note">follow the conventional hydrographic divisions at the sills &mdash; Gibraltar, the Sicily Channel, Otranto, the Dardanelles and the Cretan Arc &mdash; set as straight lines between capes, the convention the IHO uses, then clipped to the Natural Earth 1:10m coastline, simplified. The map also shows the surrounding seas (Atlantic, Black Sea, Sea of Marmara, Red Sea) in grey, outside the eight basins. <b>Area and mean depth</b> are measured from the outlined polygons and the terrain grid, so they describe what is drawn; they can differ from published figures for the same basin names, which use other limits. Maximum depths are literature values. The terrain grid is the AWS/Mapzen &ldquo;terrarium&rdquo; terrain tiles (SRTM, GMTED and ETOPO1/GEBCO), averaged to about 4&nbsp;km per cell, so depths under the cursor are approximate. <b>Sea-level scenarios:</b> an educational scenario on today&rsquo;s terrain &mdash; no ice-sheet or crustal rebound, no erosion or sediment, no tides, waves, defences or drainage &mdash; and whether water reaches a city is judged on 4&nbsp;km cells (see the method note beside the tool). The map is thematic, not navigational. Compiled September 2026.</p></details>
   </footer>
 </div>
 
@@ -532,7 +484,7 @@ function fT(v){return v.toFixed(1)+" "+DEG+"C";}
 function fN(v){return v.toLocaleString("en-US");}
 var POS=["Absent","Marginal","Patchy","Widespread","Extensive"];
 var groups=[
- {id:"temp",label:"Temperature",hint:"how warm, how variable",measures:[
+ {id:"temp",label:"Temperature",hint:"seasons, months, warming",measures:[
    {id:"summer",short:"Summer",full:"Summer sea-surface temperature",fmt:fT},
    {id:"winter",short:"Winter",full:"Winter sea-surface temperature",fmt:fT},
    {id:"range",short:"Seasonal swing",full:"Summer-to-winter temperature swing",fmt:fT},
@@ -543,14 +495,15 @@ var groups=[
  {id:"depth",label:"Depth",hint:"how deep, how big",measures:[
    {id:"avgDepth",short:"Mean depth",full:"Mean water depth",fmt:function(v){return fN(v)+" m";}},
    {id:"maxDepth",short:"Max depth",full:"Maximum recorded depth",fmt:function(v){return fN(v)+" m";}},
-   {id:"area",short:"Surface area",full:"Surface area",fmt:function(v){return fN(v)+" km\u00b2";}}]}
+   {id:"area",short:"Surface area",full:"Surface area",fmt:function(v){return fN(v)+" km\u00b2";}}]},
+ {id:"sea",label:"Sea level",hint:"scenarios, not forecasts",measures:[]}
 ];
 /* curiosities: shown in the basin panel, not as map measures */
 var CURIO=[
    {id:"dcm",short:"Plankton layer",full:"Depth of the plankton layer",est:true,fmt:function(v){return fN(v)+" m down";}},
    {id:"tide",short:"Biggest tide",full:"Largest spring tidal range",fmt:function(v){return v.toFixed(2)+" m";}},
    {id:"posidonia",short:"Posidonia meadows",full:"Posidonia seagrass meadows",fmt:function(v){return POS[Math.round(v)];}}];
-var group="temp", metric="summer", selected="levantine";
+var group="temp", metric="summer", selected="levantine", tview="seasonal";
 function G(){return groups.filter(function(g){return g.id===group;})[0];}
 function M(){
   var all=[]; groups.forEach(function(g){all=all.concat(g.measures);});
@@ -639,13 +592,15 @@ map.on("zoom",function(){ mapEl.classList.toggle("zfar",map.getZoom()<homeZoom+0
    One PNG on the Web Mercator grid: red = the sea level that first covers the cell (the depth, for sea),
    green = flags (1 sea today, 2 open ocean outside the Mediterranean). Built by scripts/build_data.py. */
 var dem=null, demWaiters=[], demLoading=false;
+var demFailed=false;
+function demFail(){ demFailed=true; var m=document.getElementById("lvlMsg"); if(m) m.textContent="Terrain data could not be loaded, so scenarios cannot be drawn. The page must be served over http(s)."; }
 function withDem(cb){
   if(dem){ cb(dem); return; }
   demWaiters.push(cb);
   if(demLoading) return;
   demLoading=true;
   var img=new Image();
-  img.onerror=function(){ demLoading=false; demWaiters.length=0; };
+  img.onerror=function(){ demLoading=false; demWaiters.length=0; demFail(); };
   img.onload=function(){
     try{
       var w=img.naturalWidth, h=img.naturalHeight, c=document.createElement("canvas"); c.width=w; c.height=h;
@@ -662,7 +617,7 @@ function withDem(cb){
         d.rowKm2[y]=cw*cw;
       }
       dem=d; demWaiters.splice(0).forEach(function(f){f(d);});
-    }catch(e){ demLoading=false; demWaiters.length=0; }   /* opened from disk: the browser blocks reading pixels */
+    }catch(e){ demLoading=false; demWaiters.length=0; demFail(); }   /* opened from disk: the browser blocks reading pixels */
   };
   img.src="data/dem.png";
 }
@@ -843,6 +798,7 @@ function drawLevel(){
   var ctx=floodCv.getContext("2d"), im=ctx.createImageData(d.w,d.h), o=im.data;
   var spread=Math.max(3,Math.abs(L)*0.06), Lout=Math.max(L,OCEAN_FLOOR);
   var fc=dark?[34,120,170]:[58,150,205], lo=dark?[96,84,56]:[238,226,186], hi=dark?[64,56,38]:[190,166,116];
+  document.getElementById("lgFlood").style.background="rgb("+fc.join(",")+")"; document.getElementById("lgSeabed").style.background="rgb("+lo.join(",")+")";
   var gained=0, lost=0, F=d.F, K=d.K, lut=d.lut, span=Math.max(10,Math.abs(L));
   for(var y=0;y<d.h;y++){
     var km2=d.rowKm2[y];
@@ -864,8 +820,8 @@ function drawLevel(){
   paintFunStats(gained,lost);
 }
 var lvlEl=document.getElementById("lvl"), lvlOut=document.getElementById("lvlOut"), funNote=document.getElementById("funNote"),
-    funStats=document.getElementById("funStats"), funBtn=document.getElementById("funBtn"), funBody=document.getElementById("funBody");
-var PRESETS=[["Last Ice Age",-120],["Today",0],["+10 m",10],["Ice-free Earth",70],["Med dries out",-1500]];
+    funStats=document.getElementById("funStats"), seaView=document.getElementById("seaView"), lvlNum=document.getElementById("lvlNum"), lvlMsg=document.getElementById("lvlMsg");
+var PRESETS=[["\u2212120 m",-120],["Today",0],["+10 m",10],["+70 m",70],["\u22121,500 m",-1500]];   /* neutral offsets: no dated or named presets without a documented source */
 function paintFunStats(gained,lost){
   var h="", n=0, wet=[];
   CITIES.forEach(function(c){ var w=level>0&&c.fl<=level; c.el.classList.toggle("wet",w); if(w) wet.push(c); });
@@ -876,19 +832,19 @@ function paintFunStats(gained,lost){
     (wet.length?wet.slice(0,12).map(function(c){return c.name;}).join(", ")+(wet.length>12?" and "+(wet.length-12)+" more":""):"none yet")+'</span></div>';
   funStats.innerHTML=h;
   var note;
-  if(level===0) note="Today. Drag the slider, or pick a moment in Earth's history. The dashed line marks today's coast.";
+  if(level===0) note="Today\u2019s sea level, the reference. Drag the slider, type an offset or pick a preset; the dashed line marks today\u2019s coast.";
   else if(level>0) note="Every cell the sea can reach below "+fmtLevel(level)+" is flooded. Land only floods if it is connected to the sea; inland hollows stay dry until the rim is overtopped.";
-  else if(level>=OCEAN_FLOOR) note="Sea level "+fmtLevel(level)+(level<=-100?", as at the last glacial maximum (about 20,000 years ago): the northern Adriatic is dry land, and Sicily, Malta and Tunisia are almost joined.":". The sand-coloured band is seabed that is now dry land.");
-  else note="Below −130 m the world ocean cannot fall, so only the Mediterranean drains here, as it did when Gibraltar closed in the Messinian salinity crisis (about 6 million years ago). Illustrative: today's seabed, no salt layer, no crustal rebound.";
+  else if(level>=OCEAN_FLOOR) note="Sea level "+fmtLevel(level)+". The sand-coloured areas are seabed that would be exposed at this level.";
+  else note="Sea level "+fmtLevel(level)+" in the Mediterranean only: the world ocean is held at \u2212130 m, as if the Strait of Gibraltar were closed. Illustrative: today\u2019s seabed, no salt layer, no crustal rebound.";
   funNote.textContent=note;
 }
 function setLevel(L,fromSlider){
-  level=L; lvlOut.textContent=fmtLevel(L);
+  level=L; lvlOut.textContent=fmtLevel(L); lvlNum.value=L;
   if(!fromSlider) lvlEl.value=level2slider(L);
   lvlEl.setAttribute("aria-valuetext",L===0?"today's sea level":fmtLevel(L)+" relative to today");
-  document.querySelectorAll(".pbtn").forEach(function(b){ b.classList.toggle("on",+b.dataset.l===L); });
+  document.querySelectorAll("#presets .pbtn").forEach(function(b){ b.classList.toggle("on",+b.dataset.l===L); });
   var go=function(){ if(mapReady){ ensureCanvasSources(); drawLevel(); } };
-  if(dem) go(); else if(L!==0||!funBody.hidden) withDem(go);
+  if(dem) go(); else if(L!==0||!seaView.hidden){ if(!demFailed) lvlMsg.textContent="Loading terrain data\u2026"; withDem(function(){ lvlMsg.textContent=""; go(); }); }
 }
 var lvlRaf=0;
 lvlEl.addEventListener("input",function(){
@@ -897,24 +853,28 @@ lvlEl.addEventListener("input",function(){
 });
 PRESETS.forEach(function(p){
   var b=document.createElement("button"); b.type="button"; b.className="pbtn"; b.dataset.l=p[1];
-  b.textContent=p[0]+(p[1]&&p[0].charAt(0)!=="+"?" ("+fmtLevel(p[1])+")":"");
+  b.textContent=p[0];
   b.addEventListener("click",function(){ setLevel(p[1],false); });
   document.getElementById("presets").appendChild(b);
 });
-funBtn.addEventListener("click",function(){
-  var open=funBody.hidden;
-  funBody.hidden=!open; funBtn.setAttribute("aria-expanded",open); mapEl.classList.toggle("cities-on",open);
-  if(open){
-    setLevel(level,false);
-  }else if(level!==0){
-    setLevel(0,false);
-  }
+function seaShow(open){
+  if(seaView.hidden===!open) return;
+  seaView.hidden=!open; mapEl.classList.toggle("cities-on",open);
+  if(open) setLevel(level,false); else if(level!==0) setLevel(0,false);
+}
+lvlNum.addEventListener("change",function(){
+  var v=parseFloat(String(lvlNum.value).replace("\u2212","-"));
+  if(!isFinite(v)){ lvlMsg.textContent="Enter a number of metres, for example 10 or \u2212120."; lvlNum.value=level; return; }
+  var c=Math.round(Math.max(-2500,Math.min(200,v))*2)/2;
+  setLevel(c,false);
+  lvlMsg.textContent=c===v?"":"Set to "+fmtLevel(c)+(v<-2500||v>200?": outside the supported range of \u22122,500 m to +200 m.":" (rounded to 0.5 m).");
 });
-lvlOut.textContent=fmtLevel(0);
+document.getElementById("lvlReset").addEventListener("click",function(){ setLevel(0,false); lvlMsg.textContent=""; });lvlOut.textContent=fmtLevel(0);
 
 /* ---- sea-surface temperature through time ----
    data/sst.png + data/sst.json are built by scripts/build_sst.py from Copernicus Marine monthly means:
-   a grey atlas of 0.25-degree frames (code = (T - base) * scale, 0 = land / no data). */
+   a grey atlas of 0.25-degree frames (code = (T - base) * scale, 0 = land / no data).
+   A true value of exactly the base temperature would also read as missing; that is below any Mediterranean surface value on the scale. */
 var sst=null, sstState="idle", sstWaiters=[], sstMode="abs", sstIdx=0, sstOn=false, sstTimer=0, sstCv=document.createElement("canvas");
 var MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 var SST_ABS=["#2b3f9c","#3d86c6","#7cc5d8","#ecf3b4","#f7c455","#ee8039","#c5301f"], SST_ABS_RANGE=[12,29];
@@ -928,7 +888,7 @@ var SST_LUT={abs:lutFor(SST_ABS),anom:lutFor(SST_ANOM)};
 function sstLabel(i){ var m=(sst.m0+i)%12, y=sst.y0+Math.floor((sst.m0+i)/12); return MONTHS[m]+" "+y; }
 function sstFail(msg){
   sstState="idle"; sstWaiters.length=0;
-  document.getElementById("sstNote").textContent=msg||"No SST grid has been published yet. Run the “Update SST grid” workflow (it needs a free Copernicus Marine login), then merge the pull request it opens. The page must also be served over http(s).";
+  document.getElementById("sstNote").textContent=msg||"Monthly data are not available right now. They load only when the page is served over http(s).";
   document.getElementById("sstSlider").disabled=true; document.getElementById("sstPlay").disabled=true;
 }
 function atlasCodes(img,n,cols,w,h){
@@ -963,6 +923,7 @@ function sstPrepare(meta,codes,climCodes){
   var n=meta.n, w=meta.w, h=meta.h, N=w*h, b=meta.bounds, i, k, y, x;
   var s={meta:meta,codes:codes,n:n,w:w,h:h,y0:+meta.start.slice(0,4),m0:+meta.start.slice(5)-1};
   sst=s;
+  DS["cmems-sst-monthly"].coverage=meta.start+" to "+meta.end+" (monthly)"; DS["cmems-sst-monthly"].retrieved="Grid built "+meta.built; renderSources(); paintContext();
   var lat=new Float32Array(h), lon=new Float32Array(w), wt=new Float32Array(h);
   for(y=0;y<h;y++){ lat[y]=b[3]-(y+0.5)*(b[3]-b[1])/h; wt[y]=Math.cos(lat[y]*Math.PI/180); }
   for(x=0;x<w;x++) lon[x]=b[0]+(x+0.5)*(b[2]-b[0])/w;
@@ -1037,22 +998,24 @@ function paintSst(){
   document.getElementById("sstOut").textContent=sstLabel(sstIdx);
   document.getElementById("sstSlider").setAttribute("aria-valuetext",sstLabel(sstIdx));
   var rg=anom?SST_ANOM_RANGE:SST_ABS_RANGE, fmt=function(v){return (anom&&v>=0?"+":"")+v.toFixed(1)+" "+DEG+"C";};
-  document.getElementById("sstKey").innerHTML='<span>'+fmt(rg[0])+'</span><i style="background:linear-gradient(90deg,'+(anom?SST_ANOM:SST_ABS).join(",")+')"></i><span>'+fmt(rg[1])+'</span>';
+  document.getElementById("sstKey").innerHTML='<span>'+fmt(rg[0])+'</span><i style="background:linear-gradient(90deg,'+(anom?SST_ANOM:SST_ABS).join(",")+')"></i><span>'+fmt(rg[1])+'</span><span>fixed scale; values beyond it take the end colour</span>';
   function tile(label,name){
     var i=sstIdx, a=s.ser[name][i], d=s.ans[name][i];
     return '<div class="tile"><span class="tl">'+label+'</span><span class="tv">'+(a===a?a.toFixed(1):"—")+'<i>'+DEG+'C</i></span><span class="tl">'+(d===d?(d>=0?"+":"")+d.toFixed(1)+" vs 1991–2020":"")+'</span></div>';
   }
-  document.getElementById("sstStats").innerHTML=tile("Mediterranean, "+sstLabel(sstIdx),B)+tile(byId[selected].name,bi);
+  document.getElementById("sstStats").innerHTML=tile("All eight basins (latitude-weighted)",B)+tile(byId[selected].name,bi);
   /* selected basin through time, with the chosen month marked */
   var series=(anom?s.ans:s.ser)[bi], W=560, H=70, L=4, T=6, mn=Infinity, mx=-Infinity, i;
   for(i=0;i<s.n;i++){ var v=series[i]; if(v===v){ if(v<mn)mn=v; if(v>mx)mx=v; } }
   var d="", X=function(i){return L+i/(s.n-1)*(W-2*L);}, Y=function(v){return T+(1-(v-mn)/(mx-mn||1))*(H-2*T);};
-  for(i=0;i<s.n;i++){ var vv=series[i]; if(vv===vv) d+=(d?"L":"M")+X(i).toFixed(1)+" "+Y(vv).toFixed(1); }
+  var pen=false; for(i=0;i<s.n;i++){ var vv=series[i]; if(vv===vv){ d+=(pen?"L":"M")+X(i).toFixed(1)+" "+Y(vv).toFixed(1); pen=true; } else pen=false; }   /* gaps stay gaps */
   var sp=document.getElementById("sstSpark");
-  sp.innerHTML='<path d="'+d+'" fill="none" stroke="var(--accent)" stroke-width="1.2"/>'+
+  if(mn===Infinity) sp.innerHTML=""; else sp.innerHTML='<path d="'+d+'" fill="none" stroke="var(--accent)" stroke-width="1.2"/>'+
     (anom?'<line x1="'+L+'" x2="'+(W-L)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'" stroke="var(--border)"/>':"")+
     '<line x1="'+X(sstIdx).toFixed(1)+'" x2="'+X(sstIdx).toFixed(1)+'" y1="0" y2="'+H+'" stroke="var(--ink)" stroke-width="1.2"/>';
   sp.setAttribute("aria-label",byId[selected].name+" "+(anom?"temperature anomaly":"sea-surface temperature")+", "+sst.meta.start+" to "+sst.meta.end);
+  document.getElementById("sstSparkCap").textContent=mn===Infinity?byId[selected].name+": no grid cells with data, so a basin series is not available.":
+    byId[selected].name+", "+sstLabel(0)+" to "+sstLabel(s.n-1)+": "+(anom?"anomaly vs 1991\u20132020":"monthly mean")+" from "+fmt(mn)+" to "+fmt(mx)+". Mean of the 0.25\u00b0 cells whose centre lies in the basin, weighted by cos(latitude); gaps are months without data.";
   if(mapReady&&sst) drawSst();
 }
 function setSst(i){ sstIdx=Math.max(0,Math.min(sst.n-1,i)); document.getElementById("sstSlider").value=sstIdx; paintSst(); }
@@ -1074,19 +1037,18 @@ document.getElementById("sstSpark").addEventListener("click",function(ev){
   if(!sst) return; var r=this.getBoundingClientRect(); sstPlayStop();
   setSst(Math.round(((ev.clientX-r.left)/r.width*560-4)/552*(sst.n-1)));
 });
-/* the control only appears once a grid has been published */
-try{ if(location.protocol!=="file:") fetch("data/sst.json",{method:"HEAD"}).then(function(r){ if(r.ok) document.getElementById("sst").hidden=false; }).catch(function(){}); }catch(e){}
-document.getElementById("sstBtn").addEventListener("click",function(){
-  var body=document.getElementById("sstBody"), open=body.hidden;
-  body.hidden=!open; this.setAttribute("aria-expanded",open); sstOn=open; mapEl.classList.toggle("sst-on",open);
+function sstShow(open){
+  var box=document.getElementById("sst");
+  box.hidden=!open; if(sstOn===open) return;
+  sstOn=open; mapEl.classList.toggle("sst-on",open);
   if(open){
-    document.getElementById("sstNote").textContent="Monthly mean sea-surface temperature, Copernicus Marine reanalysis, 0.25° grid. Drag the slider, press Play, or click the chart.";
-    withSst(function(){ paintSst(); });
+    document.getElementById("sstNote").textContent="Monthly mean sea-surface temperature from the Copernicus Marine reanalysis (model output), on a 0.25\u00b0 grid. Drag the slider, use the arrow keys, press Play, or click the chart.";
+    withSst(function(){ if(sstOn) paintSst(); });
   }else{
     sstPlayStop();
     if(mapReady&&map.getLayer("sst")) map.setLayoutProperty("sst","visibility","none");
   }
-});
+}
 
 /* ---- painting ---- */
 var tip=document.getElementById("tip");
@@ -1156,22 +1118,84 @@ function paintBars(){
 }
 /* context line: measure, unit, period, data category and source for the figures on screen */
 var CTX={
-  summer:["\u00b0C","Literature value","Season and reference period not documented","Regional literature (see Sources)"],
-  winter:["\u00b0C","Literature value","Season and reference period not documented","Regional literature (see Sources)"],
-  range:["\u00b0C","Derived from summer and winter values","Reference period not documented","Summer and winter values above"],
-  warming:["\u00b0C per decade","Interpolated estimate (est.)","Long-run satellite SST record","Copernicus Ocean State Report, Argo (see notes)"],
-  salinity:["psu","Literature value","Period not documented","Regional literature (see Sources)"],
-  evap:["m per year","Interpolated estimate (est.)","Period not documented","Frontiers in Climate, 2025 (see notes)"],
-  avgDepth:["m","Derived from terrain model","Current terrain, not dated","AWS/Mapzen terrain tiles (see Sources)"],
-  maxDepth:["m","Literature value","Period not documented","Regional literature (see Sources)"],
-  area:["km\u00b2","Derived from drawn outline","Current outline, not dated","Basin outlines (see notes)"],
-  dcm:["m","Interpolated estimate (est.)","Period not documented","Regional literature (see notes)"],
-  tide:["m","Literature value","Period not documented","Regional literature (see notes)"],
-  posidonia:["rating 0\u20134","Literature rating","Period not documented","Regional literature (see notes)"]
+  summer:["\u00b0C","Literature value","Season and reference period not documented","basin-literature"],
+  winter:["\u00b0C","Literature value","Season and reference period not documented","basin-literature"],
+  range:["\u00b0C","Derived: summer value minus winter value","Reference period not documented","basin-literature"],
+  warming:["\u00b0C per decade","Interpolated estimate (est.)","Long-run satellite SST record; window not documented","cmems-osr-bulletins; argo"],
+  salinity:["psu","Literature value","Period not documented","basin-literature"],
+  evap:["m per year","Interpolated estimate (est.)","Period not documented","water-budget"],
+  avgDepth:["m","Derived from terrain model","Current terrain, not dated","terrain-tiles; natural-earth"],
+  maxDepth:["m","Literature value","Measurement dates not documented per basin","basin-literature"],
+  area:["km\u00b2","Derived from drawn outline","Current outline, not dated","natural-earth; terrain-tiles"],
+  dcm:["m","Interpolated estimate (est.)","Period not documented","basin-literature"],
+  tide:["m","Literature value (largest observed range)","Period not documented","basin-literature"],
+  posidonia:["rating 0\u20134","Literature rating","Period not documented","basin-literature"]
 };
+/* one record per dataset; the context line, the sources section and the CSV read from these. Missing fields show "not documented". */
+var DATASETS=[
+ {id:"cmems-med-phy-reanalysis",name:"Copernicus Marine: Mediterranean Sea Physics Reanalysis",what:"The reference gridded temperature and salinity field for the Mediterranean.",
+  product:"MEDSEA_MULTIYEAR_PHY_006_004",variable:"Temperature and salinity (3-D)",method:"NEMO ocean model with OceanVAR data assimilation",resolution:"1/24\u00b0 (about 4 km), 141 depth levels",category:"Reanalysis/model output",
+  limitations:"Whether the per-basin seasonal and salinity figures on this page were derived from this product is not documented.",
+  url:"https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description",linkText:"data.marine.copernicus.eu"},
+ {id:"cmems-sst-monthly",name:"Monthly sea-surface temperature grid",what:"Monthly surface temperature behind the Monthly timeline, built by scripts/build_sst.py from the reanalysis above.",
+  product:"MEDSEA_MULTIYEAR_PHY_006_004 (monthly means)",variable:"Sea-surface temperature",unit:"\u00b0C",coverage:"Read from data/sst.json when the Monthly timeline opens",baseline:"1991\u20132020 monthly climatology (12 frames), for anomalies",
+  aggregation:"Monthly means coarsened to 0.25\u00b0; basin values are means of the cells whose centre lies in the basin, weighted by cos(latitude)",resolution:"0.25\u00b0",category:"Reanalysis/model output",
+  limitations:"Recent years only, not the full record. Cells without data stay blank. A stored value of exactly the encoding base temperature would also read as missing; that is below any Mediterranean surface value on the scale.",
+  url:"https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description",linkText:"data.marine.copernicus.eu"},
+ {id:"cmems-omi-sst-anomaly",name:"Copernicus Marine: Mediterranean SST area-averaged anomalies (OMI)",what:"The whole-Mediterranean anomaly series behind the warming chart and its trend figures.",
+  product:"MEDSEA_OMI_TEMPSAL_sst_area_averaged_anomalies",variable:"Sea-surface temperature anomaly, Mediterranean average",unit:"\u00b0C",coverage:"Ends December 2024; the chart shows 2015\u20132024 and the long trend starts in 1982",baseline:"1991\u20132020",
+  aggregation:"Annual means of the monthly anomalies, computed for this page",resolution:"One value for the whole sea",category:"Satellite observation (reprocessed)",
+  limitations:"Trend method and uncertainty are not documented here. The 2015\u20132024 trend is a short window and overstates the long-run rate. No per-basin anomalies."},
+ {id:"cmems-osr-bulletins",name:"Copernicus Ocean State Report 8, Mercator Ocean and C3S bulletins",what:"Annual SST bulletins, marine-heatwave monitoring, and the west-to-east warming-rate gradient behind the per-basin warming estimates.",
+  variable:"Annual mean SST, heatwave coverage, warming rates",unit:"\u00b0C, %, \u00b0C per decade",category:"Literature value; per-basin warming rates are interpolated estimates (est.)",
+  limitations:"Per-basin warming rates are placed along a documented gradient, not measured basin by basin.",
+  url:"https://marine.copernicus.eu/bulletin/2025-annual-ocean-health-bulletin",linkText:"2025 Ocean Health Bulletin"},
+ {id:"argo",name:"Argo float network",what:"Profilers diving to 2,000 m every ten days, the in-situ backbone for salinity and warming trends.",
+  variable:"Temperature and salinity profiles",coverage:"2012\u20132025 (the cited Argo vs. reanalysis study)",category:"Literature value (in-situ observations)",
+  limitations:"Cited for context on recent warming; no Argo values are plotted on the map.",
+  url:"https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2026.1846069/full",linkText:"Argo vs. reanalysis trends"},
+ {id:"water-budget",name:"Mediterranean water budget (Frontiers in Climate, 2025)",what:"Net evaporation (evaporation minus rain) for the western and eastern basins.",
+  variable:"Net evaporation",unit:"mm/day (shown as m per year)",aggregation:"One value per side of the sea (west 0.88, east 1.52 mm/day); each sub-basin carries its side's value",category:"Literature value; per-basin figures are interpolated estimates (est.)",
+  limitations:"Comparable per-sub-basin figures are not published.",
+  url:"https://www.frontiersin.org/journals/climate/articles/10.3389/fclim.2025.1472731/full",linkText:"Eastern Med water budget"},
+ {id:"terrain-tiles",name:"Terrain Tiles (AWS Open Data)",what:"Land elevation and seabed depth behind the Seabed view, the measured areas and mean depths, and the sea-level scenarios.",
+  product:"\u201cterrarium\u201d tiles, zoom 6",variable:"Elevation and bathymetry",unit:"m",resolution:"Averaged to about 4 km cells",method:"Composite of SRTM, GMTED2010 and ETOPO1/GEBCO (Mapzen)",category:"Gridded terrain model",
+  limitations:"Vertical datum not documented here. Depths under the cursor are approximate.",
+  url:"https://registry.opendata.aws/terrain-tiles/",linkText:"registry.opendata.aws"},
+ {id:"natural-earth",name:"Natural Earth",what:"The coastline drawn here: public-domain vector shorelines, rendered with MapLibre GL JS. Basin outlines are clipped to it.",
+  product:"ne_10m_land",variable:"Coastline",resolution:"1:10m, simplified",category:"Vector base map",
+  url:"https://www.naturalearthdata.com/",linkText:"naturalearthdata.com"},
+ {id:"emodnet-bathymetry",name:"EMODnet Bathymetry",what:"The European seabed terrain model, listed as a reference.",
+  product:"DTM 2022 (21,937 surveys, 64 providers, 28 countries)",variable:"Seabed depth",category:"Reference only",
+  limitations:"Not used in this page's calculations: measured depths and the sea-level scenarios use the Terrain Tiles above.",
+  url:"https://emodnet.ec.europa.eu/en/bathymetry",linkText:"emodnet.ec.europa.eu"},
+ {id:"basin-literature",name:"Basin monographs and regional literature",what:"Per-basin seasonal temperature, salinity, maximum depth, tide, plankton and Posidonia figures: Adriatic, Aegean, Tyrrhenian, Ligurian, Alboran and Levantine studies, CIESM and Britannica.",
+  category:"Literature value",
+  limitations:"Individual references for each figure, the seasonal definitions and the reference periods are not documented on this page.",
+  url:"https://www.britannica.com/place/Mediterranean-Sea/Hydrologic-features-and-climate",linkText:"Britannica"}
+];
+var DS={}; DATASETS.forEach(function(d){ DS[d.id]=d; });
+var DS_FIELDS=[["product","Product"],["variable","Variable"],["unit","Unit"],["coverage","Coverage"],["baseline","Baseline"],["aggregation","Aggregation"],
+  ["resolution","Resolution"],["method","Method"],["retrieved","Retrieved / built"],["category","Data category"],["limitations","Limitations"]];
+function renderSources(){
+  var host=document.getElementById("prov"); host.innerHTML="";
+  DATASETS.forEach(function(d){
+    var det=document.createElement("details"), sm=document.createElement("summary"), pw=document.createElement("span"), dl=document.createElement("dl");
+    det.className="pcard"; sm.className="pn"; sm.textContent=d.name; pw.className="pw"; pw.textContent=d.what; dl.className="dl";
+    DS_FIELDS.forEach(function(f){ var dt=document.createElement("dt"), dd=document.createElement("dd"); dt.textContent=f[1]; dd.textContent=d[f[0]]||"not documented"; dl.appendChild(dt); dl.appendChild(dd); });
+    det.appendChild(sm); det.appendChild(pw); det.appendChild(dl);
+    if(d.url){ var a=document.createElement("a"); a.href=d.url; a.target="_blank"; a.rel="noopener"; a.textContent=d.linkText+" \u2192"; det.appendChild(a); }
+    host.appendChild(det);
+  });
+}
+function dsNames(ids){ return ids.split("; ").map(function(id){ return DS[id]?DS[id].name:id; }).join("; "); }
 function paintContext(){
-  var m=M(), c=CTX[metric]||[];
-  document.getElementById("ctx").textContent=m.full+" \u00b7 "+c.join(" \u00b7 ");
+  var t;
+  if(group==="sea") t=["Sea-level scenario","m relative to today\u2019s sea level","Scenario output","No time period: today\u2019s terrain",dsNames("terrain-tiles")];
+  else if(group==="temp"&&tview==="monthly") t=["Monthly mean sea-surface temperature","\u00b0C, or anomaly vs 1991\u20132020","Reanalysis/model output",DS["cmems-sst-monthly"].coverage,dsNames("cmems-sst-monthly")];
+  else { var m=M(), c=CTX[metric]||["","","",""]; t=[m.full,c[0],c[1],c[2],dsNames(c[3])]; }
+  if(group==="temp"&&tview==="warming") t.push("Chart: "+dsNames("cmems-omi-sst-anomaly"));
+  document.getElementById("ctx").textContent=t.join(" \u00b7 ");
 }
 function paintDetail(){
   var b=basins.filter(function(x){return x.id===selected;})[0];
@@ -1225,50 +1249,42 @@ function moveTip(ev){
   if(y+h>window.innerHeight-8) y=ev.clientY-h-pad;
   tip.style.left=x+"px"; tip.style.top=y+"px";
 }
-/* ---- filter UI ---- */
-var gHost=document.getElementById("groups"), sHost=document.getElementById("subs");
+/* ---- modes: Temperature (Seasonal / Monthly / Warming), Salinity, Depth, Sea level ---- */
+var gHost=document.getElementById("groups"), sHost=document.getElementById("subs"), tHost=document.getElementById("tviews");
+var TVIEWS=[["seasonal","Seasonal patterns"],["monthly","Monthly timeline"],["warming","Warming"]], SEASONAL=["summer","winter","range"];
+function setMode(gid,view){
+  var g=groups.filter(function(x){return x.id===gid;})[0];
+  group=gid;
+  if(gid==="temp"){
+    tview=view||tview;
+    if(tview==="warming") metric="warming"; else if(SEASONAL.indexOf(metric)<0) metric="summer";
+  }else if(g.measures.length&&!g.measures.some(function(m){return m.id===metric;})) metric=g.measures[0].id;
+  Array.prototype.forEach.call(gHost.children,function(c){ var on=c.id==="g-"+gid; c.classList.toggle("on",on); c.setAttribute("aria-pressed",on); });
+  sstShow(gid==="temp"&&tview==="monthly");   /* leaving Monthly stops playback */
+  seaShow(gid==="sea");                         /* leaving Sea level returns to today */
+  document.getElementById("warmView").hidden=!(gid==="temp"&&tview==="warming");
+  renderSubs(); paintMap(); paintBars();
+}
+function subBtn(label,on,click){
+  var b=document.createElement("button"); b.type="button"; b.className="sbtn"+(on?" on":""); b.setAttribute("aria-pressed",on);
+  b.innerHTML=label; b.addEventListener("click",click); return b;
+}
 function renderSubs(){
-  var g=G();
-  sHost.innerHTML="";
-  sHost.style.display = g.measures.length>1 ? "flex" : "none";
-  g.measures.forEach(function(m){
-    var b=document.createElement("button");
-    b.className="sbtn"+(m.id===metric?" on":"");
-    b.type="button";
-    b.innerHTML=m.short+(m.est?' <span class="est">est.</span>':"");
-    b.addEventListener("click",function(){ metric=m.id; renderSubs(); paintMap(); paintBars(); });
-    sHost.appendChild(b);
+  var g=G(), ms=group==="temp"?(tview==="seasonal"?g.measures.filter(function(m){return SEASONAL.indexOf(m.id)>=0;}):[]):g.measures;
+  tHost.innerHTML=""; tHost.style.display=group==="temp"?"flex":"none";
+  if(group==="temp") TVIEWS.forEach(function(v){ tHost.appendChild(subBtn(v[1],v[0]===tview,function(){ setMode("temp",v[0]); })); });
+  sHost.innerHTML=""; sHost.style.display=ms.length>1?"flex":"none";
+  ms.forEach(function(m){
+    sHost.appendChild(subBtn(m.short+(m.est?' <span class="est">est.</span>':""),m.id===metric,function(){ metric=m.id; renderSubs(); paintMap(); paintBars(); }));
   });
 }
 groups.forEach(function(g){
   var b=document.createElement("button");
   b.className="gbtn"+(g.id===group?" on":"");
-  b.type="button"; b.id="g-"+g.id;
+  b.type="button"; b.id="g-"+g.id; b.setAttribute("aria-pressed",g.id===group);
   b.innerHTML=g.label+'<span class="gs">'+g.hint+'</span>';
-  b.addEventListener("click",function(){
-    group=g.id; metric=g.measures[0].id;
-    Array.prototype.forEach.call(gHost.children,function(c){c.classList.toggle("on",c.id==="g-"+g.id);});
-    renderSubs(); paintMap(); paintBars();
-  });
+  b.addEventListener("click",function(){ setMode(g.id); });
   gHost.appendChild(b);
-});
-
-/* ---- play strip: each card opens an existing module ---- */
-document.querySelectorAll("[data-play]").forEach(function(btn){
-  btn.addEventListener("click",function(){
-    var k=btn.getAttribute("data-play");
-    if(k==="salt"||k==="drivers"){
-      document.getElementById("g-salt").click();
-      if(k==="drivers"){ var sub=document.querySelector("#subs .sbtn:nth-child(2)"); if(sub) sub.click(); }
-      document.getElementById("map").scrollIntoView({behavior:"smooth",block:"center"});
-    }else if(k==="temp"){
-      var t=document.getElementById("sstBtn"); if(t.getAttribute("aria-expanded")!=="true") t.click();
-      t.scrollIntoView({behavior:"smooth",block:"center"});
-    }else if(k==="flood"){
-      var f=document.getElementById("funBtn"); if(f.getAttribute("aria-expanded")!=="true") f.click();
-      f.scrollIntoView({behavior:"smooth",block:"center"});
-    }
-  });
 });
 
 /* ---- CSV download ---- */
@@ -1276,7 +1292,7 @@ document.querySelectorAll("[data-play]").forEach(function(btn){
 function csvField(v){ var s=String(v); return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }
 document.getElementById("csvBtn").addEventListener("click",function(){
   var measures=[]; groups.forEach(function(g){ measures=measures.concat(g.measures); }); measures=measures.concat(CURIO);
-  var lines=["basin_id,basin,variable,value,unit,season,reference_period,anomaly_baseline,source,method,data_category,est_flag"];
+  var lines=["basin_id,basin,variable,value,unit,season,reference_period,anomaly_baseline,source_id,method,data_category,est_flag"];
   basins.forEach(function(b){
     measures.forEach(function(m){
       var c=CTX[m.id]||["","","",""];
@@ -1389,7 +1405,7 @@ scheduleSub(3000,6000);
   var n=mk("text",{x:L+2,y:13,"class":"note"},c); n.textContent="°C above the 1991–2020 average";
 })();
 
-renderSubs(); paintMap(); paintBars(); paintDetail(); paintTable();
+renderSources(); renderSubs(); paintMap(); paintBars(); paintDetail(); paintTable();
 </script>
 
 </body></html>
