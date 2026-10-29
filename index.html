@@ -265,6 +265,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
   .zbtn{width:26px;height:26px;font-size:13px;border-radius:7px;}
   .zbtn.wide{font-size:10px;padding:0 7px;}
 }
+.ctx{margin:12px 0 4px;font-size:15px;line-height:1.5;color:var(--ink-muted);}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
 </style>
 
@@ -316,6 +317,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <div class="groups" id="groups" role="tablist" aria-label="Measure category"></div>
       <div class="subs" id="subs" role="group" aria-label="Measure"></div>
     </div>
+    <p class="ctx" id="ctx" aria-live="polite"></p>
     <div class="mapwrap">
       <div id="map" role="region" aria-label="Map of the Mediterranean Sea divided into eight sub-basins, shaded by the selected measure. The ranked list below gives the same figures."></div>
       <div class="zoomui">
@@ -1080,6 +1082,8 @@ document.getElementById("sstMode").addEventListener("click",function(){
   sstMode=sstMode==="abs"?"anom":"abs"; this.setAttribute("aria-pressed",sstMode==="anom"); this.classList.toggle("on",sstMode==="anom"); paintSst();
 });
 document.getElementById("sstLatest").addEventListener("click",function(){ sstPlayStop(); setSst(sst.n-1); });
+/* playback never runs in a background tab */
+document.addEventListener("visibilitychange",function(){ if(document.hidden&&sstTimer) sstPlayStop(); });
 document.getElementById("sstSpark").addEventListener("click",function(ev){
   if(!sst) return; var r=this.getBoundingClientRect(); sstPlayStop();
   setSst(Math.round(((ev.clientX-r.left)/r.width*560-4)/552*(sst.n-1)));
@@ -1161,7 +1165,27 @@ function paintBars(){
     row.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();select(b.id,true);}});
     host.appendChild(row);
   });
-  document.getElementById("avgNote").textContent="Mediterranean mean \u00b7 "+m.fmt(mean);
+  document.getElementById("avgNote").textContent="Unweighted mean of the eight basins \u00b7 "+m.fmt(mean);
+  paintContext();
+}
+/* context line: measure, unit, period, data category and source for the figures on screen */
+var CTX={
+  summer:["\u00b0C","Literature value","Season and reference period not documented","Regional literature (see Sources)"],
+  winter:["\u00b0C","Literature value","Season and reference period not documented","Regional literature (see Sources)"],
+  range:["\u00b0C","Derived from summer and winter values","Reference period not documented","Summer and winter values above"],
+  warming:["\u00b0C per decade","Interpolated estimate (est.)","Long-run satellite SST record","Copernicus Ocean State Report, Argo (see notes)"],
+  salinity:["psu","Literature value","Period not documented","Regional literature (see Sources)"],
+  evap:["m per year","Interpolated estimate (est.)","Period not documented","Frontiers in Climate, 2025 (see notes)"],
+  avgDepth:["m","Derived from terrain model","Current terrain, not dated","AWS/Mapzen terrain tiles (see Sources)"],
+  maxDepth:["m","Literature value","Period not documented","Regional literature (see Sources)"],
+  area:["km\u00b2","Derived from drawn outline","Current outline, not dated","Basin outlines (see notes)"],
+  dcm:["m","Interpolated estimate (est.)","Period not documented","Regional literature (see notes)"],
+  tide:["m","Literature value","Period not documented","Regional literature (see notes)"],
+  posidonia:["rating 0\u20134","Literature rating","Period not documented","Regional literature (see notes)"]
+};
+function paintContext(){
+  var m=M(), c=CTX[metric]||[];
+  document.getElementById("ctx").textContent=m.full+" \u00b7 "+c.join(" \u00b7 ");
 }
 function paintDetail(){
   var b=basins.filter(function(x){return x.id===selected;})[0];
