@@ -93,8 +93,9 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
   font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;
   box-shadow:0 3px 10px -4px rgba(10,44,62,.5);padding:0;line-height:1;}
 .zbtn:hover{border-color:var(--accent);color:var(--accent-strong);}
-.hdr-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;}
-.themebtn{font-family:inherit;font-size:13px;font-weight:600;color:var(--accent-strong);background:var(--surface-2);border:1px solid var(--border);border-radius:99px;padding:8px 14px;min-height:40px;cursor:pointer;}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.topbar .eyebrow{min-width:0;}
+.themebtn{flex:none;font-family:inherit;font-size:13px;font-weight:600;color:var(--accent-strong);background:var(--surface-2);border:1px solid var(--border);border-radius:99px;padding:8px 14px;min-height:40px;cursor:pointer;white-space:nowrap;}
 .themebtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .zbtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
 .zbtn.wide{width:auto;padding:0 10px;font-size:11px;font-weight:600;}
@@ -273,8 +274,11 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
 </style>
 
 <div class="wrap">
-  <header>
-    <div class="eyebrow">Physical oceanography &middot; Copernicus Marine &middot; Argo &middot; open terrain data</div>
+  <header id="sec-header">
+    <div class="topbar">
+      <div class="eyebrow">Physical oceanography &middot; Copernicus Marine &middot; Argo &middot; open terrain data</div>
+      <button class="themebtn" id="themeBtn" type="button">Colour: Auto (system)</button>
+    </div>
     <h1>Mediterranean Basins</h1>
     <p class="sub">Explore how eight Mediterranean basins differ &mdash; and how they change.</p>
     <div class="chips">
@@ -282,10 +286,10 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <div class="chip"><b>5,109 m</b><span>Calypso Deep, Ionian Sea, measured to &plusmn;1 m</span></div>
       <div class="chip"><b>2.7 psu</b><span>saltier at the eastern end than the western</span></div>
     </div>
-    <div class="hdr-row"><p class="reviewed">Data last reviewed: <time datetime="2026-09">September 2026</time></p><button class="themebtn" id="themeBtn" type="button">Colour: Auto (system)</button></div>
+    <p class="reviewed">Data last reviewed: <time datetime="2026-09">September 2026</time></p>
   </header>
 
-  <div class="panel">
+  <div class="panel" id="sec-workspace">
     <div class="filter">
       <div class="groups" id="groups" role="group" aria-label="Mode"></div>
       <div class="subs tviews" id="tviews" role="group" aria-label="Temperature view"></div>
@@ -391,7 +395,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
   </div>
   </div>
 
-  <div class="lower">
+  <div class="lower" id="sec-lower">
     <div class="panel">
       <span class="ptitle">All eight basins ranked</span>
       <div class="bars" id="bars"></div>
@@ -414,22 +418,24 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <div class="tile"><span class="tl">Max depth</span><span class="tv" id="t5">&mdash;</span></div>
         <div class="tile"><span class="tl">Area</span><span class="tv" id="t6">&mdash;</span></div>
       </div>
+      <div id="curio-block">
       <span class="ptitle" style="display:block;margin-top:14px">Curiosities</span>
       <div class="tiles">
         <div class="tile"><span class="tl">Plankton layer</span><span class="tv" id="t7">&mdash;</span></div>
         <div class="tile"><span class="tl">Biggest tide</span><span class="tv" id="t8">&mdash;</span></div>
         <div class="tile"><span class="tl">Posidonia meadows</span><span class="tv" id="t9">&mdash;</span></div>
       </div>
+      </div>
       <div class="quirk"><span class="ql">The odd thing about it</span><span class="qt" id="dQuirk">&mdash;</span></div>
     </div>
   </div>
 
-  <div class="panel">
+  <div class="panel" id="sec-sources">
     <span class="ptitle">Where the data comes from</span>
     <div class="prov" id="prov"></div>
   </div>
 
-  <footer>
+  <footer id="sec-footer">
     <details class="note-fold"><summary>Reading the numbers: seasonal means, surface salinity, and how the Calypso Deep depth was measured.</summary><p class="note">Summer (July&ndash;September) and winter (January&ndash;March) SST are 1991&ndash;2020 climatological means of the Copernicus reanalysis over each basin&rsquo;s 0.25&deg; cells, weighted by cos(latitude): open-water averages, not coastal extremes, so shallow coastal corners can run warmer in August. Salinity is surface salinity in practical salinity units (&asymp; g/kg); the Aegean mean hides a steep gradient, from brackish Black Sea outflow in the north (below 33) to over 39 in the Cretan Sea. The Calypso Deep figure is the 2020 direct measurement of 5,109 m &plusmn;1 m from the submersible <i>Limiting Factor</i>, superseding older 5,121&ndash;5,267 m sonar estimates; the litter found there was logged in a separate 2025 study of video filmed on that same dive. The map's &ldquo;Balearic Sea&rdquo; follows the broad sense of that name &mdash; Britannica treats it as a synonym for the Algerian/Alg&eacute;ro-Proven&ccedil;al Basin, the whole open basin between Algeria, France and the Balearic Islands, not just the strip around Mallorca &mdash; so its area is the sourced ~0.85 million km&sup2; western-basin total minus the separately-mapped Alboran, Ligurian and Tyrrhenian. Basin areas otherwise vary with where you draw the boundaries; all are given to the nearest thousand km&sup2;.</p></details>
     <details class="note-fold"><summary>Estimates marked est.: how warming rate and net evaporation were derived, and where they stop.</summary><p class="note">are interpolated across a documented gradient rather than measured basin by basin. <i>Warming rate:</i> in the multi-decade satellite SST record, the Balearic, Tyrrhenian, Adriatic and northern Ionian trend fastest at 0.4&ndash;0.5 &deg;C/decade, while the Aegean and northern Levantine trend highest basin-wide, up to 0.6 &deg;C/decade (Copernicus Ocean State Report); the Alboran and Ligurian sit below that band. These are long-run averages &mdash; Argo float data for 2012&ndash;2025 alone show still steeper warming across the whole basin (up to 0.8&ndash;0.9 &deg;C/decade near the surface in the western Mediterranean and Ionian), reflecting how much faster the sea has warmed in just the last decade. <i>Net evaporation</i> is evaporation minus rainfall, and each sub-basin carries its parent basin&rsquo;s average: 0.88 mm/day (&asymp;0.32 m a year) over the western Mediterranean and 1.52 mm/day (&asymp;0.55 m a year) over the eastern, where drought since the late 1990s has intensified it. Comparable per-sub-basin figures are not published; the Adriatic in particular is so diluted by rivers that its real freshwater balance is far less negative than the eastern average suggests. Rivers replace only about a third of what the sea loses to evaporation &mdash; the Atlantic inflow at Gibraltar makes up the deficit, and that imbalance is why the sea gets saltier from west to east. <i>Plankton layer:</i> the literature reports the deep chlorophyll maximum at about 30 m in the westernmost Mediterranean (Dolan et al. 2002, as cited in a 2015 <i>Biogeosciences Discussions</i> paper, bgd-12-4139-2015) and at more than 100 m in the Levantine; the per-basin values here, including 120 m for the easternmost Levantine, are placed along that west-to-east gradient and are not measured basin by basin. <i>Posidonia meadows</i> is a five-step presence rating, not an area: <i>Posidonia oceanica</i> is endemic to the Mediterranean and 1,224,707 ha of it have been mapped basin-wide (Telesca et al. 2015, <i>Scientific Reports</i> 5, 12505), but per-basin areas are not published on a comparable footing. The ratings follow the documented range limits &mdash; the Alboran is the species' western edge, meadows are rare or absent in the low-salinity northern Adriatic, and they stop at a sharp border in the Levantine, where records from the Syrian, Lebanese and Israeli coasts are now considered erroneous. Meadows are estimated to have contracted by 34% over the last fifty years (same study). <i>Biggest tide</i> is the largest spring range observed anywhere in the basin, not a basin-wide average &mdash; the Ionian figure is the Gulf of Gab&egrave;s, the Adriatic figure is the head of the gulf at Venice, and most of the sea sits nearer 0.2&ndash;0.3 m.</p></details>
     <details class="note-fold"><summary>Basin outlines and depths: how the boundaries and terrain were drawn, and what the sea-level scenarios leave out.</summary><p class="note">follow the conventional hydrographic divisions at the sills &mdash; Gibraltar, the Sicily Channel, Otranto, the Dardanelles and the Cretan Arc &mdash; set as straight lines between capes, the convention the IHO uses, then clipped to the Natural Earth 1:10m coastline, simplified. The map also shows the surrounding seas (Atlantic, Black Sea, Sea of Marmara, Red Sea) in grey, outside the eight basins. <b>Area and mean depth</b> are measured from the outlined polygons and the terrain grid, so they describe what is drawn; they can differ from published figures for the same basin names, which use other limits. Maximum depths are literature values. The terrain grid is the AWS/Mapzen &ldquo;terrarium&rdquo; terrain tiles (SRTM, GMTED and ETOPO1/GEBCO), averaged to about 4&nbsp;km per cell, so depths under the cursor are approximate. <b>Sea-level scenarios:</b> an educational scenario on today&rsquo;s terrain &mdash; no ice-sheet or crustal rebound, no erosion or sediment, no tides, waves, defences or drainage &mdash; and whether water reaches a city is judged on 4&nbsp;km cells (see the method note beside the tool). The map is thematic, not navigational. Compiled September 2026.</p></details>
@@ -1217,7 +1223,7 @@ var DATASETS=[
   url:"https://emodnet.ec.europa.eu/en/bathymetry",linkText:"emodnet.ec.europa.eu"},
  {id:"basin-literature",name:"Basin monographs and regional literature",what:"Per-basin salinity, maximum depth, tide, plankton and Posidonia figures: Adriatic, Aegean, Tyrrhenian, Ligurian, Alboran and Levantine studies, CIESM and Britannica.",
   category:"Literature value",
-  limitations:"Maximum depths: Alboran 1,500 m (eniscuola.eni.com), Adriatic 1,233 m and Aegean 3,543 m (WorldAtlas, converted from feet); Tyrrhenian 3,785 m and Levantine 4,384 m appear on Wikipedia without a citation; Ligurian 2,850 m is not confirmed (Wikipedia says more than 2,800 m); Balearic 2,800 m has no source found; Ionian 5,109 m is the 2020 Calypso Deep measurement. Plankton layer: about 30 m westernmost and more than 100 m in the Levantine are reported in the literature; the per-basin values are interpolated. Posidonia: the basin-wide area and decline are from Telesca et al. 2015; the five-step per-basin ratings follow documented range limits and have no per-basin source. Per-basin salinity and tide values have no documented source or period.",
+  limitations:"Maximum depths: Alboran 1,500 m (eniscuola.eni.com) and Adriatic 1,233 m and Aegean 3,543 m (WorldAtlas, converted from feet) are web references, not primary bathymetry. Tyrrhenian 3,785 m is repeated across Wikipedia and its mirrors with no citation. Levantine 4,384 m (Pliny Trench) is an encyclopedia figure marked citation needed; a 2021 trench study gives no basin maximum. Ligurian 2,850 m: no source found, and Wikipedia says only more than 2,800 m. Balearic 2,800 m: a Universalis entry gives the typical abyssal floor as 2,800 to 3,300 m, so 2,800 is the bottom of that range, not a maximum. Ionian 5,109 m is the 2020 Calypso Deep measurement. Tide: Ionian 2.0 m (Gulf of Gabes) sits within a wide spread in the sources (about 1 m in Sammari et al. 2006, 2.1 m on Wikipedia, about 2.5 m in Britannica); Adriatic 1.2 m (Venice) has no source found. Salinity: no per-basin mean was found; the only support is that Levantine Surface Water in the Aegean exceeds 39.2 psu in summer. Plankton layer: about 30 m in the westernmost Mediterranean and more than 100 m in the Levantine are reported in the literature; per-basin values are interpolated. Posidonia: basin-wide area and decline are from Telesca et al. 2015; per-basin ratings are not sourced.",
   url:"https://www.britannica.com/place/Mediterranean-Sea/Hydrologic-features-and-climate",linkText:"Britannica"}
 ];
 var DS={}; DATASETS.forEach(function(d){ DS[d.id]=d; });
@@ -1318,7 +1324,7 @@ function subBtn(label,on,click){
 function renderSubs(){
   var g=G(), ms=group==="temp"?(tview==="seasonal"?g.measures.filter(function(m){return SEASONAL.indexOf(m.id)>=0;}):[]):g.measures;
   tHost.innerHTML=""; tHost.style.display=group==="temp"?"flex":"none";
-  if(group==="temp") TVIEWS.forEach(function(v){ tHost.appendChild(subBtn(v[1],v[0]===tview,function(){ setMode("temp",v[0]); })); });
+  if(group==="temp") TVIEWS.filter(function(v){ return !hiddenViews[v[0]]; }).forEach(function(v){ tHost.appendChild(subBtn(v[1],v[0]===tview,function(){ setMode("temp",v[0]); })); });
   sHost.innerHTML=""; sHost.style.display=ms.length>1?"flex":"none";
   ms.forEach(function(m){
     sHost.appendChild(subBtn(m.short+(m.est?' <span class="est">est.</span>':""),m.id===metric,function(){ metric=m.id; renderSubs(); paintMap(); paintBars(); }));
@@ -1451,7 +1457,33 @@ scheduleSub(3000,6000);
   var n=mk("text",{x:L+2,y:13,"class":"note"},c); n.textContent="°C above the 1991–2020 average";
 })();
 
+var hiddenViews={monthly:false,warming:false};
 renderSources(); renderSubs(); paintMap(); paintBars(); paintDetail(); paintTable();
+
+/* ---- display settings: data/config.json, or a live preview posted by dev/ ----
+   Optional. A missing or unreadable config leaves the page as it is. Sets layout order, default view, basin and theme, and which tools are shown. */
+function hasStoredTheme(){ try{ return THEMES.indexOf(localStorage.getItem(THEME_KEY))>=0; }catch(e){ return false; } }
+function applyConfig(cfg){
+  if(!cfg||typeof cfg!=="object") return;
+  var show=cfg.show||{}, d=cfg.defaults||{};
+  hiddenViews.monthly=show.monthly===false; hiddenViews.warming=show.warming===false;
+  var sea=document.getElementById("g-sea"); if(sea) sea.hidden=show.seaLevel===false;
+  document.getElementById("curio-block").hidden=show.curiosities===false;
+  document.getElementById("sec-sources").hidden=show.sources===false;
+  document.getElementById("sec-footer").hidden=show.footer===false;
+  if(Array.isArray(cfg.order)) cfg.order.forEach(function(id,i){ var el=document.getElementById(id); if(el&&/^sec-/.test(id)) el.style.order=i+1; });
+  var mode=d.mode, view=d.view, ok=["temp","salt","depth","sea"].indexOf(mode)>=0;
+  if(mode==="sea"&&show.seaLevel===false) ok=false;
+  if(ok){
+    if(mode==="temp"&&((view==="monthly"&&hiddenViews.monthly)||(view==="warming"&&hiddenViews.warming))) view="seasonal";
+    setMode(mode,view);
+  }
+  if(d.basin&&byId[d.basin]) select(d.basin,false);
+  if(d.theme&&!hasStoredTheme()&&THEMES.indexOf(d.theme)>=0){ if(d.theme==="auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme",d.theme); }
+  renderSubs();
+}
+window.addEventListener("message",function(e){ if(e.origin!==location.origin||!e.data||e.data.type!=="medseas-config") return; applyConfig(e.data.config); });
+fetch("data/config.json",{cache:"no-cache"}).then(function(r){ return r.ok?r.json():null; }).then(applyConfig).catch(function(){});
 </script>
 
 </body></html>

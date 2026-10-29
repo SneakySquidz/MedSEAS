@@ -24,6 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Leave out the local dev dashboard
+        run: rm -rf dev
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:

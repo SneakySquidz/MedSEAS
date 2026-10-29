@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>MedSEAS dev dashboard</title>
+<style>
+  :root{color-scheme:light dark;--bg:#f6f4ee;--surface:#fff;--ink:#1f1d18;--muted:#5e5a50;--border:#d8d3c6;--accent:#7a3a18;--accent-bg:#f3e3d4;}
+  @media (prefers-color-scheme: dark){:root{--bg:#16150f;--surface:#1f1e18;--ink:#f4f1ea;--muted:#aca79a;--border:#3b3930;--accent:#ffc9a3;--accent-bg:#3a2a1e;}}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,sans-serif;}
+  header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between;}
+  h1{font-size:18px;margin:0;}
+  .warn{font-size:13px;color:var(--muted);margin:0;}
+  main{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:16px;padding:16px;min-height:calc(100vh - 60px);}
+  @media (max-width:820px){main{grid-template-columns:1fr;}}
+  section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;}
+  h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;}
+  label{display:block;font-size:14px;margin:10px 0 4px;}
+  select,input[type=checkbox]{font:inherit;}
+  select{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink);min-height:40px;}
+  .check{display:flex;align-items:center;gap:10px;margin:8px 0;min-height:40px;}
+  .check input{width:20px;height:20px;}
+  .order{list-style:none;margin:0;padding:0;display:grid;gap:6px;}
+  .order li{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 8px;}
+  .order li span{flex:1;}
+  .order button{font:inherit;min-width:40px;min-height:40px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer;}
+  .order button:disabled{opacity:.4;cursor:default;}
+  .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  button.act{font:inherit;font-weight:600;padding:9px 14px;min-height:40px;border-radius:99px;border:1px solid var(--accent);background:var(--accent-bg);color:var(--accent);cursor:pointer;}
+  button.act.plain{background:var(--surface);border-color:var(--border);color:var(--ink);}
+  #status{font-size:13px;color:var(--muted);margin:8px 0 0;min-height:1.5em;}
+  .preview{display:flex;flex-direction:column;gap:8px;}
+  iframe{width:100%;height:calc(100vh - 170px);min-height:520px;border:1px solid var(--border);border-radius:10px;background:var(--bg);}
+  pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:12px;overflow:auto;max-height:200px;margin:10px 0 0;}
+</style>
+</head>
+<body>
+<header>
+  <h1>MedSEAS development dashboard</h1>
+  <p class="warn">Local only. Not linked from the site; the deploy workflow leaves this folder out. Run <code>python3 -m http.server</code> in the repo and open <code>/dev/</code>.</p>
+</header>
+<main>
+  <div>
+    <section>
+      <h2>Defaults</h2>
+      <label for="mode">Opening mode</label>
+      <select id="mode">
+        <option value="temp">Temperature</option>
+        <option value="salt">Salinity</option>
+        <option value="depth">Depth</option>
+        <option value="sea">Sea level</option>
+      </select>
+      <label for="view">Temperature view</label>
+      <select id="view">
+        <option value="seasonal">Seasonal patterns</option>
+        <option value="monthly">Monthly timeline</option>
+        <option value="warming">Warming</option>
+      </select>
+      <label for="basin">Selected basin</label>
+      <select id="basin"></select>
+      <label for="theme">Colour theme</label>
+      <select id="theme">
+        <option value="auto">Auto (system)</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </section>
+    <section style="margin-top:16px">
+      <h2>Show</h2>
+      <label class="check"><input type="checkbox" id="s-monthly"> Monthly timeline tab</label>
+      <label class="check"><input type="checkbox" id="s-warming"> Warming tab</label>
+      <label class="check"><input type="checkbox" id="s-seaLevel"> Sea-level mode</label>
+      <label class="check"><input type="checkbox" id="s-curiosities"> Curiosities in the basin panel</label>
+      <label class="check"><input type="checkbox" id="s-sources"> Sources section</label>
+      <label class="check"><input type="checkbox" id="s-footer"> Footnotes</label>
+    </section>
+    <section style="margin-top:16px">
+      <h2>Page layout</h2>
+      <p class="warn" style="margin:0 0 8px">Top to bottom. The header always stays first.</p>
+      <ol class="order" id="order"></ol>
+    </section>
+    <section style="margin-top:16px">
+      <h2>Save</h2>
+      <div class="row">
+        <button class="act" id="download" type="button">Download config.json</button>
+        <button class="act plain" id="reset" type="button">Reset to defaults</button>
+      </div>
+      <p id="status" role="status" aria-live="polite"></p>
+      <pre id="json" aria-label="Current settings as JSON"></pre>
+    </section>
+  </div>
+  <section class="preview">
+    <h2>Live preview</h2>
+    <iframe id="site" src="../index.html" title="MedSEAS page with the current settings"></iframe>
+  </section>
+</main>
+<script>
+var SECTIONS=[["sec-header","Header (fixed first)"],["sec-workspace","Map and measures"],["sec-lower","Ranking and basin panel"],["sec-sources","Sources"],["sec-footer","Footnotes"]];
+var DEFAULTS={version:1,defaults:{mode:"temp",view:"seasonal",basin:"levantine",theme:"auto"},
+  show:{monthly:true,warming:true,seaLevel:true,curiosities:true,sources:true,footer:true},
+  order:["sec-header","sec-workspace","sec-lower","sec-sources","sec-footer"]};
+var BASINS=[["alboran","Alboran Sea"],["balearic","Balearic Sea"],["ligurian","Ligurian Sea"],["tyrrhenian","Tyrrhenian Sea"],["adriatic","Adriatic Sea"],["ionian","Ionian Sea"],["aegean","Aegean Sea"],["levantine","Levantine Sea"]];
+var cfg=JSON.parse(JSON.stringify(DEFAULTS));
+var $=function(id){ return document.getElementById(id); };
+var frame=$("site");
+BASINS.forEach(function(b){ var o=document.createElement("option"); o.value=b[0]; o.textContent=b[1]; $("basin").appendChild(o); });
+function readForm(){
+  cfg.defaults={mode:$("mode").value,view:$("view").value,basin:$("basin").value,theme:$("theme").value};
+  cfg.show={monthly:$("s-monthly").checked,warming:$("s-warming").checked,seaLevel:$("s-seaLevel").checked,
+    curiosities:$("s-curiosities").checked,sources:$("s-sources").checked,footer:$("s-footer").checked};
+}
+function writeForm(){
+  $("mode").value=cfg.defaults.mode; $("view").value=cfg.defaults.view; $("basin").value=cfg.defaults.basin; $("theme").value=cfg.defaults.theme;
+  $("s-monthly").checked=cfg.show.monthly; $("s-warming").checked=cfg.show.warming; $("s-seaLevel").checked=cfg.show.seaLevel;
+  $("s-curiosities").checked=cfg.show.curiosities; $("s-sources").checked=cfg.show.sources; $("s-footer").checked=cfg.show.footer;
+  renderOrder();
+}
+function renderOrder(){
+  var host=$("order"); host.innerHTML="";
+  cfg.order.forEach(function(id,i){
+    var li=document.createElement("li"), name=SECTIONS.filter(function(s){ return s[0]===id; })[0];
+    var label=document.createElement("span"); label.textContent=name?name[1]:id;
+    var up=document.createElement("button"), dn=document.createElement("button");
+    up.type=dn.type="button"; up.textContent="Up"; dn.textContent="Down";
+    up.setAttribute("aria-label","Move "+label.textContent+" up"); dn.setAttribute("aria-label","Move "+label.textContent+" down");
+    up.disabled=i<=1; dn.disabled=i===0||i===cfg.order.length-1;
+    up.onclick=function(){ move(i,-1); }; dn.onclick=function(){ move(i,1); };
+    li.appendChild(label); li.appendChild(up); li.appendChild(dn); host.appendChild(li);
+  });
+}
+function move(i,dir){ var j=i+dir; var a=cfg.order; var t=a[i]; a[i]=a[j]; a[j]=t; renderOrder(); push(); }
+function push(){
+  readForm();
+  $("json").textContent=JSON.stringify(cfg,null,2);
+  if(frame.contentWindow) frame.contentWindow.postMessage({type:"medseas-config",config:cfg},location.origin);
+}
+function check(){
+  if(location.protocol==="file:"){ $("status").textContent="Open this page through the local server (python3 -m http.server), so the preview can load."; }
+}
+["mode","view","basin","theme","s-monthly","s-warming","s-seaLevel","s-curiosities","s-sources","s-footer"].forEach(function(id){ $(id).addEventListener("change",push); });
+frame.addEventListener("load",function(){ setTimeout(push,300); });
+$("download").addEventListener("click",function(){
+  readForm();
+  var blob=new Blob([JSON.stringify(cfg,null,2)+"\n"],{type:"application/json"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="config.json";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  $("status").textContent="Saved config.json. Put it in data/config.json, then commit it to publish the change.";
+});
+$("reset").addEventListener("click",function(){ cfg=JSON.parse(JSON.stringify(DEFAULTS)); writeForm(); push(); $("status").textContent="Reset to the defaults."; });
+writeForm(); push(); check();
+</script>
+</body>
+</html>
