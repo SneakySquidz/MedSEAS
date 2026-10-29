@@ -136,7 +136,16 @@ async function run(){
   t("Invalid input refused with a message",function(){ return w.level===200&&/Enter a number/.test($("lvlMsg").textContent); });
   $("lvlReset").click(); await wait(400);
   t("Reset returns to today",function(){ return w.level===0&&+$("lvlNum").value===0&&+$("lvl").value===0; });
-  t("Presets are neutral offsets",function(){ var p=Array.prototype.map.call(d.querySelectorAll("#presets .pbtn"),function(b){ return b.textContent; }).join("|"); return !/ice|age|dries|earth/i.test(p)||p; });
+  t("Every preset explains its scenario with sources",function(){ var bad=w.PRESETS.filter(function(p){ return !p.title||!p.when||!p.what||!p.src||!p.facts.length; }); return !bad.length||bad.map(function(p){return p.label;}).join(","); });
+  d.querySelector('#presets .pbtn[data-l="-120"]').click(); await wait(300);
+  t("Preset shows its scenario card",function(){ return !$("scard").hidden&&/ice age/i.test($("scard").textContent)||$("scard").textContent; });
+  $("gwl").value=4.4; $("gwl").dispatchEvent(new Event("input"));
+  t("Warming 4.4 \u00b0C by 2100 gives the AR6 SSP5-8.5 median",function(){ return /0\.77 m/.test($("gwlNote").textContent)||$("gwlNote").textContent; });
+  $("gwlShow").click(); await wait(300);
+  t("Show on the map sets the rounded level",function(){ return w.level===1||w.level; });
+  d.querySelector('.warmsl [data-h="2000y"]').click(); $("gwl").value=5; $("gwl").dispatchEvent(new Event("input"));
+  t("Warming 5 \u00b0C over 2,000 years gives about 20 m",function(){ return /about 21 m|about 20\.5 m|about 20 m/.test($("gwlNote").textContent)||$("gwlNote").textContent; });
+  $("lvlReset").click(); await wait(300);
   w.sstMode="anom"; $("sstMode").classList.add("on"); w.setLevel(10,false); await wait(300);
   t("Sea-level changes leave other toggles alone",function(){ return $("sstMode").classList.contains("on"); });
   var sc=await captureBlob(w,function(){ $("seaCsvBtn").click(); });

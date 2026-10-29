@@ -44,7 +44,7 @@ Rendered with MapLibre GL JS from vector data. Ctrl/Cmd + scroll zooms (so the p
 
 ## Sea-level scenarios
 
-A slider and a numeric offset in metres (kept in sync), a "Reset to today" button and neutral presets (−120 m, today, +10 m, +70 m, −1,500 m). The supported range is −2,500 m to +200 m relative to today's sea level as represented in the terrain tiles, whose vertical datum is not documented here. Typed values are rounded to 0.5 m; values outside the range are set to the nearest limit with a message, and non-numbers are refused with a message.
+A slider and a numeric offset in metres (kept in sync), a "Reset to today" button and five named presets, each with a card saying what the level represents, its geological or historical context and its sources: −1,500 m (Messinian Salinity Crisis), −120 m (last ice age), today, +10 m (Last Interglacial, roughly Greenland plus part of West Antarctica), +70 m (all land ice melted). A **Global warming** control (1.5–5 °C) turns a warming level into global sea-level rise from IPCC AR6, either by 2100 (Table 9.9 medians and likely ranges, interpolated by warming) or over 2,000 years (SPM B.5.4), and can draw the central value on the map, rounded to 0.5 m. Below about 1–2 m the 4 km grid only hints at the change. The supported range is −2,500 m to +200 m relative to today's sea level as represented in the terrain tiles, whose vertical datum is not documented here. Typed values are rounded to 0.5 m; values outside the range are set to the nearest limit with a message, and non-numbers are refused with a message.
 
 What the code does:
 

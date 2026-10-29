@@ -142,6 +142,16 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .presets{display:flex;gap:6px;flex-wrap:wrap;}
 .pbtn{padding:8px 14px;font-size:13.5px;min-height:40px;}
 .funnote.small{font-size:11px;color:var(--ink-muted);}
+.pbtn small{display:block;font-size:10.5px;font-weight:500;opacity:.8;line-height:1.2;}
+.scard{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px 15px;max-width:80ch;}
+.scard[hidden]{display:none;}
+.scard h3{margin:0;font-size:15px;color:var(--accent-strong);}
+.scard .when{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);margin:3px 0 7px;}
+.scard p,.scard li{font-size:12.5px;color:var(--ink-2);line-height:1.55;margin:0;}
+.scard ul{margin:7px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px;}
+.scard .src{font-size:11px;color:var(--ink-muted);margin-top:8px;}
+.warmsl{border-top:1px dashed var(--border);padding-top:11px;display:flex;flex-direction:column;gap:9px;}
+#gwl{flex:1 1 220px;min-width:0;accent-color:var(--accent);height:28px;cursor:pointer;}
 .funnote{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.55;max-width:80ch;}
 .funstats{display:flex;gap:8px;flex-wrap:wrap;}
 .funstats .tile{min-width:130px;}
@@ -353,7 +363,23 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         </div>
         <p class="funnote small">Supported range: &minus;2,500&nbsp;m to +200&nbsp;m, relative to today&rsquo;s sea level as represented in the terrain tiles (their vertical datum is not documented here). Typed offsets are rounded to 0.5&nbsp;m; the slider steps more coarsely far from today.</p>
         <p class="funnote small" id="lvlMsg" role="status"></p>
-        <div class="presets" id="presets" role="group" aria-label="Sea-level presets"></div>
+        <div class="presets" id="presets" role="group" aria-label="Sea-level scenarios from Earth history and the future"></div>
+        <div class="scard" id="scard" aria-live="polite" hidden></div>
+        <div class="warmsl">
+          <div class="funrow">
+            <label for="gwl" class="funlabel">Global warming</label>
+            <output id="gwlOut" class="funout" for="gwl">+2.0 &deg;C</output>
+            <input type="range" id="gwl" min="1.5" max="5" step="0.1" value="2" aria-label="Global warming above pre-industrial, in degrees Celsius">
+          </div>
+          <div class="funrow">
+            <div class="presets" role="group" aria-label="Time horizon">
+              <button class="pbtn" type="button" data-h="2100">By 2100</button>
+              <button class="pbtn" type="button" data-h="2000y">Over 2,000 years</button>
+            </div>
+            <button class="pbtn" id="gwlShow" type="button">Show on the map</button>
+          </div>
+          <p class="funnote" id="gwlNote"></p>
+        </div>
         <div class="legend">
           <span><i></i>Sea today (no overlay)</span>
           <span><i id="lgFlood" style="background:rgb(58,150,205)"></i>Land flooded in this scenario</span>
@@ -849,7 +875,36 @@ function drawLevel(){
 }
 var lvlEl=document.getElementById("lvl"), lvlOut=document.getElementById("lvlOut"), funNote=document.getElementById("funNote"),
     funStats=document.getElementById("funStats"), seaView=document.getElementById("seaView"), lvlNum=document.getElementById("lvlNum"), lvlMsg=document.getElementById("lvlMsg");
-var PRESETS=[["\u2212120 m",-120],["Today",0],["+10 m",10],["+70 m",70],["\u22121,500 m",-1500]];   /* neutral offsets: no dated or named presets without a documented source */
+/* scenario presets: each names what the level represents, with its sources listed in the sea-level-literature record */
+var PRESETS=[
+ {l:-1500,label:"\u22121,500 m",tag:"Messinian",title:"The Mediterranean dries out",when:"Messinian Salinity Crisis \u00b7 about 5.97 to 5.33 million years ago",
+  what:"Tectonic uplift closed the Atlantic gateways and the sea, losing far more to evaporation than rivers could replace, largely evaporated. Estimates of the drop range from about 1,000 m to more than 2,000 m; 1,500 m is a commonly used middle value.",
+  facts:["Salt and gypsum up to a few kilometres thick were laid down on the dried floor. Deep-sea drilling found them under the seabed in 1970 (Deep Sea Drilling Project Leg 13).",
+   "Rivers chased the falling sea and cut deep canyons: the Nile and the Rh\u00f4ne carved valleys far below today\u2019s sea level, now buried under sediment.",
+   "It ended with the Zanclean flood about 5.33 million years ago, when the Atlantic broke back through at Gibraltar; one study suggests most of the basin refilled within months to two years."],
+  src:"Roveri et al. 2014, Marine Geology 352; Garcia-Castellanos et al. 2009, Nature 462, 778\u2013781. Map caveat: today\u2019s seabed, without the salt layer or crustal rebound."},
+ {l:-120,label:"\u2212120 m",tag:"Ice age",title:"The last ice age",when:"Last Glacial Maximum \u00b7 about 21,000 years ago",
+  what:"Ice sheets over North America and Scandinavia locked up so much water that the world ocean stood roughly 120 to 130 m lower than today. The sea then rose back over about 10,000 years.",
+  facts:["The northern Adriatic was a wide plain: the Po flowed across it towards the middle of today\u2019s sea.",
+   "Malta was joined to Sicily, many Aegean islands merged into larger ones, and the Gulf of Gab\u00e8s shelf off Tunisia was dry land.",
+   "The Black Sea was cut off from the Mediterranean and became a lake.",
+   "Near Marseille, the Cosquer Cave was painted between about 33,000 and 19,000 years ago; its entrance now lies 37 m under the sea."],
+  src:"Lambeck et al. 2014, PNAS 111, 15296\u201315303 (global ice-age sea level); French Ministry of Culture (Cosquer Cave)."},
+ {l:0,label:"Today",tag:"Reference",title:"Today\u2019s sea level",when:"The reference level of the terrain tiles",
+  what:"Global mean sea level rose about 0.20 m between 1901 and 2018, and the rise is speeding up: 3.7 mm a year over 2006\u20132018, against 1.3 mm a year over 1901\u20131971.",
+  facts:["Mediterranean tide gauges broadly follow the global rise; where the land is sinking, as around Venice and in the Nile and Po deltas, the local rise is larger.",
+   "Venice has raised its MOSE flood barriers against high tides since 2020."],
+  src:"IPCC AR6 Working Group I, Summary for Policymakers (A.1.7)."},
+ {l:10,label:"+10 m",tag:"Warm past",title:"The last warm interglacial",when:"Last Interglacial \u00b7 about 125,000 years ago",
+  what:"With global temperatures about 0.5 to 1.5 \u00b0C above pre-industrial, sea level stood likely 5 to 10 m higher than today. It is also roughly the rise if the Greenland ice sheet (about 7 m) and part of West Antarctica melted, which would take many centuries to millennia.",
+  facts:["Raised fossil beaches of this age, some with warm-water snails no longer living in the Mediterranean, are found above today\u2019s shore in Mallorca, Sardinia and Tunisia.",
+   "On the map: the Nile delta, the Po plain around Venice, the Camargue and the Ebro delta are largely under water."],
+  src:"IPCC AR6 WGI, chapter 9 (Last Interglacial sea level and Greenland ice volume); Dutton et al. 2015, Science 349, aaa4019."},
+ {l:70,label:"+70 m",tag:"No ice",title:"All land ice melted",when:"A planet without ice sheets, as before about 34 million years ago",
+  what:"Melting every glacier and ice sheet would raise the sea by about 65 to 70 m: roughly 58 m from Antarctica, 7 m from Greenland and under half a metre from mountain glaciers. No projection reaches this within centuries; it is a multi-millennial end state.",
+  facts:["Antarctica had no large ice sheet until about 34 million years ago, so most of Earth\u2019s history looked like this or warmer.",
+   "On the map: the coastal plains of Egypt, Libya and Tunisia, the Po valley and the Thessalian plain fill with sea."],
+  src:"IPCC AR6 WGI, chapter 9 (ice-sheet sea-level equivalents)."}];
 var lastScenario={gained:0,lost:0};
 function paintFunStats(gained,lost){
   lastScenario={gained:gained,lost:lost};
@@ -873,6 +928,7 @@ function setLevel(L,fromSlider){
   if(!fromSlider) lvlEl.value=level2slider(L);
   lvlEl.setAttribute("aria-valuetext",L===0?"today's sea level":fmtLevel(L)+" relative to today");
   document.querySelectorAll("#presets .pbtn").forEach(function(b){ b.classList.toggle("on",+b.dataset.l===L); });
+  paintScenario(L);
   var go=function(){ if(mapReady){ ensureCanvasSources(); drawLevel(); } };
   if(dem) go(); else if(L!==0||!seaView.hidden){ if(!demFailed) lvlMsg.textContent="Loading terrain data\u2026"; withDem(function(){ lvlMsg.textContent=""; go(); }); }
 }
@@ -882,11 +938,57 @@ lvlEl.addEventListener("input",function(){
   if(lvlRaf) return; lvlRaf=requestAnimationFrame(function(){ lvlRaf=0; setLevel(L,true); });
 });
 PRESETS.forEach(function(p){
-  var b=document.createElement("button"); b.type="button"; b.className="pbtn"; b.dataset.l=p[1];
-  b.textContent=p[0];
-  b.addEventListener("click",function(){ setLevel(p[1],false); });
+  var b=document.createElement("button"); b.type="button"; b.className="pbtn"; b.dataset.l=p.l;
+  b.textContent=p.label; var s=document.createElement("small"); s.textContent=p.tag; b.appendChild(s);
+  b.title=p.title+" — "+p.when;
+  b.addEventListener("click",function(){ setLevel(p.l,false); });
   document.getElementById("presets").appendChild(b);
 });
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function paintScenario(L){
+  var c=document.getElementById("scard"), p=PRESETS.filter(function(x){return x.l===L;})[0], h;
+  if(p) h='<h3>'+esc(p.title)+'</h3><div class="when">'+esc(p.when)+'</div><p>'+esc(p.what)+'</p><ul>'+
+    p.facts.map(function(f){return '<li>'+esc(f)+'</li>';}).join("")+'</ul><div class="src">Sources: '+esc(p.src)+'</div>';
+  else if(gwlScenario&&gwlScenario.l===L) h='<h3>'+esc(gwlScenario.title)+'</h3><div class="when">'+esc(gwlScenario.when)+'</div><p>'+esc(gwlScenario.what)+'</p><div class="src">Source: IPCC AR6 WGI (Table 9.9 and SPM B.5.4).</div>';
+  c.hidden=!h; c.innerHTML=h||"";
+}
+/* warming to sea level: IPCC AR6 WGI. By 2100: Table 9.9 medians and likely ranges (m, relative to 1995–2014) placed at each
+   scenario's best-estimate warming for 2081–2100. Over 2,000 years: SPM B.5.4 ranges at 1.5, 2 and 5 °C; between those, linear. */
+var AR6_2100=[[1.4,0.38,0.28,0.55],[1.8,0.44,0.32,0.62],[2.7,0.56,0.44,0.76],[3.6,0.68,0.55,0.90],[4.4,0.77,0.63,1.01]];
+var AR6_2000Y=[[1.5,2.5,2,3],[2,4,2,6],[5,20.5,19,22]];
+var gwlEl=document.getElementById("gwl"), gwlHorizon="2100", gwlScenario=null;
+function interpRow(T,tab){
+  if(T<=tab[0][0]) return tab[0].slice(1).concat(T<tab[0][0]);
+  for(var i=1;i<tab.length;i++) if(T<=tab[i][0]){
+    var a=tab[i-1], b=tab[i], f=(T-a[0])/(b[0]-a[0]);
+    return [a[1]+f*(b[1]-a[1]),a[2]+f*(b[2]-a[2]),a[3]+f*(b[3]-a[3]),false];
+  }
+  var z=tab[tab.length-1]; return z.slice(1).concat(T>z[0]);
+}
+function fm(v){ return v<10?v.toFixed(v<1?2:1):String(Math.round(v)); }
+function paintGwl(){
+  var T=+gwlEl.value, r=interpRow(T,gwlHorizon==="2100"?AR6_2100:AR6_2000Y), y2100=gwlHorizon==="2100";
+  document.getElementById("gwlOut").textContent="+"+T.toFixed(1)+" °C";
+  document.querySelectorAll(".warmsl [data-h]").forEach(function(b){ b.classList.toggle("on",b.dataset.h===gwlHorizon); });
+  var t="At +"+T.toFixed(1)+" °C of global warming above pre-industrial, the IPCC projects about "+fm(r[0])+" m of global sea-level rise "+
+    (y2100?"by 2100 (likely "+fm(r[1])+" to "+fm(r[2])+" m)":"over the next 2,000 years (about "+fm(r[1])+" to "+fm(r[2])+" m), and more after that")+".";
+  if(r[3]) t+=" This is outside the range the IPCC gives for this horizon, so the nearest value is shown.";
+  t+=y2100?" Below about 1–2 m the 4 km terrain grid can only hint at the change: low deltas and lagoons like Venice, the Nile and the Camargue show first. Local flood studies need far finer elevation data.":
+    " A rise this size is locked in by the warming but unfolds over centuries; the ice sheets keep responding long after temperatures stabilise.";
+  t+=" Global warming so far is about 1.2 °C.";
+  document.getElementById("gwlNote").textContent=t;
+  return r;
+}
+gwlEl.addEventListener("input",function(){ paintGwl(); });
+document.querySelectorAll(".warmsl [data-h]").forEach(function(b){ b.addEventListener("click",function(){ gwlHorizon=b.dataset.h; paintGwl(); }); });
+document.getElementById("gwlShow").addEventListener("click",function(){
+  var r=paintGwl(), T=+gwlEl.value, L=Math.max(0.5,Math.round(r[0]*2)/2);
+  gwlScenario={l:L,title:"+"+T.toFixed(1)+" °C of warming "+(gwlHorizon==="2100"?"by 2100":"over 2,000 years"),
+    when:(gwlHorizon==="2100"?"Projection for 2100":"Long-term commitment, next 2,000 years")+" · shown as "+fmtLevel(L),
+    what:"Central estimate about "+fm(r[0])+" m (range "+fm(r[1])+" to "+fm(r[2])+" m), rounded to the nearest 0.5 m for the map. A global average: local rise differs with land movement, and this model has no defences, tides or storm surges."};
+  setLevel(L,false);
+});
+paintGwl();
 function seaShow(open){
   if(seaView.hidden===!open) return;
   seaView.hidden=!open; mapEl.classList.toggle("cities-on",open);
@@ -1210,6 +1312,12 @@ var DATASETS=[
   variable:"Net evaporation",unit:"mm/day (shown as m per year)",aggregation:"One value per side of the sea (west 0.88, east 1.52 mm/day); each sub-basin carries its side's value",category:"Literature value; per-basin figures are interpolated estimates (est.)",
   limitations:"Comparable per-sub-basin figures are not published.",
   url:"https://www.frontiersin.org/journals/climate/articles/10.3389/fclim.2025.1472731/full",linkText:"Eastern Med water budget"},
+ {id:"sea-level-literature",name:"Sea-level scenarios: IPCC AR6 and geological literature",what:"What each sea-level preset represents, and the warming-to-sea-level estimates behind the Global warming control.",
+  product:"IPCC AR6 Working Group I (2021): SPM A.1.7 and B.5.4, chapter 9 and Table 9.9; Lambeck et al. 2014 (PNAS 111, 15296); Dutton et al. 2015 (Science 349, aaa4019); Roveri et al. 2014 (Marine Geology 352); Garcia-Castellanos et al. 2009 (Nature 462, 778)",
+  variable:"Global mean sea level",unit:"m",coverage:"Messinian (about 6 million years ago) to 2100, plus a 2,000-year commitment",category:"Literature value; scenario output on the map",
+  method:"By 2100: the AR6 median and likely range for each SSP scenario, placed at that scenario's best-estimate warming for 2081\u20132100 (1.4, 1.8, 2.7, 3.6, 4.4 \u00b0C) and interpolated linearly between them. Over 2,000 years: AR6's 2\u20133 m at 1.5 \u00b0C, 2\u20136 m at 2 \u00b0C and 19\u201322 m at 5 \u00b0C, using the midpoints and interpolating linearly in between. The map shows the central value rounded to 0.5 m",
+  limitations:"Global averages, not local projections: land movement, ocean dynamics and storm surges change the local figure. Interpolation between the published warming levels is this page's, not the IPCC's. The 4 km terrain grid cannot resolve rises under about 1\u20132 m. Geological levels are approximate: the Messinian drawdown in particular is debated (roughly 1,000 to more than 2,000 m), and the map uses today's terrain, not the past one.",
+  url:"https://www.ipcc.ch/report/ar6/wg1/",linkText:"ipcc.ch/report/ar6/wg1"},
  {id:"terrain-tiles",name:"Terrain Tiles (AWS Open Data)",what:"Land elevation and seabed depth behind the Seabed view, the measured areas and mean depths, and the sea-level scenarios.",
   product:"\u201cterrarium\u201d tiles, zoom 6",variable:"Elevation and bathymetry",unit:"m",resolution:"Averaged to about 4 km cells",method:"Composite of SRTM, GMTED2010 and ETOPO1/GEBCO (Mapzen)",category:"Gridded terrain model",
   limitations:"Vertical datum not documented here. Depths under the cursor are approximate.",
