@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MedSEAS smoke tests</title>
+<style>
+  body{font:15px/1.5 system-ui,sans-serif;margin:16px;background:#fff;color:#111;}
+  #sum{font-weight:700;margin:8px 0;} li.pass{color:#0a6b2d;} li.fail{color:#b00020;} li.skip{color:#666;}
+  iframe{border:1px solid #ccc;margin:8px 8px 0 0;vertical-align:top;}
+</style>
+</head>
+<body>
+<h1>MedSEAS smoke tests</h1>
+<p>Serve the repo over http (for example <code>python3 -m http.server</code>) and open <code>/tests/smoke.html</code>. No dependencies. The sea-level checks compare the terrain model with known reference points; they are sanity checks, not a scientific validation.</p>
+<p id="sum">Running&hellip;</p>
+<ol id="out"></ol>
+<iframe id="desk" src="../index.html" width="1100" height="700" title="Page under test, desktop width"></iframe>
+<iframe id="phone" src="../index.html" width="375" height="700" title="Page under test, phone width"></iframe>
+<script>
+var results=[], out=document.getElementById("out");
+function report(name,status,detail){
+  results.push({name:name,status:status,detail:detail||""});
+  var li=document.createElement("li"); li.className=status; li.textContent=status.toUpperCase()+" — "+name+(detail?" ("+detail+")":""); out.appendChild(li);
+}
+function wait(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }
+function loaded(fr){ return new Promise(function(r){ if(fr.contentDocument&&fr.contentDocument.readyState==="complete") r(); else fr.addEventListener("load",function(){ r(); },{once:true}); }); }
+function csvParse(text){
+  var rows=[], row=[], f="", q=false, i, c;
+  for(i=0;i<text.length;i++){ c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){ f+='"'; i++; } else q=false; } else f+=c; }
+    else if(c==='"') q=true; else if(c===","){ row.push(f); f=""; }
+    else if(c==="\r"){} else if(c==="\n"){ row.push(f); rows.push(row); row=[]; f=""; } else f+=c; }
+  if(f||row.length){ row.push(f); rows.push(row); }
+  return rows;
+}
+function captureBlob(w,click){
+  return new Promise(function(res){
+    var orig=w.URL.createObjectURL, name=null;
+    var origClick=w.HTMLAnchorElement.prototype.click;
+    w.HTMLAnchorElement.prototype.click=function(){ name=this.download; };
+    w.URL.createObjectURL=function(b){ b.text().then(function(t){ w.URL.createObjectURL=orig; w.HTMLAnchorElement.prototype.click=origClick; res({text:t.replace(/^﻿/,""),name:name}); }); return "blob:test"; };
+    click();
+  });
+}
+async function run(){
+  var D=document.getElementById("desk"), P=document.getElementById("phone");
+  var errors=[];
+  [D,P].forEach(function(fr){ fr.addEventListener("load",function(){ fr.contentWindow.addEventListener("error",function(e){ errors.push(e.message); }); }); });
+  await loaded(D); await loaded(P); await wait(2500);
+  var w=D.contentWindow, d=D.contentDocument, $=function(id){ return d.getElementById(id); };
+  function t(name,fn){ try{ var r=fn(); if(r===true) report(name,"pass"); else report(name,"fail",typeof r==="string"?r:""); }catch(e){ report(name,"fail",e.message); } }
+  var btn=function(sel,start){ return Array.prototype.find.call(d.querySelectorAll(sel),function(b){ return b.textContent.trim().indexOf(start)===0; }); };
+
+  // static checks
+  var html=await fetch("../index.html").then(function(r){ return r.text(); });
+  t("Pages paths: scripts and styles are relative",function(){ var bad=html.match(/(src|href)="\/(?!\/)[^"]*"/g); return !bad||("absolute: "+bad.join(" ")); });
+  t("Reduced-motion rule present",function(){ return /prefers-reduced-motion/.test(html); });
+
+  // modes
+  t("Four modes in order",function(){ var m=Array.prototype.map.call(d.querySelectorAll("#groups .gbtn"),function(b){ return b.firstChild.textContent; }).join("|"); return m==="Temperature|Salinity|Depth|Sea level"||m; });
+  t("Temperature has three tabs",function(){ return d.querySelectorAll("#tviews .sbtn").length===3; });
+  w.select("adriatic",false);
+  btn("#tviews .sbtn","Monthly").click(); await wait(2500);
+  t("Monthly view shows only the monthly tool",function(){ return !$("sst").hidden&&$("warmView").hidden&&$("seaView").hidden||"sst/warm/sea hidden: "+[$("sst").hidden,$("warmView").hidden,$("seaView").hidden]; });
+  t("Date labels match the data file",function(){ var m=w.sst.meta, M=w.MONTHS; var a=w.sstLabel(0)===M[+m.start.slice(5)-1]+" "+m.start.slice(0,4), b=w.sstLabel(w.sst.n-1)===M[+m.end.slice(5)-1]+" "+m.end.slice(0,4); return a&&b||(w.sstLabel(0)+" / "+w.sstLabel(w.sst.n-1)+" vs "+m.start+" / "+m.end); });
+  var key0=$("sstKey").textContent; w.setSst(5); var key5=$("sstKey").textContent;
+  t("Colour scale fixed across months",function(){ return key0===key5&&/fixed scale/.test(key0)||key0+" | "+key5; });
+  t("Basin series caption present",function(){ return /Adriatic Sea/.test($("sstSparkCap").textContent)&&/cos\(latitude\)/.test($("sstSparkCap").textContent); });
+  $("sstPlay").click(); await wait(400); var t1=w.sstTimer;
+  t("Play starts one timer",function(){ return !!t1&&$("sstPlay").textContent==="Pause"; });
+  Object.defineProperty(d,"hidden",{value:true,configurable:true}); d.dispatchEvent(new Event("visibilitychange"));
+  t("Playback pauses when the tab is hidden",function(){ return w.sstTimer===0&&$("sstPlay").textContent==="Play"; });
+  Object.defineProperty(d,"hidden",{value:false,configurable:true});
+  $("sstPlay").click(); await wait(300);
+  btn("#groups .gbtn","Salinity").click(); await wait(300);
+  t("Leaving Monthly stops playback and hides it",function(){ return w.sstTimer===0&&$("sst").hidden&&!w.sstOn; });
+  t("Selected basin kept across modes",function(){ return w.selected==="adriatic"; });
+  t("Context line follows the measure",function(){ return /Surface salinity/.test($("ctx").textContent)&&/Literature value/.test($("ctx").textContent); });
+  btn("#groups .gbtn","Temperature").click(); btn("#tviews .sbtn","Monthly").click(); btn("#groups .gbtn","Depth").click(); await wait(800);
+  t("Latest selection wins under rapid switching",function(){ return w.group==="depth"&&$("sst").hidden&&!w.sstOn; });
+  btn("#groups .gbtn","Temperature").click(); btn("#tviews .sbtn","Warming").click(); await wait(300);
+  t("Warming tab: rate map, chart, units",function(){ return w.metric==="warming"&&!$("warmView").hidden&&/per decade/.test($("ctx").textContent); });
+
+  // records
+  t("Every measure has unit, category, period and a known dataset",function(){
+    var ms=[]; w.groups.forEach(function(g){ ms=ms.concat(g.measures); }); ms=ms.concat(w.CURIO);
+    var bad=ms.filter(function(m){ var c=w.CTX[m.id]; return !c||!c[0]||!c[1]||!c[2]||c[3].split("; ").some(function(id){ return !w.DS[id]; }); }).map(function(m){ return m.id; });
+    return !bad.length||bad.join(",");
+  });
+  t("Sources rendered from records",function(){ return d.querySelectorAll("#prov .pcard").length===w.DATASETS.length; });
+
+  // seasonal values reproduce from the climatology
+  t("Seasonal values reproduce from the 1991–2020 climatology",function(){
+    var s=w.sst, W=s.w, H=s.h, N=W*H, b=s.meta.bounds, worst=0, who="";
+    function mean(ms,bi){ var tt=0,ww=0; ms.forEach(function(mi){ for(var y=0;y<H;y++){ var wt=Math.cos((b[3]-(y+0.5)*(b[3]-b[1])/H)*Math.PI/180); for(var x=0;x<W;x++){ var j=y*W+x; if(s.cb[j]!==bi) continue; var v=s.clim[mi*N+j]; if(v===v){ tt+=v*wt; ww+=wt; } } } }); return tt/ww; }
+    w.basins.forEach(function(bs,bi){ [[bs.summer,[6,7,8]],[bs.winter,[0,1,2]]].forEach(function(p){ var e=Math.abs(p[0]-mean(p[1],bi)); if(e>worst){ worst=e; who=bs.id; } }); });
+    return worst<0.006||("max difference "+worst.toFixed(3)+" °C at "+who);
+  });
+
+  // 2015-2024 trend reproduces from the chart's bars
+  t("2015–2024 trend and interval reproduce from the bars",function(){
+    var pts=Array.prototype.map.call(d.querySelectorAll("#heatChart title"),function(e){ var m=e.textContent.match(/^(\d{4}): \+?(-?[\d.]+)/); return m?[+m[1],+m[2]]:null; }).filter(Boolean);
+    var n=pts.length, mx=0, my=0; pts.forEach(function(p){ mx+=p[0]/n; my+=p[1]/n; });
+    var sxx=0,sxy=0; pts.forEach(function(p){ sxx+=(p[0]-mx)*(p[0]-mx); sxy+=(p[0]-mx)*(p[1]-my); });
+    var bb=sxy/sxx, rss=0; pts.forEach(function(p){ var r=p[1]-(my+bb*(p[0]-mx)); rss+=r*r; });
+    var ci=2.306*Math.sqrt(rss/(n-2)/sxx)*10;
+    return n===10&&(bb*10).toFixed(2)==="0.87"&&ci.toFixed(2)==="0.46"||("n="+n+" slope="+(bb*10).toFixed(3)+" ci="+ci.toFixed(3));
+  });
+
+  // CSV
+  var csv=await captureBlob(w,function(){ $("csvBtn").click(); });
+  var rows=csvParse(csv.text);
+  t("Basin CSV: header, 96 rows, 12 columns each",function(){ var bad=rows.filter(function(r){ return r.length!==12; }).length; return rows[0].join(",").indexOf("basin_id,basin,variable,value,unit")===0&&rows.length===97&&!bad||("rows "+rows.length+", bad "+bad); });
+  t("Basin CSV: no blank or zero-filled values",function(){ var bad=rows.slice(1).filter(function(r){ return r[3]===""||r[3]==="NaN"||r[3]==="undefined"; }).length; return !bad||bad+" bad values"; });
+  t("Basin CSV: stable filename",function(){ return csv.name==="medseas-basin-measures.csv"||csv.name; });
+
+  // sea level
+  btn("#groups .gbtn","Sea level").click(); await wait(3000);
+  t("Terrain loaded",function(){ return !!w.dem||"dem not loaded"; });
+  function setNum(v){ $("lvlNum").value=v; $("lvlNum").dispatchEvent(new Event("change")); }
+  setNum("10"); await wait(400);
+  t("Numeric offset and slider agree",function(){ return w.level===10&&Math.abs(+$("lvl").value-w.level2slider(10))<0.3&&$("lvlOut").textContent==="+10 m"; });
+  setNum("99999"); await wait(400);
+  t("Extreme input clamped with a message",function(){ return w.level===200&&/outside the supported range/.test($("lvlMsg").textContent); });
+  setNum("abc"); await wait(200);
+  t("Invalid input refused with a message",function(){ return w.level===200&&/Enter a number/.test($("lvlMsg").textContent); });
+  $("lvlReset").click(); await wait(400);
+  t("Reset returns to today",function(){ return w.level===0&&+$("lvlNum").value===0&&+$("lvl").value===0; });
+  t("Presets are neutral offsets",function(){ var p=Array.prototype.map.call(d.querySelectorAll("#presets .pbtn"),function(b){ return b.textContent; }).join("|"); return !/ice|age|dries|earth/i.test(p)||p; });
+  w.sstMode="anom"; $("sstMode").classList.add("on"); w.setLevel(10,false); await wait(300);
+  t("Sea-level changes leave other toggles alone",function(){ return $("sstMode").classList.contains("on"); });
+  var sc=await captureBlob(w,function(){ $("seaCsvBtn").click(); });
+  t("Scenario CSV marked as scenario output",function(){ return /data_category,scenario output/.test(sc.text)&&/sea_level_offset,10,m/.test(sc.text)&&sc.name==="medseas-sea-level-scenario_plus10m.csv"||sc.name; });
+  btn("#groups .gbtn","Depth").click(); await wait(300);
+  t("Leaving Sea level returns to today",function(){ return w.level===0&&$("seaView").hidden; });
+
+  // sea-level reference points (sanity checks against well-known geography)
+  function fl(lng,lat){ var i=w.demCell(lng,lat); return i<0?NaN:w.dem.lut[w.dem.F[i]]; }
+  function seaFlag(lng,lat){ var i=w.demCell(lng,lat); return i>=0&&!!(w.dem.K[i]&1); }
+  t("Reference: Dead Sea basin stays dry at +10 m (not connected)",function(){ var v=fl(35.5,31.5); return v>10||"flood level "+v; });
+  t("Reference: Qattara Depression stays dry at +10 m (not connected)",function(){ var v=fl(27.0,29.5); return v>10||"flood level "+v; });
+  t("Reference: northern Adriatic shelf exposed at −120 m",function(){ var v=fl(13.0,44.6); return seaFlag(13.0,44.6)&&v>-120||"sea "+seaFlag(13.0,44.6)+", depth "+v; });
+  t("Reference: Ionian abyssal plain deeper than 3,000 m",function(){ var v=fl(19.5,35.5); return v<-3000||"depth "+v; });
+  t("Reference: Venice reached by a rise of 2 m or less",function(){ var c=w.CITIES.filter(function(c){ return c.name==="Venice"; })[0]; return c.fl!==null&&c.fl<=2||"level "+c.fl; });
+
+  // keyboard and panel
+  var row=d.querySelector("#bars .row");
+  t("Ranking rows are keyboard operable",function(){ return row.tabIndex===0&&row.getAttribute("role")==="button"; });
+  row.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true})); await wait(200);
+  t("Enter on a ranking row selects that basin",function(){ return row.getAttribute("aria-label").indexOf(w.byId[w.selected].name)===0; });
+  t("Basin panel shows figures without hover",function(){ return ["t1","t2","t3","t7"].every(function(id){ return $(id).textContent.trim()&&$(id).textContent.trim()!=="—"; }); });
+  t("Mode buttons expose pressed state",function(){ return Array.prototype.every.call(d.querySelectorAll("#groups .gbtn"),function(b){ return b.hasAttribute("aria-pressed"); }); });
+
+  // phone width
+  var pd=P.contentDocument;
+  t("Phone width: no horizontal overflow",function(){ return pd.documentElement.scrollWidth<=375||"scrollWidth "+pd.documentElement.scrollWidth; });
+
+  t("No script errors",function(){ return !errors.length||errors.join(" | "); });
+
+  report("Missing SST cells drawn transparent, not cold (code path reviewed, not automated)","skip");
+  var pass=results.filter(function(r){ return r.status==="pass"; }).length, fail=results.filter(function(r){ return r.status==="fail"; }).length;
+  document.getElementById("sum").textContent=(fail?"FAIL":"PASS")+": "+pass+" passed, "+fail+" failed, "+(results.length-pass-fail)+" skipped";
+  document.title=(fail?"FAIL ":"PASS ")+pass+"/"+(pass+fail);
+  window.__results=results;
+}
+run();
+</script>
+</body>
+</html>

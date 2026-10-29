@@ -12,7 +12,7 @@ Static site, no build step: `index.html` plus a vendored MapLibre GL JS (`vendor
 Four modes sit above the map. The map, the ranking, the selected-basin panel and the context line stay in step, and the selected basin is kept when you switch mode.
 
 - **Temperature**, with three tabs:
-  - *Seasonal patterns*: summer, winter and the seasonal swing (summer value minus winter value) per basin.
+  - *Seasonal patterns*: summer (July–September), winter (January–March) and the seasonal swing (summer minus winter) per basin. These are 1991–2020 climatological means of the Copernicus reanalysis over each basin's 0.25° cells, weighted by cos(latitude), computed from `data/sst_clim.png`.
   - *Monthly timeline*: a month slider over the monthly sea-surface temperature grid, with Play/Pause, an anomaly mode against 1991–2020 and a series for the selected basin. Playback stops when you leave the tab or the browser tab is hidden. The colour scale is fixed (12–29 °C, or ±3 °C for anomalies).
   - *Warming*: each basin's estimated long-run warming rate on the map, and the whole-Mediterranean anomaly chart with trends and recent extremes.
 - **Salinity**: surface salinity and net evaporation, with a ranked "what drives salt" list.
@@ -29,8 +29,8 @@ Sources are kept as one record per dataset in `index.html` (`DATASETS`): id, nam
 
 Known gaps, stated on the page:
 
-- The seasonal summer and winter values have no documented season definition or reference period.
-- Per-figure references for the basin literature values are not documented.
+- Per-figure references for the remaining literature values (salinity, maximum depth, tide, plankton layer, Posidonia) are not documented, nor their reference periods.
+- The 1991–2020 anomaly baseline is as compiled for this page. The current Copernicus product page does not state a baseline, and an older version of the indicator page used 1993–2014.
 - EMODnet Bathymetry is listed as a reference only. The measured depths and the sea-level scenarios use the AWS Terrain Tiles.
 
 ## Map
@@ -84,11 +84,13 @@ One-off setup to publish the data:
 
 ## Warming chart
 
-A bar chart of the Mediterranean's yearly sea-surface temperature anomaly (vs 1991–2020), 2015–2024, from Copernicus Marine's OMI file `MEDSEA_OMI_TEMPSAL_sst_area_averaged_anomalies` (satellite, reprocessed; monthly anomalies averaged per year here). Trends shown: +0.33 °C/decade over 1982–2024 and +0.88 °C/decade over 2015–2024; the short window overstates the long-run rate, and the trend method and uncertainty are not documented here. No per-basin anomalies are derived from this series. A "Recent extremes" list adds 2022–2025 heatwave facts from Copernicus Ocean State Report 8 and Mercator Ocean bulletins.
+A bar chart of the Mediterranean's yearly sea-surface temperature anomaly (vs 1991–2020), 2015–2024, from Copernicus Marine's OMI file `MEDSEA_OMI_TEMPSAL_sst_area_averaged_anomalies` (satellite, reprocessed; monthly anomalies averaged per year here). Trends shown: +0.33 °C/decade over 1982–2024, from the Copernicus indicator (X-11 seasonal adjustment and Sen's slope with a 95% interval, which is not transcribed here), and +0.87 ± 0.46 °C/decade (95%, n = 10) over 2015–2024, an ordinary least-squares fit to the ten bars computed for this page. The short window has a wide interval and overstates the long-run rate. No per-basin anomalies are derived from this series. A "Recent extremes" list adds 2022–2025 heatwave facts from Copernicus Ocean State Report 8 and Mercator Ocean bulletins.
 
 To refresh: the Copernicus file is re-issued yearly (currently ends Dec 2024). Download the new `.nc` from the product page, recompute annual means, and update `DATA` in the timeline script.
 
-## CSV download
+## CSV downloads
+
+The sea-level tool has a **Download this scenario (CSV)** button: the offset, flooded or exposed area (whole map, about 4 km cells), which of the 33 cities are reached, and a `data_category` row marking it as scenario output. Areas are blank until the terrain has loaded and at offsets where they do not apply.
 
 The button under the data table saves `medseas-basin-measures.csv`: one row per basin and measure, with `basin_id, basin, variable, value, unit, season, reference_period, anomaly_baseline, source_id, method, data_category, est_flag`. Text fields are quoted where needed; unavailable values would be left blank, never zero. (It replaces the older wide `medseas-basins.csv`.)
 
@@ -101,3 +103,12 @@ To refresh: ask Claude to review the figures against the latest bulletins. Chang
 ## Extras
 
 - **Submarine easter egg:** a yellow submarine surfaces at a random spot on the map now and then; clicking it shows a Calypso Deep fact. Decorative, `prefers-reduced-motion` friendly, no dependencies.
+
+## Tests
+
+`tests/smoke.html` is a zero-dependency browser test page (no build step, no packages). Serve the repo over http and open it:
+
+    python3 -m http.server
+    # then open http://localhost:8000/tests/smoke.html
+
+It loads the page at desktop and phone width and runs about 40 checks: mode and tab switching, selection kept across modes, playback start, pause, hidden-tab pause and cleanup, date labels against the data file, fixed colour scale, latest-selection-wins under rapid switching, units, categories and sources for every measure, the seasonal values and the 2015–2024 trend recomputed from their inputs, both CSV exports (row counts, escaping, no blank values, filenames), sea-level slider and number agreement, clamping, invalid input, reset, and sea-level reference points (the Dead Sea and Qattara hollows stay dry at +10 m, the northern Adriatic shelf is exposed at −120 m, Venice floods within 2 m). These reference points are sanity checks against well-known geography, not a scientific validation of the model. Missing SST cells being drawn blank rather than cold is checked by code review only.
