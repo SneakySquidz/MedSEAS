@@ -158,7 +158,23 @@ async function run(){
 
   t("No script errors",function(){ return !errors.length||errors.join(" | "); });
 
-  report("Missing SST cells drawn transparent, not cold (code path reviewed, not automated)","skip");
+  btn("#groups .gbtn","Temperature").click(); btn("#tviews .sbtn","Monthly").click(); await wait(2500); w.setSst(40);
+  t("Missing SST cells are transparent, never drawn as cold water",function(){
+    var S=w.sst, cv=w.sstCv, img=cv.getContext("2d").getImageData(0,0,cv.width,cv.height).data, W=S.w, H=S.h, N=W*H, i=w.sstIdx;
+    var missing=0, missingDrawn=0, drawn=0;
+    for(var y=0;y<cv.height;y++){
+      var fy=S.rowF[y], y0=Math.max(0,Math.min(H-1,Math.floor(fy))), y1=Math.min(H-1,y0+1);
+      for(var x=0;x<cv.width;x++){
+        var fx=S.colF[x], x0=Math.max(0,Math.min(W-1,Math.floor(fx))), x1=Math.min(W-1,x0+1);
+        var none=!S.codes[i*N+y0*W+x0]&&!S.codes[i*N+y0*W+x1]&&!S.codes[i*N+y1*W+x0]&&!S.codes[i*N+y1*W+x1];
+        var a=img[(y*cv.width+x)*4+3];
+        if(none){ missing++; if(a>0) missingDrawn++; } else if(a>0) drawn++;
+      }
+    }
+    return (missing>1000&&drawn>1000&&missingDrawn===0)||("missing "+missing+", drawn on missing "+missingDrawn+", drawn "+drawn);
+  });
+  t("Anomaly baseline is stated with its source",function(){ return /Issue 5\.0, November 2024/.test(html)&&!/as compiled for this page/.test(html); });
+  t("Unsourced trend figure is gone",function(){ return !/\+0\.33/.test(html); });
   var pass=results.filter(function(r){ return r.status==="pass"; }).length, fail=results.filter(function(r){ return r.status==="fail"; }).length;
   document.getElementById("sum").textContent=(fail?"FAIL":"PASS")+": "+pass+" passed, "+fail+" failed, "+(results.length-pass-fail)+" skipped";
   document.title=(fail?"FAIL ":"PASS ")+pass+"/"+(pass+fail);
