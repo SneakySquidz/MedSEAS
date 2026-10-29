@@ -266,6 +266,8 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
   .zbtn.wide{font-size:10px;padding:0 7px;}
 }
 .ctx{margin:12px 0 4px;font-size:15px;line-height:1.5;color:var(--ink-muted);}
+.jump{display:flex;flex-wrap:wrap;gap:8px 16px;margin:18px 0 6px;}
+.jlink{font-family:inherit;font-size:15px;font-weight:600;color:var(--accent-strong);background:none;border:0;border-bottom:1px solid var(--accent);padding:6px 0;cursor:pointer;min-height:44px;}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
 </style>
 
@@ -282,35 +284,12 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
     <p class="reviewed">Data last reviewed: <time datetime="2026-09">September 2026</time></p>
   </header>
 
-  <section class="play" aria-labelledby="playTitle">
-    <div class="play-head">
-      <span class="ptitle" id="playTitle">Play with the sea</span>
-      <p class="play-sub">Three things to try. Each one changes the map.</p>
-    </div>
-    <div class="play-grid">
-      <article class="play-card">
-        <span class="pk">Salinity</span>
-        <h2 class="pt">Taste the sea</h2>
-        <p class="pw">Compare how salty each basin is, then see what drives it.</p>
-        <div class="pacts">
-          <button class="pbtn" type="button" data-play="salt">Surface salt</button>
-          <button class="pbtn" type="button" data-play="drivers">What drives it</button>
-        </div>
-      </article>
-      <article class="play-card">
-        <span class="pk">Temperature</span>
-        <h2 class="pt">Watch the sea warm</h2>
-        <p class="pw">Scrub through monthly sea temperatures since 2015, or press Play for a film.</p>
-        <div class="pacts"><button class="pbtn" type="button" data-play="temp">Open the monthly map</button></div>
-      </article>
-      <article class="play-card">
-        <span class="pk">Flooding</span>
-        <h2 class="pt">Raise the sea</h2>
-        <p class="pw">Drag the sea level from an ice-age low to an ice-free Earth and see which coasts go under.</p>
-        <div class="pacts"><button class="pbtn" type="button" data-play="flood">Open sea-level</button></div>
-      </article>
-    </div>
-  </section>
+  <nav class="jump" aria-label="Jump to a tool">
+    <button class="jlink" type="button" data-play="salt">Salinity: surface salt</button>
+    <button class="jlink" type="button" data-play="drivers">Salinity: what drives it</button>
+    <button class="jlink" type="button" data-play="temp">Temperature: monthly map</button>
+    <button class="jlink" type="button" data-play="flood">Sea level: scenarios</button>
+  </nav>
 
   <div class="panel">
     <div class="filter">
@@ -423,6 +402,12 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <div class="tile"><span class="tl">Mean depth</span><span class="tv" id="t4">&mdash;</span></div>
         <div class="tile"><span class="tl">Max depth</span><span class="tv" id="t5">&mdash;</span></div>
         <div class="tile"><span class="tl">Area</span><span class="tv" id="t6">&mdash;</span></div>
+      </div>
+      <span class="ptitle" style="display:block;margin-top:14px">Curiosities</span>
+      <div class="tiles">
+        <div class="tile"><span class="tl">Plankton layer</span><span class="tv" id="t7">&mdash;</span></div>
+        <div class="tile"><span class="tl">Biggest tide</span><span class="tv" id="t8">&mdash;</span></div>
+        <div class="tile"><span class="tl">Posidonia meadows</span><span class="tv" id="t9">&mdash;</span></div>
       </div>
       <div class="quirk"><span class="ql">The odd thing about it</span><span class="qt" id="dQuirk">&mdash;</span></div>
     </div>
@@ -558,12 +543,13 @@ var groups=[
  {id:"depth",label:"Depth",hint:"how deep, how big",measures:[
    {id:"avgDepth",short:"Mean depth",full:"Mean water depth",fmt:function(v){return fN(v)+" m";}},
    {id:"maxDepth",short:"Max depth",full:"Maximum recorded depth",fmt:function(v){return fN(v)+" m";}},
-   {id:"area",short:"Surface area",full:"Surface area",fmt:function(v){return fN(v)+" km\u00b2";}}]},
- {id:"odd",label:"Curiosities",hint:"the strange measures",measures:[
+   {id:"area",short:"Surface area",full:"Surface area",fmt:function(v){return fN(v)+" km\u00b2";}}]}
+];
+/* curiosities: shown in the basin panel, not as map measures */
+var CURIO=[
    {id:"dcm",short:"Plankton layer",full:"Depth of the plankton layer",est:true,fmt:function(v){return fN(v)+" m down";}},
    {id:"tide",short:"Biggest tide",full:"Largest spring tidal range",fmt:function(v){return v.toFixed(2)+" m";}},
-   {id:"posidonia",short:"Posidonia meadows",full:"Posidonia seagrass meadows",fmt:function(v){return POS[Math.round(v)];}}]}
-];
+   {id:"posidonia",short:"Posidonia meadows",full:"Posidonia seagrass meadows",fmt:function(v){return POS[Math.round(v)];}}];
 var group="temp", metric="summer", selected="levantine";
 function G(){return groups.filter(function(g){return g.id===group;})[0];}
 function M(){
@@ -1198,6 +1184,9 @@ function paintDetail(){
   document.getElementById("t4").innerHTML=fN(b.avgDepth)+'<i>m</i>';
   document.getElementById("t5").innerHTML=fN(b.maxDepth)+'<i>m</i>';
   document.getElementById("t6").innerHTML=fN(Math.round(b.area/1000))+'<i>k km\u00b2</i>';
+  document.getElementById("t7").innerHTML=fN(b.dcm)+'<i>m down (est.)</i>';
+  document.getElementById("t8").innerHTML=b.tide.toFixed(2)+'<i>m</i>';
+  document.getElementById("t9").innerHTML=POS[Math.round(b.posidonia)];
 }
 function paintTable(){
   var cols=[["Basin","name"],["Summer "+DEG+"C","summer"],["Winter "+DEG+"C","winter"],["Swing "+DEG+"C","range"],
@@ -1283,23 +1272,23 @@ document.querySelectorAll("[data-play]").forEach(function(btn){
 });
 
 /* ---- CSV download ---- */
-var CSV_COLS=[["basin","name"],["summer_sst_c","summer"],["winter_sst_c","winter"],["seasonal_swing_c","range"],
-  ["surface_salinity_psu","salinity"],["net_evaporation_m_per_yr_est","evap"],["mean_depth_m","avgDepth"],
-  ["max_depth_m","maxDepth"],["area_km2","area"],["warming_c_per_decade_est","warming"],
-  ["plankton_layer_depth_m_est","dcm"],["max_spring_tide_m","tide"],["posidonia_meadows","posidonia"]];
+/* long format: one row per basin and measure. Unavailable values would be left blank, never zero (none are unavailable today). */
+function csvField(v){ var s=String(v); return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }
 document.getElementById("csvBtn").addEventListener("click",function(){
-  var lines=[CSV_COLS.map(function(c){return c[0];}).join(",")];
+  var measures=[]; groups.forEach(function(g){ measures=measures.concat(g.measures); }); measures=measures.concat(CURIO);
+  var lines=["basin_id,basin,variable,value,unit,season,reference_period,anomaly_baseline,source,method,data_category,est_flag"];
   basins.forEach(function(b){
-    lines.push(CSV_COLS.map(function(c){
-      var v=b[c[1]];
-      if(c[1]==="posidonia") return POS[v];
-      if(c[1]==="name") return '"'+v+'"';
-      return v;
-    }).join(","));
+    measures.forEach(function(m){
+      var c=CTX[m.id]||["","","",""];
+      var season=m.id==="summer"||m.id==="winter"?m.id:"not stated";
+      var method=m.id==="range"?"summer value minus winter value":"not documented";
+      var row=[b.id,b.name,m.id,b[m.id],c[0],season,c[2],"not applicable",c[3],method,c[1],m.est?"yes":"no"];
+      lines.push(row.map(csvField).join(","));
+    });
   });
-  var blob=new Blob(["﻿"+lines.join("\r\n")+"\r\n"],{type:"text/csv;charset=utf-8"});
+  var blob=new Blob(["\uFEFF"+lines.join("\r\n")+"\r\n"],{type:"text/csv;charset=utf-8"});
   var a=document.createElement("a");
-  a.href=URL.createObjectURL(blob); a.download="medseas-basins.csv";
+  a.href=URL.createObjectURL(blob); a.download="medseas-basin-measures.csv";
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
 });
