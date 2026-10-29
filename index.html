@@ -35,7 +35,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .sub{color:var(--ink-2);font-size:16px;line-height:1.6;max-width:62ch;margin:12px 0 0;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;}
 .chip{display:flex;align-items:baseline;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:7px 15px;box-shadow:var(--shadow);}
-.chip b{white-space:nowrap;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--accent-strong);font-size:14px;}
+.chip b{white-space:nowrap;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--accent-strong);font-size:15px;}
 .chip span{font-size:12px;color:var(--ink-muted);}
 .reviewed{font-size:12px;color:var(--ink-muted);margin:10px 0 0;}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px 18px 20px;}
@@ -93,6 +93,9 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
   font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;
   box-shadow:0 3px 10px -4px rgba(10,44,62,.5);padding:0;line-height:1;}
 .zbtn:hover{border-color:var(--accent);color:var(--accent-strong);}
+.hdr-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;}
+.themebtn{font-family:inherit;font-size:13px;font-weight:600;color:var(--accent-strong);background:var(--surface-2);border:1px solid var(--border);border-radius:99px;padding:8px 14px;min-height:40px;cursor:pointer;}
+.themebtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .zbtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
 .zbtn.wide{width:auto;padding:0 10px;font-size:11px;font-weight:600;}
 .maphint{position:absolute;left:10px;bottom:9px;font-size:11.5px;color:var(--ink-muted);background:var(--surface);
@@ -100,7 +103,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .bmark{pointer-events:none;text-align:center;line-height:1.15;white-space:nowrap;
   text-shadow:0 0 2px var(--halo-c),0 0 2px var(--halo-c),0 0 5px var(--halo-c),0 0 5px var(--halo-c);}
 .bmark .bn{font-weight:700;font-size:13px;}
-.bmark .bv{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;margin-top:1px;}
+.bmark .bv{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:13px;margin-top:1px;}
 .bmark.sm .bn,.bmark.sm .bv{font-size:10.5px;}
 .clabel,.ilabel,.olabel{pointer-events:none;white-space:nowrap;text-shadow:0 0 3px var(--halo);}
 .clabel{color:var(--land-ink);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:10.5px;}
@@ -133,7 +136,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .funbody[hidden]{display:none;}
 .funrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .funlabel{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;}
-.funout{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:22px;color:var(--accent-strong);min-width:7.5ch;font-variant-numeric:tabular-nums;}
+.funout{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:26px;color:var(--accent-strong);min-width:7.5ch;font-variant-numeric:tabular-nums;}
 #lvl{flex:1 1 260px;min-width:0;accent-color:var(--accent);height:28px;cursor:pointer;}
 .presets{display:flex;gap:6px;flex-wrap:wrap;}
 .pbtn{padding:8px 14px;font-size:13.5px;min-height:40px;}
@@ -171,7 +174,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .row.on .rname{color:var(--ink);font-weight:700;}
 .track{display:block;height:18px;border-radius:6px;background:var(--surface-3);position:relative;overflow:hidden;}
 .fill{display:block;height:18px;border-radius:6px;transition:width .4s cubic-bezier(.4,0,.2,1);min-width:3px;}
-.rval{display:block;font-family:"IBM Plex Mono",monospace;font-size:12.5px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums;font-weight:500;}
+.rval{display:block;font-family:"IBM Plex Mono",monospace;font-size:14px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600;}
 .avg-mark{position:absolute;top:0;bottom:0;width:2px;background:var(--ink-muted);opacity:.65;}
 .avg-note{font-size:11px;color:var(--ink-muted);margin-top:10px;display:flex;align-items:center;gap:6px;}
 .avg-swatch{display:inline-block;width:2px;height:11px;background:var(--ink-muted);opacity:.65;}
@@ -182,9 +185,9 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .quirk .qt{font-size:12.5px;color:var(--ink-2);line-height:1.55;}
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;}
 .tile{background:var(--surface-2);border-radius:10px;padding:9px 10px;}
-.tile .tl{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);display:block;}
-.tile .tv{font-family:"IBM Plex Mono",monospace;font-size:16px;font-weight:600;color:var(--accent-strong);display:block;margin-top:2px;}
-.tile .tv i{font-size:9.5px;font-style:normal;color:var(--ink-muted);margin-left:1px;}
+.tile .tl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);display:block;line-height:1.35;}
+.tile .tv{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;color:var(--accent-strong);display:block;margin-top:3px;font-variant-numeric:tabular-nums;}
+.tile .tv i{font-size:11px;font-style:normal;color:var(--ink-muted);margin-left:2px;font-weight:500;}
 .prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:11px;margin-top:11px;}
 .pcard{background:var(--surface-2);border-radius:11px;padding:11px 12px;display:block;}
 .pcard > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;}
@@ -279,7 +282,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <div class="chip"><b>5,109 m</b><span>Calypso Deep, Ionian Sea, measured to &plusmn;1 m</span></div>
       <div class="chip"><b>2.7 psu</b><span>saltier at the eastern end than the western</span></div>
     </div>
-    <p class="reviewed">Data last reviewed: <time datetime="2026-09">September 2026</time></p>
+    <div class="hdr-row"><p class="reviewed">Data last reviewed: <time datetime="2026-09">September 2026</time></p><button class="themebtn" id="themeBtn" type="button">Colour: Auto (system)</button></div>
   </header>
 
   <div class="panel">
@@ -720,6 +723,22 @@ function applyTheme(){
 }
 try{ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyTheme); }catch(e){}
 new MutationObserver(applyTheme).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+/* colour theme: Auto follows the system, Light and Dark are forced; the choice is remembered in this browser */
+var THEME_KEY="medseas.theme", THEMES=["auto","light","dark"], THEME_LABEL={auto:"Auto (system)",light:"Light",dark:"Dark"};
+var themeBtn=document.getElementById("themeBtn"), sysDark=null;
+try{ sysDark=window.matchMedia("(prefers-color-scheme: dark)"); }catch(e){}
+function savedTheme(){ try{ var t=localStorage.getItem(THEME_KEY); if(THEMES.indexOf(t)>=0) return t; }catch(e){} return "auto"; }
+function setTheme(t){
+  var root=document.documentElement, dark=t==="dark"||(t==="auto"&&!!(sysDark&&sysDark.matches));
+  if(t==="auto") root.removeAttribute("data-theme"); else root.setAttribute("data-theme",t);
+  root.style.colorScheme=dark?"dark":"light";
+  themeBtn.textContent="Colour: "+THEME_LABEL[t];
+  themeBtn.setAttribute("aria-label","Colour theme: "+THEME_LABEL[t]+". Activate to change.");
+  try{ if(t==="auto") localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY,t); }catch(e){}
+}
+themeBtn.addEventListener("click",function(){ setTheme(THEMES[(THEMES.indexOf(savedTheme())+1)%THEMES.length]); });
+try{ if(sysDark) sysDark.addEventListener("change",function(){ if(savedTheme()==="auto") setTheme("auto"); }); }catch(e){}
+setTheme(savedTheme());
 
 map.on("load",function(){
   map.addSource("land",{type:"geojson",data:GEO.land,tolerance:0.1});

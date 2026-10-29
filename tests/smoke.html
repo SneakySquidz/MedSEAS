@@ -7,16 +7,19 @@
 <style>
   body{font:15px/1.5 system-ui,sans-serif;margin:16px;background:#fff;color:#111;}
   #sum{font-weight:700;margin:8px 0;} li.pass{color:#0a6b2d;} li.fail{color:#b00020;} li.skip{color:#666;}
-  iframe{border:1px solid #ccc;margin:8px 8px 0 0;vertical-align:top;}
+  /* both frames are pinned inside the viewport, behind the results: a frame that is off screen gets no animation frames, so its map would never load */
+  iframe{position:fixed;top:0;left:0;border:0;opacity:.03;pointer-events:none;z-index:-1;}
+  #phone{left:auto;right:0;}
 </style>
 </head>
 <body>
 <h1>MedSEAS smoke tests</h1>
 <p>Serve the repo over http (for example <code>python3 -m http.server</code>) and open <code>/tests/smoke.html</code>. No dependencies. The sea-level checks compare the terrain model with known reference points; they are sanity checks, not a scientific validation.</p>
 <p id="sum">Running&hellip;</p>
-<ol id="out"></ol>
-<iframe id="desk" src="../index.html" width="1100" height="700" title="Page under test, desktop width"></iframe>
+<p>Keep this tab in front while it runs: a page that is hidden or scrolled out of view gets no animation frames, so its map cannot load.</p>
+<iframe id="desk" src="../index.html" width="1000" height="700" title="Page under test, desktop width"></iframe>
 <iframe id="phone" src="../index.html" width="375" height="700" title="Page under test, phone width"></iframe>
+<ol id="out"></ol>
 <script>
 var results=[], out=document.getElementById("out");
 function report(name,status,detail){
@@ -47,7 +50,13 @@ async function run(){
   var D=document.getElementById("desk"), P=document.getElementById("phone");
   var errors=[];
   [D,P].forEach(function(fr){ fr.addEventListener("load",function(){ fr.contentWindow.addEventListener("error",function(e){ errors.push(e.message); }); }); });
-  await loaded(D); await loaded(P); await wait(2500);
+  await loaded(D); await loaded(P);
+  for(var k=0;k<40&&!(D.contentWindow.mapReady&&P.contentWindow.mapReady);k++) await wait(500);
+  if(!(D.contentWindow.mapReady&&P.contentWindow.mapReady)){
+    report("Both maps loaded in the test frames","fail","a map did not load; keep this tab in front and visible, then reload");
+    document.getElementById("sum").textContent="FAIL: the maps did not load in the test frames (tab hidden or WebGL unavailable?)"; document.title="FAIL maps"; window.__results=results; return;
+  }
+  await wait(1500);
   var w=D.contentWindow, d=D.contentDocument, $=function(id){ return d.getElementById(id); };
   function t(name,fn){ try{ var r=fn(); if(r===true) report(name,"pass"); else report(name,"fail",typeof r==="string"?r:""); }catch(e){ report(name,"fail",e.message); } }
   var btn=function(sel,start){ return Array.prototype.find.call(d.querySelectorAll(sel),function(b){ return b.textContent.trim().indexOf(start)===0; }); };
