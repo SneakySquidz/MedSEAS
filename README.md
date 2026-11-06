@@ -29,7 +29,7 @@ Sources are kept as one record per dataset in `index.html` (`DATASETS`): id, nam
 
 Known gaps, stated on the page:
 
-- Per-basin salinity and tide values have no documented source or reference period. Maximum depths are only partly sourced (Alboran, Adriatic and Aegean from web references; Tyrrhenian and Levantine from Wikipedia without a citation; Ligurian and Balearic not confirmed; Ionian is the 2020 Calypso Deep measurement). The plankton-layer depths follow a west-to-east gradient reported in the literature, with the per-basin values interpolated. The Posidonia area and decline are from Telesca et al. 2015; the per-basin ratings are not sourced. The Sources section lists exactly what is and is not documented.
+- Per-basin salinity and tide values have no documented source or reference period. Maximum depths are only partly sourced (Alboran, Adriatic and Aegean from web references; Tyrrhenian and Levantine from Wikipedia without a citation; Ligurian and Balearic not confirmed; Ionian is the 2020 Calypso Deep measurement). The plankton-layer depths follow a west-to-east gradient reported in the literature, with the per-basin values interpolated. The Posidonia area and decline are from Telesca et al. 2015; the per-basin ratings are not sourced. The Sources section lists exactly what is and is not documented. A per-basin table ("Sources for the figures per basin") links each maximum depth, salinity and tide to a published source or marks it "source needed"; checked 2026-11-06 (salinity: no per-basin source found yet; two depth figures conflict with the ENI page).
 - EMODnet Bathymetry is listed as a reference only. The measured depths and the sea-level scenarios use the AWS Terrain Tiles.
 
 ## Map

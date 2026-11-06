@@ -199,6 +199,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .tile .tl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);display:block;line-height:1.35;}
 .tile .tv{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;color:var(--accent-strong);display:block;margin-top:3px;font-variant-numeric:tabular-nums;}
 .tile .tv i{font-size:11px;font-style:normal;color:var(--ink-muted);margin-left:2px;font-weight:500;}
+.vs{border-collapse:collapse;width:100%;font-size:12px;margin-top:10px;}.vs th,.vs td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line,rgba(128,128,128,.25));vertical-align:top;}.vs th{font-size:11px;color:var(--ink-muted);font-weight:600;}.vs .need{color:#b3261e;font-weight:600;}.vs .vn{font-variant-numeric:tabular-nums;white-space:nowrap;}
 .prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:11px;margin-top:11px;}
 .pcard{background:var(--surface-2);border-radius:11px;padding:11px 12px;display:block;}
 .pcard > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;}
@@ -459,6 +460,12 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
   <div class="panel" id="sec-sources">
     <span class="ptitle">Where the data comes from</span>
     <div class="prov" id="prov"></div>
+  </div>
+
+  <div class="panel" id="sec-valuesources">
+    <span class="ptitle">Sources for the figures per basin</span>
+    <p class="note" style="margin-top:8px">Maximum depth, surface salinity and biggest tide as shown above, each with the published source that supports it. &ldquo;Source needed&rdquo; means no checkable source has been found yet; the figure is kept for now but should not be relied on. Most depth sources are encyclopedia or education pages, not primary bathymetry. For primary checks use <a href="https://emodnet.ec.europa.eu/en/bathymetry" target="_blank" rel="noopener">EMODnet Bathymetry</a>, <a href="https://www.gebco.net/data-products-gridded-bathymetry-data" target="_blank" rel="noopener">GEBCO</a> and the <a href="https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description" target="_blank" rel="noopener">Copernicus Marine Mediterranean reanalysis</a>.</p>
+    <div style="overflow-x:auto"><table class="vs" id="vsrc"></table></div>
   </div>
 
   <footer id="sec-footer">
@@ -1348,6 +1355,39 @@ function renderSources(){
     host.appendChild(det);
   });
 }
+/* Published source for each per-basin figure. null = source needed (never invent a number). Checked 2026-11-06. */
+var ENI={n:"ENI Scuola, Mediterranean Sea (page updated 2025)",u:"https://eniscuola.eni.com/en-IT/environment/water/mediterranean-sea.html"};
+var VSRC={
+ maxDepth:{
+  alboran:{s:ENI.n+": maximum depth 1,500 m",u:ENI.u,w:"secondary"},
+  balearic:{s:ENI.n+": Algerian-Provence basin, maximum depth 2,800 m",u:ENI.u,w:"secondary; basin limits differ"},
+  ligurian:null,
+  tyrrhenian:{s:ENI.n+" gives 3,800 m, not 3,785 m",u:ENI.u,w:"conflict: exact figure needs a source"},
+  adriatic:{s:"WorldAtlas, The Major Subdivisions Of The Mediterranean Sea: 4,045 ft (= 1,233 m)",u:"https://www.worldatlas.com/articles/the-major-subdivisions-of-the-mediterranean-sea.html",w:"secondary"},
+  ionian:{s:"Calypso Deep, 2020 dive, 5,109 m ±1 m (Wikipedia summary of the expedition; a 2025 survey reports about 5,112 m)",u:"https://en.wikipedia.org/wiki/Calypso_Deep",w:"secondary"},
+  aegean:{s:"Britannica, Aegean Sea: 11,627 ft (= 3,544 m) east of Crete",u:"https://www.britannica.com/place/Aegean-Sea",w:"secondary"},
+  levantine:{s:ENI.n+" gives 4,834 m, not 4,384 m",u:ENI.u,w:"conflict: possible transposed digits, needs a primary source"}
+ },
+ salinity:{alboran:null,balearic:null,ligurian:null,tyrrhenian:null,adriatic:null,ionian:null,aegean:null,levantine:null},
+ tide:{
+  alboran:null,balearic:null,ligurian:null,tyrrhenian:null,adriatic:null,
+  ionian:{s:"AVISO+, Tides around the world: Gulf of Gabes range of nearly two metres (the Gulf of Gabes lies south of the Ionian proper)",u:"https://www.aviso.altimetry.fr/en/applications/ocean/tides/tides-around-the-world.html",w:"secondary; other sources give 1 to 2.5 m"},
+  aegean:null,levantine:null
+ }
+};
+function renderValueSources(){
+  var t=document.getElementById("vsrc"); if(!t) return;
+  var rows=[["maxDepth","Maximum depth"],["salinity","Surface salinity"],["tide","Biggest tide"]];
+  var h="<thead><tr><th>Basin</th><th>Measure</th><th>Shown</th><th>Source</th></tr></thead><tbody>";
+  basins.forEach(function(b){
+    rows.forEach(function(r){
+      var src=VSRC[r[0]][b.id], v=b[r[0]], shown=r[0]==="tide"?v.toFixed(2)+" m":r[0]==="salinity"?v.toFixed(1)+" psu":fN(v)+" m";
+      var cell=src?(esc(src.s)+(src.w?" ("+esc(src.w)+")":"")+' <a href="'+src.u+'" target="_blank" rel="noopener">link &rarr;</a>'):'<span class="need">source needed</span>';
+      h+="<tr><td>"+esc(b.name)+"</td><td>"+r[1]+'</td><td class="vn">'+shown+"</td><td>"+cell+"</td></tr>";
+    });
+  });
+  t.innerHTML=h+"</tbody>";
+}
 function dsNames(ids){ return ids.split("; ").map(function(id){ return DS[id]?DS[id].name:id; }).join("; "); }
 function paintContext(){
   var t;
@@ -1566,7 +1606,7 @@ scheduleSub(3000,6000);
 })();
 
 var hiddenViews={monthly:false,warming:false};
-renderSources(); renderSubs(); paintMap(); paintBars(); paintDetail(); paintTable();
+renderSources(); renderValueSources(); renderSubs(); paintMap(); paintBars(); paintDetail(); paintTable();
 
 /* ---- display settings: data/config.json, or a live preview posted by dev/ ----
    Optional. A missing or unreadable config leaves the page as it is. Sets layout order, default view, basin and theme, and which tools are shown. */

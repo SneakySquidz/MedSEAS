@@ -97,6 +97,7 @@ async function run(){
     var bad=ms.filter(function(m){ var c=w.CTX[m.id]; return !c||!c[0]||!c[1]||!c[2]||c[3].split("; ").some(function(id){ return !w.DS[id]; }); }).map(function(m){ return m.id; });
     return !bad.length||bad.join(",");
   });
+  t("Per-basin source table: 24 rows, unsourced values marked, none blank",function(){ var rows=d.querySelectorAll("#vsrc tbody tr"); if(rows.length!==24) return false; for(var i=0;i<rows.length;i++){ var c=rows[i].cells[3].textContent.trim(); if(!c) return false; } return /source needed/.test(d.getElementById("vsrc").textContent); });
   t("Sources rendered from records",function(){ return d.querySelectorAll("#prov .pcard").length===w.DATASETS.length; });
 
   // seasonal values reproduce from the climatology
