@@ -85,7 +85,7 @@ async function run(){
   btn("#groups .gbtn","Salinity").click(); await wait(300);
   t("Leaving Monthly stops playback and hides it",function(){ return w.sstTimer===0&&$("sst").hidden&&!w.sstOn; });
   t("Selected basin kept across modes",function(){ return w.selected==="adriatic"; });
-  t("Context line follows the measure",function(){ return /Surface salinity/.test($("ctx").textContent)&&/Literature value/.test($("ctx").textContent); });
+  t("Context line follows the measure",function(){ return /Surface salinity/.test($("ctx").textContent)&&/World Ocean Atlas 2023/.test($("ctx").textContent); });
   btn("#groups .gbtn","Temperature").click(); btn("#tviews .sbtn","Monthly").click(); btn("#groups .gbtn","Depth").click(); await wait(800);
   t("Latest selection wins under rapid switching",function(){ return w.group==="depth"&&$("sst").hidden&&!w.sstOn; });
   btn("#groups .gbtn","Temperature").click(); btn("#tviews .sbtn","Warming").click(); await wait(300);
@@ -98,6 +98,7 @@ async function run(){
     return !bad.length||bad.join(",");
   });
   t("Per-basin source table: 24 rows, unsourced values marked, none blank",function(){ var rows=d.querySelectorAll("#vsrc tbody tr"); if(rows.length!==24) return false; for(var i=0;i<rows.length;i++){ var c=rows[i].cells[3].textContent.trim(); if(!c) return false; } return /source needed/.test(d.getElementById("vsrc").textContent); });
+  t("Per-basin salinity sourced from World Ocean Atlas 2023, matches the shown value",function(){ return w.basins.every(function(b){ var v=w.VSRC.salinity[b.id]; var m=v&&/surface ([0-9.]+) psu/.exec(v.s); return m&&Math.abs(parseFloat(m[1])-b.salinity)<0.051; }); });
   t("Sources rendered from records",function(){ return d.querySelectorAll("#prov .pcard").length===w.DATASETS.length; });
 
   // seasonal values reproduce from the climatology
