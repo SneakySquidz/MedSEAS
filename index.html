@@ -31,7 +31,7 @@
 body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;padding:26px 18px 52px;}
 .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px;}
 h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-size:clamp(29px,4.2vw,44px);font-weight:600;line-height:1.05;}
-.eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;}
+.eyebrow{font-size:13px;letter-spacing:.01em;color:var(--accent);font-weight:500;}
 .sub{color:var(--ink-2);font-size:16px;line-height:1.6;max-width:62ch;margin:12px 0 0;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;}
 .chip{display:flex;align-items:baseline;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:7px 15px;box-shadow:var(--shadow);}
@@ -39,7 +39,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .chip span{font-size:12px;color:var(--ink-muted);}
 .reviewed{font-size:12px;color:var(--ink-muted);margin:10px 0 0;}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px 18px 20px;}
-.ptitle{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;}
+.ptitle{font-size:13px;color:var(--ink-muted);font-weight:500;}
 
 
 /* salinity drivers: a ranked list, not a chart, because evaporation is only two estimates */
@@ -103,7 +103,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
   border:1px solid var(--border);border-radius:99px;padding:4px 11px;opacity:.9;}
 .bmark{pointer-events:none;text-align:center;line-height:1.15;white-space:nowrap;
   text-shadow:0 0 2px var(--halo-c),0 0 2px var(--halo-c),0 0 5px var(--halo-c),0 0 5px var(--halo-c);}
-.bmark .bn{font-weight:700;font-size:13px;}
+.bmark .bn{font-weight:600;font-size:13px;}
 .bmark .bv{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:13px;margin-top:1px;}
 .bmark.sm .bn,.bmark.sm .bv{font-size:10.5px;}
 .clabel,.ilabel,.olabel{pointer-events:none;white-space:nowrap;text-shadow:0 0 3px var(--halo);}
@@ -136,7 +136,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .funbody{margin-top:13px;display:flex;flex-direction:column;gap:11px;}
 .funbody[hidden]{display:none;}
 .funrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-.funlabel{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;}
+.funlabel{font-size:13px;color:var(--ink-muted);font-weight:500;}
 .funout{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:26px;color:var(--accent-strong);min-width:7.5ch;font-variant-numeric:tabular-nums;}
 #lvl{flex:1 1 260px;min-width:0;accent-color:var(--accent);height:28px;cursor:pointer;}
 .presets{display:flex;gap:6px;flex-wrap:wrap;}
@@ -146,7 +146,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .scard{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px 15px;max-width:80ch;}
 .scard[hidden]{display:none;}
 .scard h3{margin:0;font-size:15px;color:var(--accent-strong);}
-.scard .when{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);margin:3px 0 7px;}
+.scard .when{font-size:12px;color:var(--ink-muted);margin:4px 0 8px;}
 .scard p,.scard li{font-size:12.5px;color:var(--ink-2);line-height:1.55;margin:0;}
 .scard ul{margin:7px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px;}
 .scard .src{font-size:11px;color:var(--ink-muted);margin-top:8px;}
@@ -161,7 +161,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .bkey{position:absolute;right:10px;bottom:34px;display:flex;flex-wrap:wrap;align-items:center;gap:3px 9px;max-width:calc(100% - 20px);
   background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 10px;font-size:10px;color:var(--ink-2);box-shadow:0 3px 10px -4px rgba(10,44,62,.4);}
 .bkey[hidden]{display:none;}
-.bkey b{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);}
+.bkey b{font-size:11px;font-weight:500;color:var(--ink-muted);}
 .bkey span{display:flex;align-items:center;gap:4px;font-family:"IBM Plex Mono",monospace;}
 .bkey i{width:14px;height:9px;border-radius:2px;border:1px solid var(--border);}
 .bkey small{color:var(--ink-muted);}
@@ -170,7 +170,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .ramp-end{font-size:11.5px;color:var(--ink-muted);font-family:"IBM Plex Mono",monospace;}
 .ramp-cap{font-size:11.5px;color:var(--ink-2);font-weight:600;}
 #tip{position:fixed;z-index:40;pointer-events:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 12px;box-shadow:0 10px 26px -10px rgba(10,44,62,.45);font-size:12px;color:var(--ink);display:none;max-width:235px;}
-#tip .tn{font-weight:700;margin-bottom:5px;}
+#tip .tn{font-weight:600;margin-bottom:4px;}
 #tip .tr{display:flex;justify-content:space-between;gap:14px;color:var(--ink-2);line-height:1.65;}
 #tip .tr b{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-weight:600;}
 
@@ -182,7 +182,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .row.on{background:var(--surface-2);border-color:var(--border);}
 .row:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
 .rname{font-size:12.5px;color:var(--ink-2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.row.on .rname{color:var(--ink);font-weight:700;}
+.row.on .rname{color:var(--ink);font-weight:600;}
 .track{display:block;height:18px;border-radius:6px;background:var(--surface-3);position:relative;overflow:hidden;}
 .fill{display:block;height:18px;border-radius:6px;transition:width .4s cubic-bezier(.4,0,.2,1);min-width:3px;}
 .rval{display:block;font-family:"IBM Plex Mono",monospace;font-size:14px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600;}
@@ -192,11 +192,11 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .dname{font-family:"Fraunces",Georgia,serif;font-size:22px;font-weight:600;margin-top:10px;}
 .ddesc{font-size:13px;color:var(--ink-2);line-height:1.55;margin-top:5px;}
 .quirk{margin-top:12px;background:var(--surface-2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 12px;}
-.quirk .ql{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--accent);font-weight:700;display:block;margin-bottom:4px;}
+.quirk .ql{font-size:12px;color:var(--accent);font-weight:500;display:block;margin-bottom:4px;}
 .quirk .qt{font-size:12.5px;color:var(--ink-2);line-height:1.55;}
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;}
 .tile{background:var(--surface-2);border-radius:10px;padding:9px 10px;}
-.tile .tl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);display:block;line-height:1.35;}
+.tile .tl{font-size:12px;color:var(--ink-muted);display:block;line-height:1.35;}
 .tile .tv{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;color:var(--accent-strong);display:block;margin-top:3px;font-variant-numeric:tabular-nums;}
 .tile .tv i{font-size:11px;font-style:normal;color:var(--ink-muted);margin-left:2px;font-weight:500;}
 .vs{border-collapse:collapse;width:100%;font-size:12px;margin-top:10px;}.vs th,.vs td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line,rgba(128,128,128,.25));vertical-align:top;}.vs th{font-size:11px;color:var(--ink-muted);font-weight:600;}.vs .need{color:#b3261e;font-weight:600;}.vs .vn{font-variant-numeric:tabular-nums;white-space:nowrap;}
@@ -208,7 +208,7 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .pcard[open] > summary::after{content:"\2212";}
 .pcard > summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
 .pcard > .pw,.pcard > .pd,.pcard > a{display:block;margin-top:5px;}
-.pcard .pn{font-size:12.5px;font-weight:700;}
+.pcard .pn{font-size:13px;font-weight:600;}
 .pcard .pw{font-size:11.5px;color:var(--ink-2);line-height:1.5;}
 .pcard .pd{font-size:10.5px;color:var(--ink-muted);font-family:"IBM Plex Mono",monospace;line-height:1.5;}
 .pcard a{color:var(--accent);text-decoration:none;font-size:11.5px;}
@@ -249,7 +249,7 @@ summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 table{border-collapse:collapse;width:100%;min-width:700px;font-size:12px;}
 th,td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--border);}
 th:first-child,td:first-child{text-align:left;}
-th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);font-weight:600;}
+th{font-size:12px;color:var(--ink-muted);font-weight:500;}
 td{font-family:"IBM Plex Mono",monospace;color:var(--ink-2);font-variant-numeric:tabular-nums;}
 td:first-child{font-family:"IBM Plex Sans",sans-serif;color:var(--ink);font-weight:500;}
 footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-direction:column;gap:8px;}
@@ -291,7 +291,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <button class="themebtn" id="themeBtn" type="button">Colour: Auto (system)</button>
     </div>
     <h1>Mediterranean Basins</h1>
-    <p class="sub">Explore how eight Mediterranean basins differ &mdash; and how they change.</p>
+    <p class="sub">How the eight Mediterranean basins differ, and how they are changing</p>
     <div class="chips">
       <div class="chip"><b>21.2 &deg;C</b><span>mean sea-surface temperature in 2025, second warmest on record</span></div>
       <div class="chip"><b>5,109 m</b><span>Calypso Deep, Ionian Sea, measured to &plusmn;1 m</span></div>
