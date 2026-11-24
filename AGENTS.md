@@ -4,7 +4,7 @@ Read CLAUDE.md.
 ## Working here on another model (any assistant that is not Claude)
 **Cloud models allowed.** Nothing private lives in this folder; keep it that way.
 
-1. **Read `CLAUDE.md` in this folder first** and follow it. Run `git status`: files another session left uncommitted are not yours to touch.
+1. **Read `CLAUDE.md` in this folder first** (no `CLAUDE.md`: `README.md`) and follow it. Run `git status`: files another session left uncommitted are not yours to touch.
 2. **Small edits only.** Never rewrite a file, and leave `CLAUDE.md`, `AGENTS.md` and `Me.md` alone: propose changes to them in the trace.
 3. **Nothing that sends, submits, posts, pays, pushes or deletes.** Draft it and say where the draft is.
 4. **Leave a trace before you stop:** `HANDOFF.md` in this folder (add to it if it exists), with these headings: Asked · Changed · Decided · Dates · Not checked · Next.
