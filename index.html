@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>MedSEAS · Mediterranean Basins</title><meta name="description" content="Interactive map of the Mediterranean's eight sub-basins: temperature, salinity, depth and curiosities, from Copernicus Marine, Argo and EMODnet data."><meta property="og:title" content="MedSEAS · Mediterranean Basins"><meta property="og:description" content="The Mediterranean as eight distinct seas, shaded by temperature, salinity or depth."><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%2312688f%27/%3E%3Cpath d=%27M5 19c3.5-4 7.5 4 11 0s7.5 4 11 0%27 stroke=%27white%27 stroke-width=%273%27 fill=%27none%27 stroke-linecap=%27round%27/%3E%3C/svg%3E"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>MedSEAS · Mediterranean Basins</title><meta name="description" content="Interactive map of the Mediterranean's eight sub-basins: temperature, salinity, depth and curiosities, from Copernicus Marine, Argo and EMODnet data."><meta property="og:title" content="MedSEAS · Mediterranean Basins"><meta property="og:description" content="The Mediterranean as eight distinct seas, shaded by temperature, salinity or depth, with a sea-level scenario tool."><meta property="og:type" content="website"><meta property="og:site_name" content="MedSEAS"><meta property="og:url" content="https://sneakysquidz.github.io/MedSEAS/"><meta property="og:image" content="https://sneakysquidz.github.io/MedSEAS/data/preview.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Map of the Mediterranean divided into eight basins, shaded by sea-surface temperature."><meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="https://sneakysquidz.github.io/MedSEAS/"><meta name="theme-color" content="#f6f4ee" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#16150f" media="(prefers-color-scheme: dark)"><link rel="apple-touch-icon" href="data/icon-180.png"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%2312688f%27/%3E%3Cpath d=%27M5 19c3.5-4 7.5 4 11 0s7.5 4 11 0%27 stroke=%27white%27 stroke-width=%273%27 fill=%27none%27 stroke-linecap=%27round%27/%3E%3C/svg%3E"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <link rel="stylesheet" href="vendor/maplibre-gl/maplibre-gl.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -81,6 +81,8 @@ h1{font-family:"Fraunces",Georgia,serif;margin:6px 0 0;text-wrap:balance;font-si
 .mapwrap{position:relative;border-radius:13px;overflow:hidden;border:1px solid var(--border);background:var(--sea-void);}
 #map{width:100%;aspect-ratio:2.1/1;min-height:300px;background:var(--sea-void);}
 @media (max-width:600px){#map{aspect-ratio:1.2/1;min-height:0;}
+  body{padding:18px 12px 40px;} .sub{font-size:15px;margin-top:8px;} .chips{gap:6px;margin-top:10px;}
+  .chip{padding:5px 12px;gap:6px;} .chip b{font-size:13.5px;} .chip span{font-size:11.5px;line-height:1.35;}
   .bmark .bn{font-size:11.5px;} .bmark .bv{font-size:10.5px;} .bmark.sm .bn,.bmark.sm .bv{font-size:10px;}
   #map.zfar .bv{display:none;}
   .clabel{font-size:9px;} .ilabel{font-size:8.5px;} .olabel{font-size:9.5px;} .sill{font-size:9px;} #map .city{font-size:10px;}}
@@ -316,7 +318,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <button class="zbtn wide" id="zseabed" type="button" aria-pressed="false" aria-label="Show seabed depth">Seabed</button>
       </div>
       <div class="subtoast" id="subToast" role="status" aria-live="polite"></div>
-      <div class="maphint">Drag to pan &middot; Ctrl + scroll to zoom &middot; click a basin to select it</div>
+      <div class="maphint" id="mapHint">Drag to pan &middot; Ctrl + scroll to zoom &middot; click a basin to select it</div>
     </div>
     <div class="ramp-row">
       <span class="ramp-cap" id="rampCap">&mdash;</span>
@@ -593,6 +595,9 @@ var map=new maplibregl.Map({
 });
 map.touchZoomRotate.disableRotation();
 map.addControl(new maplibregl.AttributionControl({compact:true,customAttribution:"Natural Earth · Terrain Tiles (SRTM, GEBCO) · MapLibre"}),"bottom-right");
+/* start with the credits folded to the (i) button, so they do not cover the map on small screens */
+map.once("load",function(){ var a=mapEl.querySelector(".maplibregl-ctrl-attrib"); if(a){ a.classList.remove("maplibregl-compact-show"); a.removeAttribute("open"); } });
+if(window.matchMedia&&matchMedia("(hover: none) and (pointer: coarse)").matches){ document.getElementById("mapHint").textContent="Two fingers to pan and zoom \u00b7 tap a basin to select it"; }
 
 /* labels are DOM markers: crisp text, no font server, styled with the page's own CSS */
 var countries={"Spain":[-3.5,39.6],"Portugal":[-8.0,39.8],"France":[2.4,45.4],"Italy":[12.6,42.7],"Croatia":[16.2,44.6],
