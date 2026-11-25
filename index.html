@@ -341,7 +341,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <div class="chip"><b>5,109 m</b><span>Calypso Deep, Ionian Sea, measured to &plusmn;1 m</span></div>
       <div class="chip"><b>2.7 psu</b><span>saltier at the eastern end than the western</span></div>
     </div>
-    <p class="reviewed">Data last reviewed: <time datetime="2026-09">September 2026</time></p>
+    <p class="reviewed">Data last reviewed: <time datetime="2026-11">November 2026</time></p>
   </header>
 
   <section class="panel live" id="sec-live" aria-labelledby="liveTitle" hidden>
@@ -457,7 +457,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
     </div>
     <div class="view" id="warmView" hidden>
     <h2 class="vh">How fast the sea is warming</h2>
-    <p class="funnote">The map shows each basin&rsquo;s estimated long-run warming rate (est., &deg;C per decade). The chart below is the whole-Mediterranean anomaly against 1991&ndash;2020; it is not split by basin.</p>
+    <p class="funnote">The map shows each basin&rsquo;s long-run warming rate over 1982&ndash;2024 (&deg;C per decade), from the official Copernicus trend map. The chart below is the whole-Mediterranean anomaly against 1991&ndash;2020; it is not split by basin.</p>
     <p class="hsub">Yearly sea-surface temperature of the whole Mediterranean, compared with the 1991&ndash;2020 average. Every year since 2015 has been warmer than that baseline, and the last three each set a new record.</p>
     <div class="heat">
       <div>
@@ -468,17 +468,17 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <div class="hstats">
           <div class="tile"><span class="tl">2024 vs normal</span><span class="tv">+1.20<i>&deg;C</i></span></div>
           <div class="tile"><span class="tl">Hottest month</span><span class="tv">+1.77<i>&deg;C &middot; Aug 2024</i></span></div>
-          <div class="tile"><span class="tl">Trend 1982&ndash;2018 (Pisano et al.)</span><span class="tv">+0.41<i>&plusmn;0.06 &deg;C/dec</i></span></div>
+          <div class="tile"><span class="tl">Trend 1982&ndash;2024 (Copernicus)</span><span class="tv">+0.32<i>&plusmn;0.01 &deg;C/dec</i></span></div>
           <div class="tile"><span class="tl">Trend 2015&ndash;2024 (fit to bars)</span><span class="tv">+0.87<i>&plusmn;0.46 &deg;C/dec</i></span></div>
         </div>
         <span class="ptitle" style="display:block;margin-top:14px">Recent extremes</span>
         <ul class="hlist">
           <li><b>2022</b> &mdash; record summer heatwave in the western basin; local anomalies up to +4.6&nbsp;&deg;C, reaching 1,500&nbsp;m deep.</li>
           <li><b>2023</b> &mdash; intense heatwaves covered 96% of the sea.</li>
-          <li><b>2024</b> &mdash; warmest year on record, 21.32&nbsp;&deg;C mean; 99.8% of the sea hit by at least one heatwave, the most extreme year since 1993.</li>
+          <li><b>2024</b> &mdash; warmest year on record, 21.32&nbsp;&deg;C mean; 99.8% of the sea hit by at least one heatwave, the most extreme year since 1993; the eastern basin set heatwave records on every detection method tested.</li>
           <li><b>2025</b> &mdash; second warmest, 21.21&nbsp;&deg;C; intense heatwaves covered 93% of the sea.</li>
         </ul>
-        <p class="note" style="margin-top:8px">Extremes from Copernicus Ocean State Report&nbsp;8 and Mercator Ocean annual bulletins. The long-run figure is from Pisano et al. (2020, <i>Remote Sensing</i> 12, 132, DOI 10.3390/rs12010132), computed on the same Copernicus reprocessed satellite record: 0.041 &plusmn; 0.006 &deg;C per year over 1982&ndash;2018, so a different window gives a different rate. The 2015&ndash;2024 trend is an ordinary least-squares fit to the ten bars, with a 95% interval: a short window that overstates the long-run rate. The 1991&ndash;2020 baseline is the one stated in the Copernicus product manual (Issue 5.0, November 2024).</p>
+        <p class="note" style="margin-top:8px">Extremes from Copernicus Ocean State Reports&nbsp;8 and 10 (report 10, chapter 4.5, DOI 10.5194/sp-7-osr10-19-2026) and Mercator Ocean annual bulletins. The long-run figure is the official Copernicus Marine trend indicator (MEDSEA_OMI_TEMPSAL_sst_trend, DOI 10.48670/moi-00269), also reported in Ocean State Report&nbsp;10: 0.032 &plusmn; 0.001 &deg;C per year over 1982&ndash;2024 on the reprocessed satellite record. An earlier estimate, Pisano et al. (2020, <i>Remote Sensing</i> 12, 132, DOI 10.3390/rs12010132), gave 0.041 &plusmn; 0.006 &deg;C per year over 1982&ndash;2018; it uses a shorter window and an older version of the record, so the two rates are not directly comparable. The 2015&ndash;2024 trend is an ordinary least-squares fit to the ten bars, with a 95% interval: a short window that overstates the long-run rate. The 1991&ndash;2020 baseline is the one stated in the Copernicus product manual (Issue 5.0, November 2024).</p>
       </div>
     </div>
   </div>
@@ -535,7 +535,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
 
   <footer id="sec-footer">
     <details class="note-fold"><summary>Reading the numbers: seasonal means, surface salinity, and how the Calypso Deep depth was measured.</summary><p class="note">Summer (July&ndash;September) and winter (January&ndash;March) SST are 1991&ndash;2020 climatological means of the Copernicus reanalysis over each basin&rsquo;s 0.25&deg; cells, weighted by cos(latitude): open-water averages, not coastal extremes, so shallow coastal corners can run warmer in August. Salinity is the annual mean surface salinity from World Ocean Atlas 2023 (1955&ndash;2022), in practical salinity units (&asymp; g/kg); the Aegean mean hides a steep gradient, from brackish Black Sea outflow in the north (below 33) to over 39 in the Cretan Sea. The Calypso Deep figure is the 2020 direct measurement of 5,109 m &plusmn;1 m from the submersible <i>Limiting Factor</i>, superseding older 5,121&ndash;5,267 m sonar estimates; the litter found there was logged in a separate 2025 study of video filmed on that same dive. The map's &ldquo;Balearic Sea&rdquo; follows the broad sense of that name &mdash; Britannica treats it as a synonym for the Algerian/Alg&eacute;ro-Proven&ccedil;al Basin, the whole open basin between Algeria, France and the Balearic Islands, not just the strip around Mallorca &mdash; so its area is the sourced ~0.85 million km&sup2; western-basin total minus the separately-mapped Alboran, Ligurian and Tyrrhenian. Basin areas otherwise vary with where you draw the boundaries; all are given to the nearest thousand km&sup2;.</p></details>
-    <details class="note-fold"><summary>Estimates marked est.: how warming rate and net evaporation were derived, and where they stop.</summary><p class="note">are interpolated across a documented gradient rather than measured basin by basin. <i>Warming rate:</i> in the multi-decade satellite SST record, the Balearic, Tyrrhenian, Adriatic and northern Ionian trend fastest at 0.4&ndash;0.5 &deg;C/decade, while the Aegean and northern Levantine trend highest basin-wide, up to 0.6 &deg;C/decade (Copernicus Ocean State Report); the Alboran and Ligurian sit below that band. These are long-run averages &mdash; Argo float data for 2012&ndash;2025 alone show still steeper warming across the whole basin (up to 0.8&ndash;0.9 &deg;C/decade near the surface in the western Mediterranean and Ionian), reflecting how much faster the sea has warmed in just the last decade. <i>Net evaporation</i> is evaporation minus rainfall, and each sub-basin carries its parent basin&rsquo;s average: 0.88 mm/day (&asymp;0.32 m a year) over the western Mediterranean and 1.52 mm/day (&asymp;0.55 m a year) over the eastern, where drought since the late 1990s has intensified it. Comparable per-sub-basin figures are not published; the Adriatic in particular is so diluted by rivers that its real freshwater balance is far less negative than the eastern average suggests. Rivers replace only about a third of what the sea loses to evaporation &mdash; the Atlantic inflow at Gibraltar makes up the deficit, and that imbalance is why the sea gets saltier from west to east. <i>Plankton layer:</i> the literature reports the deep chlorophyll maximum at about 30 m in the westernmost Mediterranean (Dolan et al. 2002, as cited in a 2015 <i>Biogeosciences Discussions</i> paper, bgd-12-4139-2015) and at more than 100 m in the Levantine; the per-basin values here, including 120 m for the easternmost Levantine, are placed along that west-to-east gradient and are not measured basin by basin. <i>Posidonia meadows</i> is a five-step presence rating, not an area: <i>Posidonia oceanica</i> is endemic to the Mediterranean and 1,224,707 ha of it have been mapped basin-wide (Telesca et al. 2015, <i>Scientific Reports</i> 5, 12505), but per-basin areas are not published on a comparable footing. The ratings follow the documented range limits &mdash; the Alboran is the species' western edge, meadows are rare or absent in the low-salinity northern Adriatic, and they stop at a sharp border in the Levantine, where records from the Syrian, Lebanese and Israeli coasts are now considered erroneous. Meadows are estimated to have contracted by 34% over the last fifty years (same study). <i>Biggest tide</i> is the largest spring range observed anywhere in the basin, not a basin-wide average &mdash; the Ionian figure is the Gulf of Gab&egrave;s, the Adriatic figure is the head of the gulf at Venice, and most of the sea sits nearer 0.2&ndash;0.3 m.</p></details>
+    <details class="note-fold"><summary>Estimates marked est.: how net evaporation and the plankton layer were derived, and where they stop; plus how each basin&rsquo;s warming rate is measured.</summary><p class="note">are interpolated across a documented gradient rather than measured basin by basin. <i>Warming rate</i> is not one of them: each basin&rsquo;s value is the official Copernicus trend map for 1982&ndash;2024 (MEDSEA_OMI_TEMPSAL_sst_trend) averaged over the cells inside its outline, weighted by cos(latitude). It runs from 0.18 &deg;C/decade in the Alboran, at the Atlantic gateway, to 0.38&ndash;0.39 in the Adriatic and Aegean; the sea as a whole warmed by 0.32 &plusmn; 0.01 &deg;C/decade. Whole-basin averages smooth out hot spots: single cells reach about 0.5 &deg;C/decade in the Aegean and Levantine, and the broad Balearic Sea, which runs down to the Algerian coast, averages below its northern waters. These are long-run averages &mdash; Argo float data for 2012&ndash;2025 alone show still steeper warming across the whole basin (up to 0.8&ndash;0.9 &deg;C/decade near the surface in the western Mediterranean and Ionian), reflecting how much faster the sea has warmed in just the last decade. <i>Net evaporation</i> is evaporation minus rainfall, and each sub-basin carries its parent basin&rsquo;s average: 0.88 mm/day (&asymp;0.32 m a year) over the western Mediterranean and 1.52 mm/day (&asymp;0.55 m a year) over the eastern, where drought since the late 1990s has intensified it. Comparable per-sub-basin figures are not published; the Adriatic in particular is so diluted by rivers that its real freshwater balance is far less negative than the eastern average suggests. Rivers replace only about a third of what the sea loses to evaporation &mdash; the Atlantic inflow at Gibraltar makes up the deficit, and that imbalance is why the sea gets saltier from west to east. <i>Plankton layer:</i> the literature reports the deep chlorophyll maximum at about 30 m in the westernmost Mediterranean (Dolan et al. 2002, as cited in a 2015 <i>Biogeosciences Discussions</i> paper, bgd-12-4139-2015) and at more than 100 m in the Levantine; the per-basin values here, including 120 m for the easternmost Levantine, are placed along that west-to-east gradient and are not measured basin by basin. <i>Posidonia meadows</i> is a five-step presence rating, not an area: <i>Posidonia oceanica</i> is endemic to the Mediterranean and 1,224,707 ha of it have been mapped basin-wide (Telesca et al. 2015, <i>Scientific Reports</i> 5, 12505), but per-basin areas are not published on a comparable footing. The ratings follow the documented range limits &mdash; the Alboran is the species' western edge, meadows are rare or absent in the low-salinity northern Adriatic, and they stop at a sharp border in the Levantine, where records from the Syrian, Lebanese and Israeli coasts are now considered erroneous. Meadows are estimated to have contracted by 34% over the last fifty years (same study). <i>Biggest tide</i> is the largest spring range observed anywhere in the basin, not a basin-wide average &mdash; the Ionian figure is the Gulf of Gab&egrave;s, the Adriatic figure is the head of the gulf at Venice, and most of the sea sits nearer 0.2&ndash;0.3 m.</p></details>
     <details class="note-fold"><summary>Basin outlines and depths: how the boundaries and terrain were drawn, and what the sea-level scenarios leave out.</summary><p class="note">follow the conventional hydrographic divisions at the sills &mdash; Gibraltar, the Sicily Channel, Otranto, the Dardanelles and the Cretan Arc &mdash; set as straight lines between capes, the convention the IHO uses, then clipped to the Natural Earth 1:10m coastline, simplified. The map also shows the surrounding seas (Atlantic, Black Sea, Sea of Marmara, Red Sea) in grey, outside the eight basins. <b>Area and mean depth</b> are measured from the outlined polygons and the terrain grid, so they describe what is drawn; they can differ from published figures for the same basin names, which use other limits. Maximum depths are literature values. The terrain grid is the AWS/Mapzen &ldquo;terrarium&rdquo; terrain tiles (SRTM, GMTED and ETOPO1/GEBCO), averaged to about 4&nbsp;km per cell, so depths under the cursor are approximate. <b>Sea-level scenarios:</b> an educational scenario on today&rsquo;s terrain &mdash; no ice-sheet or crustal rebound, no erosion or sediment, no tides, waves, defences or drainage &mdash; and whether water reaches a city is judged on 4&nbsp;km cells (see the method note beside the tool). The map is thematic, not navigational. Compiled September 2026.</p></details>
   </footer>
 </div>
@@ -553,35 +553,35 @@ var basins=[
  {id:"alboran",name:"Alboran Sea",sm:true,
   desc:"The Atlantic's doorway. A jet of cool, fresh ocean water pours through Gibraltar and coils into two standing gyres, keeping this the coldest and least salty corner of the sea.",
   quirk:"Every drop of Mediterranean water entered through this basin. It is also the one stretch that blooms like a real ocean \u2014 the plankton layer sits just 30 m down, against 120 m at the far eastern end.",
-  summer:22.77,winter:15.35,salinity:36.7,maxDepth:1500,warming:0.30,dcm:30,tide:0.3,posidonia:1},
+  summer:22.77,winter:15.35,salinity:36.7,maxDepth:1500,warming:0.18,dcm:30,tide:0.3,posidonia:1},
  {id:"balearic",name:"Balearic Sea",
   desc:"The Mediterranean's broadest open basin, running from the Algerian current to the Balearic Islands and the Gulf of Lion. In that northern corner, winter mistral storms make it one of the few places on Earth where surface water sinks all the way to the seafloor.",
   quirk:"A single seagrass meadow off Formentera, within this basin, has been cloning itself for an estimated 80,000 to 200,000 years and stretches 15 km. It is arguably the oldest living organism on the planet.",
-  summer:24.58,winter:14.29,salinity:37.5,maxDepth:2800,warming:0.45,dcm:50,tide:0.25,posidonia:4},
+  summer:24.58,winter:14.29,salinity:37.5,maxDepth:2800,warming:0.26,dcm:50,tide:0.25,posidonia:4},
  {id:"ligurian",name:"Ligurian Sea",sm:true,
   desc:"A small, steep basin in the crook of the Riviera. Deep water rises close to shore here, feeding the plankton blooms that draw fin whales in every summer.",
   quirk:"The Pelagos Sanctuary, 87,500 km\u00b2 of protected water centred on this basin, is the Mediterranean's only large marine-mammal reserve \u2014 and the reason fin whales still summer within sight of Monaco.",
-  summer:23.99,winter:13.58,salinity:38.1,maxDepth:2850,warming:0.40,dcm:50,tide:0.3,posidonia:3},
+  summer:23.99,winter:13.58,salinity:38.1,maxDepth:2850,warming:0.34,dcm:50,tide:0.3,posidonia:3},
  {id:"tyrrhenian",name:"Tyrrhenian Sea",
   desc:"Boxed in by Italy, Sicily, Sardinia and Corsica, and deep almost everywhere. Its water column is among the most stable in the sea.",
   quirk:"Marsili, 70 km long and rising 3,000 m off the seabed, is the largest volcano in Europe \u2014 bigger than Etna. Its crater sits 450 m below the surface and nothing on the water above gives it away.",
-  summer:25.57,winter:14.31,salinity:38.0,maxDepth:3785,warming:0.45,dcm:70,tide:0.4,posidonia:4},
+  summer:25.57,winter:14.31,salinity:38.0,maxDepth:3785,warming:0.29,dcm:70,tide:0.4,posidonia:4},
  {id:"adriatic",name:"Adriatic Sea",
   desc:"Shallow enough to wade far offshore in the north, then plunging past 1,200 m in the south. River water and winter cold give it the widest seasonal swing of any basin.",
   quirk:"It carries the Mediterranean's second-biggest tides \u2014 about 1.2 m at the head of the gulf, which, stacked on a storm surge, is what floods St Mark's Square \u2014 in a sea where 20 to 30 cm is the norm.",
-  summer:24.67,winter:12.85,salinity:37.8,maxDepth:1233,warming:0.50,dcm:40,tide:1.2,posidonia:2},
+  summer:24.67,winter:12.85,salinity:37.8,maxDepth:1233,warming:0.38,dcm:40,tide:1.2,posidonia:2},
  {id:"ionian",name:"Ionian Sea",
   desc:"The abyss of the Mediterranean. The Hellenic Trench drops to the Calypso Deep, deeper than anywhere else in the sea.",
   quirk:"Its floor, 5,109 m down, is the lowest point in the Mediterranean. Video from the 2020 dive that measured it, analysed in a 2025 study, shows 167 objects on the seafloor \u2014 88% of the identified litter plastic \u2014 one of the highest litter densities ever recorded in the deep sea.",
-  summer:26.44,winter:15.95,salinity:38.2,maxDepth:5109,warming:0.40,dcm:90,tide:2.0,posidonia:4},
+  summer:26.44,winter:15.95,salinity:38.2,maxDepth:5109,warming:0.29,dcm:90,tide:2.0,posidonia:4},
  {id:"aegean",name:"Aegean Sea",
   desc:"Thousands of islands and a sharp north-south split: brackish Black Sea outflow chills the north, while the Cretan Sea in the south is warm, salty and over 3,500 m deep.",
   quirk:"Nobody agrees how many islands it holds \u2014 estimates run from about 1,200 to 6,000 depending on the minimum size counted. Only around 220 of them have anyone living on them.",
-  summer:24.32,winter:15.45,salinity:38.4,maxDepth:3543,warming:0.55,dcm:80,tide:0.3,posidonia:3},
+  summer:24.32,winter:15.45,salinity:38.4,maxDepth:3543,warming:0.39,dcm:80,tide:0.3,posidonia:3},
  {id:"levantine",name:"Levantine Sea",
   desc:"The hot, salty end of the line. Relentless evaporation leaves the saltiest surface water in the Mediterranean, which then sinks and begins the long return journey west.",
   quirk:"The clearest and emptiest water in the sea \u2014 a Secchi disc once stayed visible 53 m down. It is also the front line of the Suez invasion that has pushed the Mediterranean past 1,000 alien species.",
-  summer:26.66,winter:17.06,salinity:39.0,maxDepth:4384,warming:0.50,dcm:120,tide:0.4,posidonia:1}
+  summer:26.66,winter:17.06,salinity:39.0,maxDepth:4384,warming:0.35,dcm:120,tide:0.4,posidonia:1}
 ];
 /* summer = Jul-Sep, winter = Jan-Mar: 1991-2020 climatological means of the Copernicus reanalysis over each basin's 0.25-degree cells,
    weighted by cos(latitude), computed from data/sst_clim.png (tests/smoke.html recomputes and checks them) */
@@ -598,7 +598,7 @@ var groups=[
    {id:"summer",short:"Summer",full:"Summer sea-surface temperature",fmt:fT},
    {id:"winter",short:"Winter",full:"Winter sea-surface temperature",fmt:fT},
    {id:"range",short:"Seasonal swing",full:"Summer-to-winter temperature swing",fmt:fT},
-   {id:"warming",short:"Warming rate",full:"Surface warming rate",est:true,fmt:function(v){return "+"+v.toFixed(2)+" "+DEG+"C/dec";}}]},
+   {id:"warming",short:"Warming rate",full:"Surface warming rate",fmt:function(v){return "+"+v.toFixed(2)+" "+DEG+"C/dec";}}]},
  {id:"salt",label:"Salinity",hint:"salt, and the water it loses",measures:[
    {id:"salinity",short:"Surface salinity",full:"Surface salinity",fmt:function(v){return v.toFixed(1)+" psu";}},
    {id:"evap",short:"Net evaporation",full:"Net evaporation (evaporation minus rain)",est:true,fmt:function(v){return v.toFixed(2)+" m/yr";}}]},
@@ -1475,7 +1475,7 @@ var CTX={
   summer:["\u00b0C","Reanalysis/model output (climatology)","July\u2013September mean, 1991\u20132020","cmems-sst-monthly"],
   winter:["\u00b0C","Reanalysis/model output (climatology)","January\u2013March mean, 1991\u20132020","cmems-sst-monthly"],
   range:["\u00b0C","Derived: summer value minus winter value","1991\u20132020 climatology","cmems-sst-monthly"],
-  warming:["\u00b0C per decade","Interpolated estimate (est.)","Long-run satellite SST record; window not documented","cmems-osr-bulletins; argo"],
+  warming:["\u00b0C per decade","Satellite observation (trend map averaged over each basin)","1982\u20132024","cmems-sst-trend"],
   salinity:["psu","Gridded climatology (annual mean at the surface)","1955\u20132022, average of decades","woa23"],
   evap:["m per year","Interpolated estimate (est.)","Period not documented","water-budget"],
   avgDepth:["m","Derived from terrain model","Current terrain, not dated","terrain-tiles; natural-earth"],
@@ -1500,21 +1500,28 @@ var DATASETS=[
   product:"MEDSEA_OMI_TEMPSAL_sst_area_averaged_anomalies (DOI 10.48670/moi-00268), from the reprocessed L4 satellite product SST_MED_SST_L4_REP_OBSERVATIONS_010_021",variable:"Sea-surface temperature anomaly, Mediterranean average",unit:"\u00b0C",coverage:"Since January 1982; this page's copy ends December 2024 and the chart shows 2015\u20132024",
   baseline:"1991\u20132020, as stated in the product user manual (Issue 5.0, November 2024: anomalies are computed with respect to the 1991\u20132020 reference period). Its change history lists the switch to this climatology in September 2024",
   aggregation:"Annual means of the monthly anomalies, computed for this page",resolution:"One value for the whole sea",category:"Satellite observation (reprocessed)",
-  method:"Unfiltered monthly anomalies averaged over the Mediterranean. Trends shown: +0.41 \u00b1 0.06 \u00b0C/decade over 1982\u20132018 (Pisano et al. 2020, 0.041 \u00b1 0.006 \u00b0C/year; see the next record), and for 2015\u20132024 an ordinary least-squares fit to the ten annual means in the chart, +0.87 \u00b0C/decade with a 95% interval of \u00b10.46 (n = 10, t = 2.31)",
+  method:"Unfiltered monthly anomalies averaged over the Mediterranean. Trends shown: +0.32 \u00b1 0.01 \u00b0C/decade over 1982\u20132024 (the Copernicus trend indicator, 0.032 \u00b1 0.001 \u00b0C/year; see the next record), and for 2015\u20132024 an ordinary least-squares fit to the ten annual means in the chart, +0.87 \u00b0C/decade with a 95% interval of \u00b10.46 (n = 10, t = 2.31)",
   limitations:"The 2015\u20132024 trend is a short window: its interval is wide and it overstates the long-run rate. No per-basin anomalies are derived from this series.",
   url:"https://data.marine.copernicus.eu/product/MEDSEA_OMI_TEMPSAL_sst_area_averaged_anomalies/description",linkText:"data.marine.copernicus.eu"},
- {id:"pisano-2020",name:"Pisano et al. (2020): Mediterranean SST warming trend",what:"Peer-reviewed estimate of the Mediterranean-wide warming trend from the Copernicus reprocessed satellite SST record. Source of the long-run trend shown on the Warming tab.",
+ {id:"cmems-sst-trend",name:"Copernicus Marine: Mediterranean SST trend map (OMI)",what:"The official long-run warming trend, as a map and as one figure for the whole sea. Source of the long-run trend on the Warming tab and of each basin's warming rate.",
+  product:"MEDSEA_OMI_TEMPSAL_sst_trend (DOI 10.48670/moi-00269; dataset version November 2025), from the reprocessed L4 satellite product SST_MED_SST_L4_REP_OBSERVATIONS_010_021",variable:"Sea-surface temperature trend",unit:"°C per year (shown per decade)",coverage:"1982–2024",
+  aggregation:"Whole sea: 0.032 ± 0.001 °C/year, as published. Per basin: the map's cells whose centre lies inside the drawn outline, averaged with cos(latitude) weights, computed for this page",resolution:"About 0.05°",category:"Satellite observation (reprocessed)",
+  method:"Monthly SST deseasonalised with the X-11 method, then a Mann-Kendall test and Sen's slope at each grid cell. The trend is significant at the 95% level in all but 10 of about 105,000 cells",
+  limitations:"Per-basin values average whole outlines, so they smooth out local hot spots (single cells reach about 0.5 °C/decade in the Aegean and Levantine), and slower southern waters pull the large basins down. The mean of the cell trends, 0.31 °C/decade, sits just below the published whole-sea figure, which is the trend of the sea-wide average.",
+  url:"https://data.marine.copernicus.eu/product/MEDSEA_OMI_TEMPSAL_sst_trend/description",linkText:"data.marine.copernicus.eu"},
+ {id:"pisano-2020",name:"Pisano et al. (2020): Mediterranean SST warming trend",what:"Peer-reviewed estimate of the Mediterranean-wide warming trend from an earlier version of the Copernicus reprocessed satellite SST record. Kept for comparison with the 1982–2024 indicator above.",
   product:"Remote Sensing 12(1), 132; DOI 10.3390/rs12010132",variable:"Sea-surface temperature trend",unit:"\u00b0C per year (shown per decade)",coverage:"1982\u20132018",
   aggregation:"Whole Mediterranean: 0.041 \u00b1 0.006 \u00b0C/year; western basin 0.036 \u00b1 0.006; Levantine\u2013Aegean 0.048 \u00b1 0.006",category:"Literature value (satellite observations)",
-  limitations:"Window ends in 2018, before the recent acceleration. Only the abstract was read for this page. Per-basin trends in the paper are regional, not for these eight basins.",
+  limitations:"Window ends in 2018, before the recent acceleration, and the record has been reprocessed since, so it is not directly comparable with the 1982–2024 indicator. Only the abstract was read for this page. Per-basin trends in the paper are regional, not for these eight basins.",
   url:"https://doi.org/10.3390/rs12010132",linkText:"doi.org/10.3390/rs12010132"},
- {id:"cmems-osr-bulletins",name:"Copernicus Ocean State Report 8, Mercator Ocean and C3S bulletins",what:"Annual SST bulletins, marine-heatwave monitoring, and the west-to-east warming-rate gradient behind the per-basin warming estimates.",
-  variable:"Annual mean SST, heatwave coverage, warming rates",unit:"\u00b0C, %, \u00b0C per decade",category:"Literature value; per-basin warming rates are interpolated estimates (est.)",
-  limitations:"Per-basin warming rates are placed along a documented gradient, not measured basin by basin.",
+ {id:"cmems-osr-bulletins",name:"Copernicus Ocean State Reports 8 and 10, Mercator Ocean and C3S bulletins",what:"Annual SST bulletins and marine-heatwave monitoring behind Recent extremes.",
+  product:"Ocean State Report 10 (State Planet 7-osr10, 2026), chapter 4.5 on Mediterranean warming and marine heatwaves in 2024, DOI 10.5194/sp-7-osr10-19-2026",
+  variable:"Annual mean SST, heatwave coverage and records",unit:"\u00b0C, %",category:"Literature value",
+  limitations:"Reports and bulletins use different products, so their annual means can differ by about 0.1 \u00b0C.",
   url:"https://marine.copernicus.eu/bulletin/2025-annual-ocean-health-bulletin",linkText:"2025 Ocean Health Bulletin"},
  {id:"argo",name:"Argo float network",what:"Profilers diving to 2,000 m every ten days, the in-situ backbone for salinity and warming trends.",
   variable:"Temperature and salinity profiles",coverage:"2012\u20132025 (the cited Argo vs. reanalysis study)",category:"Literature value (in-situ observations)",
-  limitations:"Cited for context on recent warming; no Argo values are plotted on the map.",
+  limitations:"Cited for context on recent warming; the 2012–2025 trends are not plotted. Today's floats are on the map from a separate live feed (see the live Argo record).",
   url:"https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2026.1846069/full",linkText:"Argo vs. reanalysis trends"},
  {id:"water-budget",name:"Mediterranean water budget (Frontiers in Climate, 2025)",what:"Net evaporation (evaporation minus rain) for the western and eastern basins.",
   variable:"Net evaporation",unit:"mm/day (shown as m per year)",aggregation:"One value per side of the sea (west 0.88, east 1.52 mm/day); each sub-basin carries its side's value",category:"Literature value; per-basin figures are interpolated estimates (est.)",
@@ -1613,7 +1620,7 @@ function paintContext(){
   if(group==="sea") t=["Sea-level scenario","m relative to today\u2019s sea level","Scenario output","No time period: today\u2019s terrain",dsNames("terrain-tiles")];
   else if(group==="temp"&&tview==="monthly") t=["Monthly mean sea-surface temperature","\u00b0C, or anomaly vs 1991\u20132020","Reanalysis/model output",DS["cmems-sst-monthly"].coverage,dsNames("cmems-sst-monthly")];
   else { var m=M(), c=CTX[metric]||["","","",""]; t=[m.full,c[0],c[1],c[2],dsNames(c[3])]; }
-  if(group==="temp"&&tview==="warming") t.push("Chart: "+dsNames("cmems-omi-sst-anomaly"));
+  if(group==="temp"&&tview==="warming") t.push("Chart: "+dsNames("cmems-omi-sst-anomaly; cmems-sst-trend"));
   document.getElementById("ctx").textContent=t.join(" \u00b7 ");
 }
 function paintDetail(){
