@@ -898,10 +898,11 @@ function spark(series){
   var z=(H-1-(0-lo)/(hi-lo)*(H-2)).toFixed(1);
   return '<svg class="hs" viewBox="0 0 46 22" aria-hidden="true"><line x1="0" x2="46" y1="'+z+'" y2="'+z+'" stroke="var(--border)" stroke-width="1"/><path d="'+d+'" fill="none" stroke="var(--hc,var(--ink-muted))" stroke-width="1.6" stroke-linejoin="round"/></svg>';
 }
+function nDays(h){ return h.streak+(h.series&&h.streak>=h.series.length?"+":"")+(h.streak===1?" day":" days"); }
 function heatText(h){
   if(h.anom==null) return "no data";
-  if(h.level) return "<b>"+h.label+"</b> · "+h.streak+" days";
-  if(h.streak) return "warm for "+h.streak+(h.streak===1?" day":" days");
+  if(h.level) return "<b>"+h.label+"</b> · "+nDays(h);
+  if(h.streak) return "warm for "+nDays(h);
   return h.anom>=0?"near or above normal":"below normal";
 }
 function paintHeat(){
@@ -922,7 +923,7 @@ document.getElementById("heatList").addEventListener("click",function(e){
 function paintNow(){
   var el=document.getElementById("dNow"); if(!el) return;
   var h=LIVE&&LIVE.heat&&LIVE.heat.basins[selected], parts=[];
-  if(h&&h.anom!=null) parts.push("<b>"+sgn(h.anom)+" "+DEG+"C</b> against normal on "+dShort(LIVE.heat.date)+(h.level?" · "+h.label+" for "+h.streak+" days":""));
+  if(h&&h.anom!=null) parts.push("<b>"+sgn(h.anom)+" "+DEG+"C</b> against normal on "+dShort(LIVE.heat.date)+(h.level?" · "+h.label+" for "+nDays(h):""));
   if(LIVE&&LIVE.argo){ var n=LIVE.argo.floats.filter(function(f){return f.basin===selected;}).length; if(n) parts.push(n+" Argo float"+(n>1?"s":"")+" reporting"); }
   el.hidden=!parts.length; el.innerHTML="Right now: "+parts.join(" · ");
   el.style.setProperty("--hc",h&&h.level?"var(--heat"+h.level+")":"var(--heat0)");
