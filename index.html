@@ -257,6 +257,48 @@ td:first-child{font-family:"IBM Plex Sans",sans-serif;color:var(--ink);font-weig
 footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-direction:column;gap:8px;}
 .note{font-size:11.5px;color:var(--ink-muted);line-height:1.65;max-width:90ch;margin:0;}
 .note a{color:var(--ink-2);}
+.live{padding:16px 18px 18px;}
+.livehead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.livehead .ptitle{display:inline-flex;align-items:center;gap:7px;font-weight:600;color:var(--ink);font-size:14px;}
+.livedot{width:8px;height:8px;border-radius:50%;background:var(--heat3);box-shadow:0 0 0 3px color-mix(in srgb,var(--heat3) 22%,transparent);animation:livep 2.4s ease-in-out infinite;}
+@keyframes livep{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--heat3) 0%,transparent);}}
+@media (prefers-reduced-motion:reduce){.livedot{animation:none;}}
+.livewhen{font-size:12px;color:var(--ink-muted);}
+.livegrid{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);gap:18px;margin-top:10px;}
+.livegrid > div{min-width:0;}
+.lh{font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:7px;}
+.lsub{font-weight:400;color:var(--ink-muted);}
+.heatlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:6px;}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) 46px auto;grid-template-rows:auto auto;column-gap:8px;align-items:center;text-align:left;font:inherit;color:var(--ink);
+  background:var(--surface-2);border:1px solid var(--border);border-left:4px solid var(--heat0);border-radius:10px;padding:6px 10px;cursor:pointer;min-height:44px;}
+.hrow:hover{border-color:var(--accent);border-left-color:var(--hc,var(--heat0));}
+.hrow:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+.hrow.on{background:var(--surface);border-color:var(--accent);}
+.hrow .hn{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hrow .hv{font-family:"IBM Plex Mono",monospace;font-size:13.5px;font-weight:600;color:var(--hc,var(--ink));text-align:right;font-variant-numeric:tabular-nums;}
+.hrow .hl{grid-column:1/2;font-size:11.5px;color:var(--ink-muted);}
+.hrow .hs{grid-row:1/3;grid-column:2/3;width:46px;height:22px;}
+.hrow .hv{grid-row:1/3;grid-column:3/4;}
+.hrow.lv1{--hc:var(--heat1);border-left-color:var(--heat1);} .hrow.lv2{--hc:var(--heat2);border-left-color:var(--heat2);} .hrow.lv3{--hc:var(--heat3);border-left-color:var(--heat3);}
+.hrow .hl b{color:var(--hc,var(--ink-2));font-weight:600;}
+.lnote{font-size:12px;color:var(--ink-muted);margin:9px 0 0;line-height:1.45;}
+.argostat{display:flex;gap:10px;align-items:baseline;}
+.argostat b{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:600;color:var(--accent-strong);}
+.argostat span{font-size:13px;color:var(--ink-2);line-height:1.4;}
+#argoBtn{margin-top:10px;}
+.nowline{margin-top:8px;font-size:13px;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--border);border-left:4px solid var(--hc,var(--heat0));border-radius:8px;padding:6px 10px;}
+.nowline b{font-family:"IBM Plex Mono",monospace;color:var(--hc,var(--ink));}
+@media (max-width:860px){.livegrid{grid-template-columns:1fr;}}
+@media (max-width:600px){.heatlist{grid-template-columns:1fr 1fr;}.hrow{grid-template-columns:minmax(0,1fr) auto;padding:6px 8px;}.hrow .hs{display:none;}.hrow .hv{grid-column:2/3;font-size:12.5px;}.hrow .hn{font-size:12.5px;}}
+:root{--heat0:#b9b2a2;--heat1:#a36a00;--heat2:#c2491b;--heat3:#b3261e;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--heat0:#5b574c;--heat1:#f2c14e;--heat2:#ff9a5c;--heat3:#ff7b72;}}
+:root[data-theme="dark"]{--heat0:#5b574c;--heat1:#f2c14e;--heat2:#ff9a5c;--heat3:#ff7b72;}
+.srcfold > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 0;min-height:32px;}
+.srcfold > summary::-webkit-details-marker{display:none;}
+.srcfold > summary::after{content:"Show";font-size:12px;font-weight:600;color:var(--accent-strong);border:1px solid var(--border);border-radius:99px;padding:3px 12px;flex:none;}
+.srcfold[open] > summary::after{content:"Hide";}
+.srcfold > summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px;}
+.srcfold[open] > summary{margin-bottom:6px;}
 .note-fold{border-top:1px dashed var(--border);padding-top:8px;}
 .note-fold > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--ink-2);line-height:1.5;}
 .note-fold > summary::-webkit-details-marker{display:none;}
@@ -302,6 +344,22 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
     <p class="reviewed">Data last reviewed: <time datetime="2026-09">September 2026</time></p>
   </header>
 
+  <section class="panel live" id="sec-live" aria-labelledby="liveTitle" hidden>
+    <div class="livehead"><span class="ptitle" id="liveTitle"><span class="livedot" aria-hidden="true"></span>Live now</span><span class="livewhen" id="liveWhen"></span></div>
+    <div class="livegrid">
+      <div id="heatBox" hidden>
+        <div class="lh">Sea-surface heat watch <span class="lsub" id="heatDate"></span></div>
+        <div class="heatlist" id="heatList"></div>
+        <p class="lnote">Each basin&rsquo;s average sea-surface temperature against normal for the date, from satellite data, over the last five weeks. <b>Warm</b>, <b>Strong</b> and <b>Severe</b> mean at least +1, +2 or +3&nbsp;&deg;C for five days or more: a simple stand-in for a marine-heatwave alert, not the formal definition.</p>
+      </div>
+      <div id="argoBox" hidden>
+        <div class="lh">Argo floats <span class="lsub" id="argoDays"></span></div>
+        <div class="argostat"><b id="argoCount">&mdash;</b><span>robotic floats have reported from the Mediterranean in the last three weeks, each with its surface temperature</span></div>
+        <button class="pbtn" id="argoBtn" type="button" aria-pressed="false">Show floats on the map</button>
+      </div>
+    </div>
+  </section>
+
   <div class="panel" id="sec-workspace">
     <div class="filter">
       <div class="groups" id="groups" role="group" aria-label="Mode"></div>
@@ -316,6 +374,8 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
         <button class="zbtn" id="zout" type="button" aria-label="Zoom out">&minus;</button>
         <button class="zbtn wide" id="zreset" type="button" aria-label="Reset the map view">Reset</button>
         <button class="zbtn wide" id="zseabed" type="button" aria-pressed="false" aria-label="Show seabed depth">Seabed</button>
+        <button class="zbtn wide" id="z3d" type="button" aria-pressed="false" aria-label="Tilt the map to show the seabed in 3D">3D</button>
+        <button class="zbtn wide" id="zargo" type="button" aria-pressed="false" aria-label="Show live Argo floats" hidden>Argo</button>
       </div>
       <div class="subtoast" id="subToast" role="status" aria-live="polite"></div>
       <div class="maphint" id="mapHint">Drag to pan &middot; Ctrl + scroll to zoom &middot; click a basin to select it</div>
@@ -439,6 +499,7 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
       <span class="ptitle">Selected basin</span>
       <div class="dname" id="dName">&mdash;</div>
       <div class="ddesc" id="dDesc">&mdash;</div>
+      <div class="nowline" id="dNow" hidden></div>
       <div class="tiles">
         <div class="tile"><span class="tl">Summer</span><span class="tv" id="t1">&mdash;</span></div>
         <div class="tile"><span class="tl">Winter</span><span class="tv" id="t2">&mdash;</span></div>
@@ -460,14 +521,16 @@ footer{border-top:1px solid var(--border);padding-top:13px;display:flex;flex-dir
   </div>
 
   <div class="panel" id="sec-sources">
-    <span class="ptitle">Where the data comes from</span>
+    <details class="srcfold"><summary><span class="ptitle">Where the data comes from</span></summary>
     <div class="prov" id="prov"></div>
+    </details>
   </div>
 
   <div class="panel" id="sec-valuesources">
-    <span class="ptitle">Sources for the figures per basin</span>
+    <details class="srcfold"><summary><span class="ptitle">Sources for the figures per basin</span></summary>
     <p class="note" style="margin-top:8px">Maximum depth, surface salinity and biggest tide as shown above, each with the published source that supports it. &ldquo;Source needed&rdquo; means no checkable source has been found yet; the figure is kept for now but should not be relied on. Most depth sources are encyclopedia or education pages; each depth checked against the EMODnet Bathymetry grid says whether that grid confirms it. Salinity is computed from World Ocean Atlas 2023. For primary checks use <a href="https://emodnet.ec.europa.eu/en/bathymetry" target="_blank" rel="noopener">EMODnet Bathymetry</a>, <a href="https://www.gebco.net/data-products-gridded-bathymetry-data" target="_blank" rel="noopener">GEBCO</a> and the <a href="https://data.marine.copernicus.eu/product/MEDSEA_MULTIYEAR_PHY_006_004/description" target="_blank" rel="noopener">Copernicus Marine Mediterranean reanalysis</a>.</p>
     <div style="overflow-x:auto"><table class="vs" id="vsrc"></table></div>
+    </details>
   </div>
 
   <footer id="sec-footer">
@@ -634,7 +697,7 @@ function syncZoomLimits(){
 }
 document.getElementById("zin").addEventListener("click",function(){map.zoomIn({duration:350});});
 document.getElementById("zout").addEventListener("click",function(){map.zoomOut({duration:350});});
-document.getElementById("zreset").addEventListener("click",function(){homeView(true);});
+document.getElementById("zreset").addEventListener("click",function(){ if(tilt) set3d(false); homeView(true); });
 map.on("resize",syncZoomLimits);
 map.on("zoom",function(){ mapEl.classList.toggle("zfar",map.getZoom()<homeZoom+0.45); });
 
@@ -749,6 +812,137 @@ seaBtn.addEventListener("click",function(){
   withDem(function(){ seaBtn.textContent="Seabed"; applySeabed(); });
 });
 
+/* ---- 3D seabed: the map tilts over real terrain tiles (AWS Terrain Tiles, terrarium encoding),
+   with depth exaggerated so the basins and trenches read at this scale ---- */
+var tilt=false, TILT_EX=14, DEM_TILES={type:"raster-dem",tiles:["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
+  encoding:"terrarium",tileSize:256,maxzoom:9,attribution:"Terrain Tiles (SRTM, GEBCO)"};
+var tiltBtn=document.getElementById("z3d"), maxB=map.getMaxBounds();
+function set3d(on){
+  tilt=on; tiltBtn.setAttribute("aria-pressed",on); tiltBtn.classList.toggle("on",on);
+  if(!mapReady) return;
+  if(on){
+    if(!map.getSource("dem3d")){ map.addSource("dem3d",Object.assign({},DEM_TILES)); map.addSource("dem3d-hs",Object.assign({},DEM_TILES)); }
+    if(!map.getLayer("hill")) map.addLayer({id:"hill",type:"hillshade",source:"dem3d-hs",paint:{"hillshade-exaggeration":0.55,
+      "hillshade-shadow-color":isDark()?"#000000":"#3a4a55","hillshade-highlight-color":isDark()?"#4a5a66":"#ffffff"}},"basins-fill");
+    if(!seabed) seaBtn.click();
+    map.setMaxBounds(null); map.setMaxPitch(70);
+    map.setTerrain({source:"dem3d",exaggeration:TILT_EX});
+    map.dragRotate.enable(); map.touchPitch.enable();
+    map.easeTo({pitch:58,bearing:-12,duration:1200});
+  }else{
+    map.setTerrain(null); if(map.getLayer("hill")) map.removeLayer("hill");
+    map.dragRotate.disable(); map.touchPitch.disable();
+    map.easeTo({pitch:0,bearing:0,duration:700});
+    map.once("moveend",function(){ if(!tilt&&maxB) map.setMaxBounds(maxB); });
+  }
+}
+tiltBtn.addEventListener("click",function(){ set3d(!tilt); });
+
+/* ---- live: Argo floats and the sea-surface heat watch ----
+   data/live.json is built by scripts/build_live.py in the deploy job (daily). If it is missing,
+   or one half failed, that half stays hidden. */
+var LIVE=null, argoOn=false, argoBtn=document.getElementById("argoBtn"), argoZ=document.getElementById("zargo");
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function dShort(t){ var d=new Date(t); return isNaN(d)?"":d.getUTCDate()+" "+MON[d.getUTCMonth()]; }
+function sgn(v){ return (v>0?"+":v<0?"−":"")+Math.abs(v).toFixed(1); }
+function floatAt(pt){ return argoOn&&map.getLayer("argo-pts")?map.queryRenderedFeatures([[pt.x-5,pt.y-5],[pt.x+5,pt.y+5]],{layers:["argo-pts"]})[0]:null; }
+function argoGeo(){
+  var fs=[];
+  LIVE.argo.floats.forEach(function(f){
+    if(f.track.length>1) fs.push({type:"Feature",geometry:{type:"LineString",coordinates:f.track},properties:{}});
+    fs.push({type:"Feature",geometry:{type:"Point",coordinates:[f.lon,f.lat]},properties:{id:f.id,time:f.time,temp:f.temp==null?-99:f.temp,basin:f.basin||""}});
+  });
+  return {type:"FeatureCollection",features:fs};
+}
+function addArgo(){
+  if(!mapReady||!LIVE||!LIVE.argo||map.getSource("argo")) return;
+  map.addSource("argo",{type:"geojson",data:argoGeo()});
+  var lineF=["==",["geometry-type"],"LineString"];
+  map.addLayer({id:"argo-track-case",type:"line",source:"argo",filter:lineF,
+    layout:{visibility:"none","line-join":"round","line-cap":"round"},paint:{"line-color":"#ffffff","line-width":3.2,"line-opacity":0.55}});
+  map.addLayer({id:"argo-track",type:"line",source:"argo",filter:lineF,
+    layout:{visibility:"none","line-join":"round","line-cap":"round"},paint:{"line-color":"#0b2545","line-width":1.4,"line-opacity":0.85,"line-dasharray":[2,1.5]}});
+  map.addLayer({id:"argo-pts",type:"circle",source:"argo",filter:["==",["geometry-type"],"Point"],layout:{visibility:"none"},
+    paint:{"circle-radius":["interpolate",["linear"],["zoom"],3,4,7,7],"circle-color":"#ffc929","circle-stroke-color":"#0b2545","circle-stroke-width":1.6}});
+  map.on("mousemove","argo-pts",function(e){ map.getCanvas().style.cursor="pointer"; floatTip(e.features[0].properties,e.originalEvent); });
+  map.on("mouseleave","argo-pts",function(){ map.getCanvas().style.cursor=""; tip.style.display="none"; });
+  map.on("click","argo-pts",function(e){ floatTip(e.features[0].properties,e.originalEvent); });
+  if(argoOn) setArgo(true);
+}
+function floatTip(p,ev){
+  var b=byId[p.basin];
+  tip.innerHTML='<div class="tn">Argo float '+p.id+'</div>'+
+   (b?'<div class="tr"><span>Basin</span><b>'+b.name+'</b></div>':"")+
+   '<div class="tr"><span>Last report</span><b>'+dShort(p.time)+'</b></div>'+
+   (p.temp>-90?'<div class="tr"><span>Surface temperature</span><b>'+(+p.temp).toFixed(1)+" "+DEG+'C</b></div>':"")+
+   '<div class="tr"><span>Dashed track</span><b>last 3 weeks</b></div>';
+  tip.style.display="block"; moveTip(ev);
+}
+function setArgo(on){
+  argoOn=on;
+  [argoBtn,argoZ].forEach(function(b){ b.setAttribute("aria-pressed",on); b.classList.toggle("on",on); });
+  argoBtn.textContent=on?"Hide floats":"Show floats on the map";
+  if(!map.getLayer("argo-pts")) return;
+  ["argo-track-case","argo-track","argo-pts"].forEach(function(l){ map.setLayoutProperty(l,"visibility",on?"visible":"none"); });
+  if(!on) tip.style.display="none";
+}
+argoBtn.addEventListener("click",function(){
+  setArgo(!argoOn);
+  if(argoOn){ var m=document.getElementById("map"); if(m.getBoundingClientRect().top<0||m.getBoundingClientRect().top>innerHeight*0.6) m.scrollIntoView({behavior:"smooth",block:"center"}); }
+});
+argoZ.addEventListener("click",function(){ setArgo(!argoOn); });
+function spark(series){
+  var v=series.filter(function(x){return x!=null;}); if(v.length<2) return "";
+  var lo=Math.min(0,Math.min.apply(null,v)), hi=Math.max(1,Math.max.apply(null,v)), W=46, H=22, n=series.length-1, d="";
+  series.forEach(function(x,i){ if(x==null) return; d+=(d?"L":"M")+(i/n*W).toFixed(1)+","+(H-1-(x-lo)/(hi-lo)*(H-2)).toFixed(1); });
+  var z=(H-1-(0-lo)/(hi-lo)*(H-2)).toFixed(1);
+  return '<svg class="hs" viewBox="0 0 46 22" aria-hidden="true"><line x1="0" x2="46" y1="'+z+'" y2="'+z+'" stroke="var(--border)" stroke-width="1"/><path d="'+d+'" fill="none" stroke="var(--hc,var(--ink-muted))" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+}
+function heatText(h){
+  if(h.anom==null) return "no data";
+  if(h.level) return "<b>"+h.label+"</b> · "+h.streak+" days";
+  if(h.streak) return "warm for "+h.streak+(h.streak===1?" day":" days");
+  return h.anom>=0?"near or above normal":"below normal";
+}
+function paintHeat(){
+  if(!LIVE||!LIVE.heat) return;
+  var H=LIVE.heat.basins, host=document.getElementById("heatList");
+  var ids=Object.keys(H).filter(function(k){return byId[k]&&H[k].anom!=null;}).sort(function(a,b){return H[b].anom-H[a].anom;});
+  host.innerHTML=ids.map(function(k){ var h=H[k];
+    return '<button type="button" class="hrow lv'+h.level+(k===selected?" on":"")+'" data-id="'+k+'" aria-label="'+byId[k].name+": "+sgn(h.anom)+" degrees against normal, "+heatText(h).replace(/<[^>]+>/g,"")+'. Select this basin">'+
+      '<span class="hn">'+byId[k].name.replace(/ Sea$/,"")+'</span>'+spark(h.series)+'<span class="hv">'+sgn(h.anom)+"°</span>"+
+      '<span class="hl">'+heatText(h)+"</span></button>";
+  }).join("");
+}
+document.getElementById("heatList").addEventListener("click",function(e){
+  var b=e.target.closest(".hrow"); if(!b) return;
+  select(b.getAttribute("data-id"),true);
+  var m=document.getElementById("map"); if(m.getBoundingClientRect().top<0) m.scrollIntoView({behavior:"smooth",block:"center"});
+});
+function paintNow(){
+  var el=document.getElementById("dNow"); if(!el) return;
+  var h=LIVE&&LIVE.heat&&LIVE.heat.basins[selected], parts=[];
+  if(h&&h.anom!=null) parts.push("<b>"+sgn(h.anom)+" "+DEG+"C</b> against normal on "+dShort(LIVE.heat.date)+(h.level?" · "+h.label+" for "+h.streak+" days":""));
+  if(LIVE&&LIVE.argo){ var n=LIVE.argo.floats.filter(function(f){return f.basin===selected;}).length; if(n) parts.push(n+" Argo float"+(n>1?"s":"")+" reporting"); }
+  el.hidden=!parts.length; el.innerHTML="Right now: "+parts.join(" · ");
+  el.style.setProperty("--hc",h&&h.level?"var(--heat"+h.level+")":"var(--heat0)");
+  Array.prototype.forEach.call(document.querySelectorAll(".hrow"),function(r){ r.classList.toggle("on",r.getAttribute("data-id")===selected); });
+}
+fetch("data/live.json",{cache:"no-cache"}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(d){
+  LIVE=d;
+  var any=false;
+  if(d.heat&&d.heat.basins){ any=true; document.getElementById("heatBox").hidden=false;
+    document.getElementById("heatDate").textContent="· to "+dShort(d.heat.date)+(d.heat.synthetic?" (test data)":""); paintHeat(); }
+  if(d.argo&&d.argo.floats&&d.argo.floats.length){ any=true; document.getElementById("argoBox").hidden=false; argoZ.hidden=false;
+    document.getElementById("argoCount").textContent=d.argo.floats.length;
+    document.getElementById("argoDays").textContent="· last "+d.argo.days+" days";
+    if(mapReady) addArgo(); else map.once("load",addArgo); }
+  if(!any) return;
+  document.getElementById("liveWhen").textContent="Updated daily · last built "+dShort(d.built);
+  document.getElementById("sec-live").hidden=false;
+  paintNow();
+}).catch(function(){});
+
 /* ---- theme ---- */
 function applyTheme(){
   if(!mapReady) return;
@@ -800,6 +994,7 @@ map.on("load",function(){
   if(dem){ applySeabed(); if(level!==0) drawLevel(); }
 
   map.on("mousemove","basins-fill",function(e){
+    if(floatAt(e.point)) return;
     var id=e.features[0].properties.id;
     if(id!==hoverId){ hoverId=id; map.setFilter("basin-hover",["==",["get","id"],id]); }
     map.getCanvas().style.cursor="pointer";
@@ -809,7 +1004,7 @@ map.on("load",function(){
     hoverId=null; map.setFilter("basin-hover",["==",["get","id"],""]);
     map.getCanvas().style.cursor=""; tip.style.display="none";
   });
-  map.on("click","basins-fill",function(e){ select(e.features[0].properties.id,false); });
+  map.on("click","basins-fill",function(e){ if(floatAt(e.point)) return; select(e.features[0].properties.id,false); });
   map.on("movestart",function(){ tip.style.display="none"; });
 });
 
@@ -1350,7 +1545,17 @@ var DATASETS=[
  {id:"basin-literature",name:"Basin monographs and regional literature",what:"Per-basin maximum depth, tide, plankton and Posidonia figures: Adriatic, Aegean, Tyrrhenian, Ligurian, Alboran and Levantine studies, CIESM and Britannica.",
   category:"Literature value",
   limitations:"Maximum depths: Alboran 1,500 m (eniscuola.eni.com) and Adriatic 1,233 m and Aegean 3,543 m (WorldAtlas, converted from feet) are web references, not primary bathymetry. Tyrrhenian 3,785 m is repeated across Wikipedia and its mirrors with no citation; the EMODnet grid\u2019s deepest cell in the outline is 3,648 m. Levantine 4,384 m (Pliny Trench) is an encyclopedia figure marked citation needed; a 2021 trench study gives no basin maximum, and the EMODnet grid gives 4,503 m south-east of Rhodes (4,668 m at the Ionian edge). Ligurian 2,850 m: no source found, Wikipedia says only more than 2,800 m, and the EMODnet grid gives 2,704 m at the outline\u2019s southern limit. Balearic 2,800 m: a Universalis entry gives the typical abyssal floor as 2,800 to 3,300 m, so 2,800 is the bottom of that range, not a maximum. Ionian 5,109 m is the 2020 Calypso Deep measurement. Tide: Ionian 2.0 m (Gulf of Gabes) sits within a wide spread in the sources (about 1 m in Sammari et al. 2006, 2.1 m on Wikipedia, about 2.5 m in Britannica); Adriatic 1.2 m (Venice) has no source found. Salinity: no longer from this record; it now comes from World Ocean Atlas 2023 (see that record). Plankton layer: about 30 m in the westernmost Mediterranean and more than 100 m in the Levantine are reported in the literature; per-basin values are interpolated. Posidonia: basin-wide area and decline are from Telesca et al. 2015; per-basin ratings are not sourced.",
-  url:"https://www.britannica.com/place/Mediterranean-Sea/Hydrologic-features-and-climate",linkText:"Britannica"}
+  url:"https://www.britannica.com/place/Mediterranean-Sea/Hydrologic-features-and-climate",linkText:"Britannica"},
+ {id:"argo-live",name:"Argo floats (live)",what:"The robotic floats in the Live now panel and on the map. These data were collected and made freely available by the International Argo Program and the national programmes that contribute to it.",
+   product:"Argo GDAC profiles, served by Ifremer ERDDAP (dataset ArgoFloats)",variable:"Position, time and temperature of each profile",unit:"\u00b0C",coverage:"The last 21 days, refreshed once a day when the site is rebuilt",
+   aggregation:"For each profile the shallowest temperature in the top 10 dbar (about 10 m); for each float its latest position and its track over the period. Floats are assigned to a basin by their latest position",resolution:"Individual floats, roughly one profile every 5\u201310 days each",category:"In-situ observation (near real time)",
+   limitations:"Real-time values pass only automatic quality checks; corrected (delayed-mode) values come months later. Floats drift, so the count per basin changes from day to day, and a basin with none simply had no float in it.",
+   url:"https://erddap.ifremer.fr/erddap/tabledap/ArgoFloats.html",linkText:"erddap.ifremer.fr"},
+ {id:"cmems-sst-nrt-anomaly",name:"Copernicus Marine: Mediterranean SST anomaly, near real time",what:"The daily satellite anomaly behind the sea-surface heat watch in the Live now panel and the Right now line.",
+   product:"SST_MED_SST_L4_NRT_OBSERVATIONS_010_004 (anomaly dataset SST_MED_SSTA_L4_NRT_OBSERVATIONS_010_004_b), produced by CNR-ISMAR",variable:"Night-time foundation sea-surface temperature anomaly",unit:"\u00b0C",coverage:"The last 35 days, refreshed once a day when the site is rebuilt",baseline:"1991\u20132020 daily climatology, as stated by the product",
+   aggregation:"Every second grid cell (about 1/8\u00b0); basin values are means of the cells inside the basin outline, weighted by cos(latitude). Warm, Strong and Severe = basin mean at least +1, +2 or +3 \u00b0C for five days or more in a row",resolution:"1/16\u00b0 (about 7 km), daily",category:"Satellite observation (near real time)",
+   limitations:"The alert levels are this page's simple stand-in, not the formal marine-heatwave definition (which uses the 90th percentile of each place's own climatology). A basin average can hide a hotspot along one coast. Near-real-time data are not yet reprocessed.",
+   url:"https://data.marine.copernicus.eu/product/SST_MED_SST_L4_NRT_OBSERVATIONS_010_004/description",linkText:"data.marine.copernicus.eu"},
 ];
 var DS={}; DATASETS.forEach(function(d){ DS[d.id]=d; });
 var DS_FIELDS=[["product","Product"],["variable","Variable"],["unit","Unit"],["coverage","Coverage"],["baseline","Baseline"],["aggregation","Aggregation"],
@@ -1424,6 +1629,7 @@ function paintDetail(){
   document.getElementById("t7").innerHTML=fN(b.dcm)+'<i>m down (est.)</i>';
   document.getElementById("t8").innerHTML=b.tide.toFixed(2)+'<i>m</i>';
   document.getElementById("t9").innerHTML=POS[Math.round(b.posidonia)];
+  paintNow();
 }
 function paintTable(){
   var cols=[["Basin","name"],["Summer "+DEG+"C","summer"],["Winter "+DEG+"C","winter"],["Swing "+DEG+"C","range"],

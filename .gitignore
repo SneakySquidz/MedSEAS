@@ -20,3 +20,6 @@ build/
 
 # Logs
 *.log
+
+# Live data, built at deploy time (scripts/build_live.py)
+data/live.json

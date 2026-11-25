@@ -1,8 +1,14 @@
 name: Deploy to GitHub Pages
 
+# Runs on every push to main and once a day, so the live data (Argo floats and the
+# sea-surface heat watch, data/live.json) is rebuilt daily. live.json is never committed.
+# If the live build fails the site still deploys, and the page hides the live panel.
+# Note: GitHub pauses scheduled runs after 60 days without a commit to the repo.
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "15 6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -23,6 +29,23 @@ jobs:
 
       - name: Leave out the local dev dashboard
         run: rm -rf dev
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements-sst.txt
+
+      - name: Build live data (Argo floats, heat watch)
+        continue-on-error: true
+        timeout-minutes: 15
+        env:
+          COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUSMARINE_SERVICE_USERNAME }}
+          COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUSMARINE_SERVICE_PASSWORD }}
+        run: |
+          pip install -r scripts/requirements-sst.txt
+          python scripts/build_live.py
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v5
